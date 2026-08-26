@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Relatorio analitico do Canada na Liga KND 2026: map pool, curva de forma, profundidade de lineup e plano de veto nas semanas 1 a 6.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%230f131b%27/%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%279%27 fill=%27none%27 stroke=%27%23c3f53c%27 stroke-width=%273%27/%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%272.5%27 fill=%27%23c3f53c%27/%3E%3C/svg%3E">
+<title>Canadá 7-7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap">
+
+<style>
+  :root{
+    --bg:#0f131b;
+    --panel:#161b25;
+    --panel2:#1d2430;
+    --line:#2b3441;
+    --line-soft:#202834;
+    --txt:#eaf0f7;
+    --mut:#8a93a3;
+    --mut-dim:#5f6877;
+    --lime:#c3f53c;
+    --lime-deep:#8fbe1f;
+    --red:#ff4d6d;
+    --red-soft:#ff8a9c;
+    --cyan:#38bdf8;
+    --amber:#ffb347;
+
+    --f-disp:'Saira Condensed','Arial Narrow',Impact,sans-serif;
+    --f-body:'IBM Plex Sans','Segoe UI',system-ui,Arial,sans-serif;
+    --f-mono:'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
+
+    --sp:clamp(18px,3.2vw,30px);
+  }
+
+  *{box-sizing:border-box}
+
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--txt);
+    font-family:var(--f-body);
+    font-size:15px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";position:fixed;left:0;right:0;top:0;height:3px;z-index:100;
+    background:linear-gradient(90deg,var(--lime),var(--lime) 28%,transparent 76%);
+  }
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 clamp(16px,4vw,28px) 90px}
+
+  /* ---------- tipografia base ---------- */
+  h1,h2,h3,h4{font-family:var(--f-disp);text-transform:uppercase;text-wrap:balance;margin:0}
+  h1{font-size:clamp(46px,10vw,92px);font-weight:800;line-height:.92;letter-spacing:-.5px}
+  h2{font-size:clamp(24px,3.6vw,33px);font-weight:700;letter-spacing:.4px;line-height:1.05}
+  h3{font-size:19px;font-weight:700;letter-spacing:.6px}
+  h4{font-size:14px;font-weight:700;letter-spacing:1.4px;color:var(--mut)}
+  p{margin:0}
+  b,strong{font-weight:600;color:#fff}
+  .num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+  .eyebrow{
+    font-family:var(--f-mono);font-size:11px;font-weight:600;letter-spacing:2.6px;
+    text-transform:uppercase;color:var(--mut);
+  }
+
+  /* ---------- header ---------- */
+  header{padding:clamp(38px,7vw,68px) 0 0}
+  .head-top{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:baseline;
+            border-bottom:1px solid var(--line);padding-bottom:12px}
+  .head-top .eyebrow:last-child{color:var(--mut-dim)}
+  .titleblock{display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px 26px;margin-top:22px}
+  h1{color:var(--txt)}
+  h1 em{font-style:normal;color:var(--lime)}
+  .record{
+    font-family:var(--f-mono);font-size:13px;font-weight:600;letter-spacing:1px;
+    color:var(--bg);background:var(--lime);border-radius:6px;padding:5px 12px;margin-bottom:12px;
+  }
+  .thesis{
+    margin-top:26px;padding-left:18px;border-left:2px solid var(--lime);
+    max-width:66ch;font-size:17px;line-height:1.6;color:#dbe4ee;
+  }
+
+  /* ---------- estrutura de secao ---------- */
+  section{margin-top:clamp(46px,7vw,76px)}
+  .sec-head{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;
+            border-bottom:1px solid var(--line);padding-bottom:11px;margin-bottom:26px}
+  .sec-head h2{flex:none}
+  .sec-head .kicker{font-family:var(--f-mono);font-size:11px;letter-spacing:1.6px;
+                    text-transform:uppercase;color:var(--mut-dim)}
+  .lead{max-width:68ch;color:#cbd5e1;margin-bottom:26px}
+  .note{max-width:68ch;color:var(--mut);font-size:13.5px;line-height:1.6}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:var(--sp)}
+  .panel + .panel{margin-top:16px}
+
+  /* ---------- KPI ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+       padding:16px 18px 18px;display:flex;flex-direction:column;gap:5px}
+  .kpi .k-lbl{font-family:var(--f-mono);font-size:10px;letter-spacing:1.5px;
+              text-transform:uppercase;color:var(--mut)}
+  .kpi .k-val{font-family:var(--f-disp);font-size:40px;font-weight:800;line-height:1;
+              letter-spacing:.5px;font-variant-numeric:tabular-nums}
+  .kpi .k-sub{font-family:var(--f-mono);font-size:11.5px;color:var(--mut-dim)}
+  .kpi.good .k-val{color:var(--lime)}
+  .kpi.bad .k-val{color:var(--red)}
+  .kpi.flat .k-val{color:var(--txt)}
+
+  /* ---------- curva de forma ---------- */
+  .form{display:grid;grid-template-columns:1fr;gap:14px}
+  .form-plot{position:relative;height:210px;display:flex;gap:10px;align-items:flex-end;
+             padding-top:8px}
+  .form-ref{position:absolute;left:0;right:0;bottom:62.5%;border-top:1px dashed var(--mut-dim);z-index:1}
+  .form-ref span{position:absolute;right:0;top:-9px;font-family:var(--f-mono);font-size:9.5px;
+                 font-weight:600;letter-spacing:1px;color:var(--mut);background:var(--panel);padding:0 6px}
+  .fbar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;
+        align-items:center;gap:6px;height:100%;position:relative;z-index:2}
+  .fbar .fv{font-family:var(--f-mono);font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+  .fbar .fc{width:100%;border-radius:4px 4px 0 0;min-height:5px}
+  .fbar.w .fc{background:linear-gradient(180deg,#e4ff90,var(--lime))}
+  .fbar.l .fc{background:linear-gradient(180deg,#ff8a9c,#c9314c)}
+  .fbar.w .fv{color:var(--lime)}
+  .fbar.l .fv{color:var(--red-soft)}
+  .form-axis{display:flex;gap:10px}
+  .form-axis div{flex:1;text-align:center;font-family:var(--f-mono);font-size:10.5px;
+                 letter-spacing:.8px;color:var(--mut)}
+  .form-axis div b{display:block;font-size:11px;color:var(--mut-dim);font-weight:500}
+
+  /* ---------- barras divergentes de mapa ---------- */
+  .dchart{display:flex;flex-direction:column;gap:9px}
+  .dhead{display:grid;grid-template-columns:92px 1fr 62px;gap:14px;align-items:center;
+         font-family:var(--f-mono);font-size:9.5px;letter-spacing:1.4px;text-transform:uppercase;
+         color:var(--mut-dim);padding-bottom:6px;border-bottom:1px solid var(--line-soft)}
+  .dhead .dh-mid{display:flex;justify-content:space-between}
+  .drow{display:grid;grid-template-columns:92px 1fr 62px;gap:14px;align-items:center}
+  .drow .dname{font-family:var(--f-disp);font-size:17px;font-weight:600;letter-spacing:.6px;
+               text-transform:uppercase}
+  .dtrack{display:flex;align-items:center;height:26px}
+  .dside{flex:1;display:flex;height:100%;align-items:center}
+  .dside.neg{justify-content:flex-end}
+  .dfill{height:100%;border-radius:3px}
+  .dside.neg .dfill{background:linear-gradient(90deg,#c9314c,#ff6b84)}
+  .dside.pos .dfill{background:linear-gradient(90deg,var(--lime-deep),var(--lime))}
+  .daxis{width:1px;background:var(--line);height:34px;flex:none}
+  .dval{font-family:var(--f-mono);font-size:14px;font-weight:600;text-align:right;
+        font-variant-numeric:tabular-nums}
+  .dval.p{color:var(--lime)} .dval.n{color:var(--red-soft)}
+
+  /* ---------- tabelas ---------- */
+  .tscroll{overflow-x:auto;margin-top:4px}
+  table{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-size:13px;
+        font-variant-numeric:tabular-nums;min-width:560px}
+  thead th{font-size:9.5px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;
+           color:var(--mut);text-align:right;padding:0 10px 9px;border-bottom:1px solid var(--line);
+           white-space:nowrap}
+  thead th:first-child{text-align:left}
+  tbody td{padding:9px 10px;border-bottom:1px solid var(--line-soft);text-align:right;white-space:nowrap}
+  tbody td:first-child{text-align:left;font-family:var(--f-body);font-weight:500;color:#fff}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr.hi td{background:rgba(195,245,60,.055)}
+  td.pos{color:var(--lime)} td.neg{color:var(--red-soft)} td.dim{color:var(--mut)}
+
+  .kprcell{display:flex;align-items:center;gap:9px;justify-content:flex-end}
+  .kprbar{width:74px;height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;flex:none}
+  .kprbar i{display:block;height:100%;background:var(--lime);border-radius:3px}
+  .kprbar.op i{background:var(--cyan)}
+
+  /* ---------- board de veto ---------- */
+  .veto{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .vcard{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:15px 16px 17px;
+         display:flex;flex-direction:column;gap:9px;position:relative;overflow:hidden}
+  .vcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+  .vcard.pick::before{background:var(--lime)}
+  .vcard.neutral::before{background:var(--amber)}
+  .vcard.ban::before{background:var(--red)}
+  .vtag{font-family:var(--f-mono);font-size:9.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase}
+  .vcard.pick .vtag{color:var(--lime)}
+  .vcard.neutral .vtag{color:var(--amber)}
+  .vcard.ban .vtag{color:var(--red-soft)}
+  .vmaps{display:flex;flex-wrap:wrap;gap:7px}
+  .vmaps span{font-family:var(--f-disp);font-size:16px;font-weight:600;letter-spacing:.5px;
+              text-transform:uppercase;background:var(--panel);border:1px solid var(--line);
+              border-radius:6px;padding:3px 10px}
+  .vwhy{font-size:13px;color:var(--mut);line-height:1.5}
+
+  /* ---------- linha do tempo do Mirage ---------- */
+  .mtl{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .mcard{background:var(--panel2);border:1px solid var(--line);border-radius:11px;
+         padding:13px 12px 15px;display:flex;flex-direction:column;gap:7px;text-align:center}
+  .mcard.l{border-color:rgba(255,77,109,.42)}
+  .mcard.w{border-color:rgba(195,245,60,.36)}
+  .mcard .mwk{font-family:var(--f-mono);font-size:9.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--mut)}
+  .mcard .msc{font-family:var(--f-disp);font-size:31px;font-weight:800;line-height:1;
+              font-variant-numeric:tabular-nums}
+  .mcard.l .msc{color:var(--red-soft)} .mcard.w .msc{color:var(--lime)}
+  .mcard .mfr{font-family:var(--f-mono);font-size:10.5px;color:var(--mut-dim)}
+
+  /* ---------- splits ---------- */
+  .splits{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .split{background:var(--panel2);border:1px solid var(--line);border-radius:12px;
+         padding:17px 18px 19px;display:flex;flex-direction:column;gap:4px}
+  .split .s-lbl{font-family:var(--f-mono);font-size:10px;letter-spacing:1.5px;
+                text-transform:uppercase;color:var(--mut)}
+  .split .s-val{font-family:var(--f-disp);font-size:38px;font-weight:800;line-height:1.05;
+                font-variant-numeric:tabular-nums}
+  .split .s-sub{font-family:var(--f-mono);font-size:11px;color:var(--mut-dim);line-height:1.5}
+  .split.bad .s-val{color:var(--red)}
+  .split.ok .s-val{color:var(--lime)}
+  .split.mid .s-val{color:var(--amber)}
+
+  /* ---------- profundidade (grafico tese) ---------- */
+  .depth{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .dpanel{background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:18px 20px 20px}
+  .dpanel h4{margin-bottom:16px}
+  .dpanel.win h4{color:var(--lime)} .dpanel.loss h4{color:var(--red-soft)}
+  .dplot{height:168px;display:flex;gap:26px;align-items:flex-end}
+  .dpair{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
+         gap:7px;height:100%}
+  .dpair .dv{font-family:var(--f-mono);font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+  .dpair .dcol{width:100%;max-width:96px;border-radius:5px 5px 0 0;min-height:6px}
+  .dpanel.win .dpair.star .dcol{background:linear-gradient(180deg,#e4ff90,var(--lime))}
+  .dpanel.win .dpair.tail .dcol{background:linear-gradient(180deg,#e4ff90,var(--lime))}
+  .dpanel.loss .dpair.star .dcol{background:linear-gradient(180deg,#b7c9d6,#6b7a89)}
+  .dpanel.loss .dpair.tail .dcol{background:linear-gradient(180deg,#ff8a9c,#c9314c)}
+  .dpanel.win .dv{color:var(--lime)}
+  .dpanel.loss .dpair.star .dv{color:#b7c9d6}
+  .dpanel.loss .dpair.tail .dv{color:var(--red-soft)}
+  .dlabels{display:flex;gap:26px;margin-top:11px}
+  .dlabels div{flex:1;text-align:center;font-family:var(--f-mono);font-size:10px;
+               letter-spacing:1.1px;text-transform:uppercase;color:var(--mut)}
+  .verdict{margin-top:18px;padding:16px 20px;background:var(--panel2);
+           border:1px solid var(--line);border-left:2px solid var(--lime);border-radius:0 11px 11px 0;
+           max-width:74ch}
+  .verdict b{color:var(--lime)}
+
+  /* ---------- gatilho do adversario ---------- */
+  .trigger{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+  .tcard{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:16px 18px 18px;
+         display:flex;flex-direction:column;gap:5px}
+  .tcard .t-cond{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.6px;color:var(--mut)}
+  .tcard .t-rec{font-family:var(--f-disp);font-size:36px;font-weight:800;line-height:1;
+                font-variant-numeric:tabular-nums}
+  .tcard.up .t-rec{color:var(--cyan)}
+  .tcard.down .t-rec{color:var(--lime)}
+  .tcard .t-sub{font-size:13px;color:var(--mut);line-height:1.5}
+
+  /* ---------- plano de acao ---------- */
+  .plan{display:flex;flex-direction:column;gap:10px;counter-reset:step}
+  .step{display:grid;grid-template-columns:44px 1fr;gap:16px;align-items:start;
+        background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .step .s-n{font-family:var(--f-disp);font-size:26px;font-weight:800;line-height:1;
+             color:var(--lime);font-variant-numeric:tabular-nums;padding-top:2px}
+  .step h3{margin-bottom:4px}
+  .step p{color:var(--mut);font-size:13.5px;line-height:1.55}
+  .step p b{color:#dbe4ee;font-weight:500}
+
+  footer{margin-top:clamp(50px,8vw,84px);padding-top:22px;border-top:1px solid var(--line);
+         display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between;align-items:baseline}
+  footer p{font-family:var(--f-mono);font-size:11px;letter-spacing:.6px;color:var(--mut-dim);max-width:62ch}
+
+  a{color:var(--lime);text-decoration:none;border-bottom:1px solid rgba(195,245,60,.35)}
+  a:hover{border-bottom-color:var(--lime)}
+  :focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:4px}
+
+  @media(max-width:860px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .veto,.splits{grid-template-columns:1fr}
+    .depth,.trigger{grid-template-columns:1fr}
+    .mtl{grid-template-columns:repeat(3,1fr)}
+    .drow,.dhead{grid-template-columns:74px 1fr 54px;gap:10px}
+    .drow .dname{font-size:15px}
+  }
+  @media(max-width:520px){
+    .mtl{grid-template-columns:repeat(2,1fr)}
+    .form-plot{height:170px}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="head-top">
+    <span class="eyebrow">Liga KND 2026 · Relatório analítico</span>
+    <span class="eyebrow">Semanas 1 a 6 · 14 mapas · 283 rounds</span>
+  </div>
+
+  <div class="titleblock">
+    <h1>Canadá <em>7-7</em></h1>
+    <span class="record num">3-3 em séries · 51.6% RWR</span>
+  </div>
+
+  <p class="thesis">O Canadá não tem problema de poder de fogo. Tem problema de <b>profundidade</b> e de <b>fase de mapas</b>. Vence bem quando vence e perde feio quando perde, mas nunca ganha jogo apertado: <b>0-3 em mapas decididos por até 3 rounds</b>.</p>
+</header>
+
+<section>
+  <div class="sec-head">
+    <h2>Panorama</h2>
+    <span class="kicker">O time exatamente na média, com distribuição bipolar</span>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi flat">
+      <span class="k-lbl">Séries</span>
+      <span class="k-val">3-3</span>
+      <span class="k-sub">50.0%</span>
+    </div>
+    <div class="kpi flat">
+      <span class="k-lbl">Mapas</span>
+      <span class="k-val">7-7</span>
+      <span class="k-sub">50.0%</span>
+    </div>
+    <div class="kpi good">
+      <span class="k-lbl">Saldo de rounds</span>
+      <span class="k-val">+9</span>
+      <span class="k-sub">146-137 · RWR 51.6%</span>
+    </div>
+    <div class="kpi bad">
+      <span class="k-lbl">Mapas apertados</span>
+      <span class="k-val">0-3</span>
+      <span class="k-sub">margem de até 3 rounds</span>
+    </div>
+  </div>
+
+  <p class="lead" style="margin-top:26px">Round win rate de 51.6% com 7-7 em mapas descreve um time de meio de tabela. O que o agregado esconde é a distribuição: <b>6 das 7 vitórias vieram por 4 rounds ou mais</b>, e <b>3 das 7 derrotas foram atropelo de 6+</b>. Quase nada acontece no meio.</p>
+
+  <div class="panel">
+    <div class="form">
+      <h4>Round win rate por semana</h4>
+      <div class="form-plot">
+        <div class="form-ref"><span>50% · equilíbrio</span></div>
+        <div class="fbar l"><span class="fv">50.0</span><span class="fc" style="height:62.5%"></span></div>
+        <div class="fbar l"><span class="fv">39.5</span><span class="fc" style="height:49.4%"></span></div>
+        <div class="fbar w"><span class="fv">66.7</span><span class="fc" style="height:83.4%"></span></div>
+        <div class="fbar w"><span class="fv">72.2</span><span class="fc" style="height:90.3%"></span></div>
+        <div class="fbar w"><span class="fv">54.7</span><span class="fc" style="height:68.4%"></span></div>
+        <div class="fbar l"><span class="fv">27.8</span><span class="fc" style="height:34.8%"></span></div>
+      </div>
+      <div class="form-axis">
+        <div>S1<b>1-2</b></div>
+        <div>S2<b>0-2</b></div>
+        <div>S3<b>2-0</b></div>
+        <div>S4<b>2-0</b></div>
+        <div>S5<b>2-1</b></div>
+        <div>S6<b>0-2</b></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:18px">Pico na semana 4: 26-10 em rounds, com um 13x1 no Inferno. Desde então é queda contínua. A semana 6 foi a pior atuação do split, 10-26, e a única abaixo de 30%.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Map pool</h2>
+    <span class="kicker">Saldo médio de rounds por mapa</span>
+  </div>
+
+  <div class="panel">
+    <div class="dchart">
+      <div class="dhead">
+        <span>Mapa</span>
+        <span class="dh-mid"><span>déficit</span><span>superávit</span></span>
+        <span style="text-align:right">Média</span>
+      </div>
+
+      <div class="drow">
+        <span class="dname">Nuke</span>
+        <span class="dtrack">
+          <span class="dside neg"></span><span class="daxis"></span>
+          <span class="dside pos"><span class="dfill" style="width:100%"></span></span>
+        </span>
+        <span class="dval p num">+7.0</span>
+      </div>
+      <div class="drow">
+        <span class="dname">Ancient</span>
+        <span class="dtrack">
+          <span class="dside neg"></span><span class="daxis"></span>
+          <span class="dside pos"><span class="dfill" style="width:92.9%"></span></span>
+        </span>
+        <span class="dval p num">+6.5</span>
+      </div>
+      <div class="drow">
+        <span class="dname">Inferno</span>
+        <span class="dtrack">
+          <span class="dside neg"></span><span class="daxis"></span>
+          <span class="dside pos"><span class="dfill" style="width:47.1%"></span></span>
+        </span>
+        <span class="dval p num">+3.3</span>
+      </div>
+      <div class="drow">
+        <span class="dname">Dust II</span>
+        <span class="dtrack">
+          <span class="dside neg"><span class="dfill" style="width:28.6%"></span></span><span class="daxis"></span>
+          <span class="dside pos"></span>
+        </span>
+        <span class="dval n num">-2.0</span>
+      </div>
+      <div class="drow">
+        <span class="dname">Mirage</span>
+        <span class="dtrack">
+          <span class="dside neg"><span class="dfill" style="width:34.3%"></span></span><span class="daxis"></span>
+          <span class="dside pos"></span>
+        </span>
+        <span class="dval n num">-2.4</span>
+      </div>
+      <div class="drow">
+        <span class="dname">Anubis</span>
+        <span class="dtrack">
+          <span class="dside neg"><span class="dfill" style="width:50%"></span></span><span class="daxis"></span>
+          <span class="dside pos"></span>
+        </span>
+        <span class="dval n num">-3.5</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="tscroll">
+      <table>
+        <thead>
+          <tr><th>Mapa</th><th>Jogos</th><th>W-L</th><th>Rounds</th><th>Saldo</th><th>Média</th></tr>
+        </thead>
+        <tbody>
+          <tr class="hi"><td>Ancient</td><td>2</td><td class="pos">2-0</td><td class="dim">26-13</td><td class="pos">+13</td><td class="pos">+6.5</td></tr>
+          <tr class="hi"><td>Nuke</td><td>1</td><td class="pos">1-0</td><td class="dim">13-6</td><td class="pos">+7</td><td class="pos">+7.0</td></tr>
+          <tr class="hi"><td>Inferno</td><td>3</td><td class="pos">2-1</td><td class="dim">33-23</td><td class="pos">+10</td><td class="pos">+3.3</td></tr>
+          <tr><td>Mirage</td><td>5</td><td class="neg">2-3</td><td class="dim">41-53</td><td class="neg">-12</td><td class="neg">-2.4</td></tr>
+          <tr><td>Anubis</td><td>2</td><td class="neg">0-2</td><td class="dim">19-26</td><td class="neg">-7</td><td class="neg">-3.5</td></tr>
+          <tr><td>Dust II</td><td>1</td><td class="neg">0-1</td><td class="dim">14-16</td><td class="neg">-2</td><td class="neg">-2.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h4 style="margin:32px 0 14px">Veto recomendado</h4>
+  <div class="veto">
+    <div class="vcard pick">
+      <span class="vtag">Pick</span>
+      <div class="vmaps"><span>Ancient</span><span>Inferno</span></div>
+      <p class="vwhy">Juntos: 4-1, saldo de +23. Ancient é o mapa mais confortável do time e nunca foi perdido.</p>
+    </div>
+    <div class="vcard neutral">
+      <span class="vtag">Segunda amostra</span>
+      <div class="vmaps"><span>Nuke</span></div>
+      <p class="vwhy">13x6 no único jogo, o melhor saldo médio do pool. Um mapa não sustenta conclusão, mas merece ser testado de novo.</p>
+    </div>
+    <div class="vcard ban">
+      <span class="vtag">Ban</span>
+      <div class="vmaps"><span>Anubis</span><span>Dust II</span><span>Mirage</span></div>
+      <p class="vwhy">Anubis e Dust II somam 0-3. Mirage foi resolvido pelo adversário e virou o mapa mais deficitário do pool.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>O caso Mirage</h2>
+    <span class="kicker">Mapa 1 em todas as 5 séries em que apareceu</span>
+  </div>
+
+  <p class="lead">Mirage abriu todas as séries em que foi jogado, o que indica pick do Canadá. E deixou de funcionar em tempo real: depois do 13x5 e do 13x9 das semanas 3 e 4, o adversário estudou e resolveu.</p>
+
+  <div class="panel">
+    <div class="mtl">
+      <div class="mcard l"><span class="mwk">Semana 1</span><span class="msc">11-13</span><span class="mfr">frags 75-90</span></div>
+      <div class="mcard w"><span class="mwk">Semana 3</span><span class="msc">13-5</span><span class="mfr">frags 82-54</span></div>
+      <div class="mcard w"><span class="mwk">Semana 4</span><span class="msc">13-9</span><span class="mfr">frags 85-70</span></div>
+      <div class="mcard l"><span class="mwk">Semana 5</span><span class="msc">3-13</span><span class="mfr">frags 41-69</span></div>
+      <div class="mcard l"><span class="mwk">Semana 6</span><span class="msc">1-13</span><span class="mfr">frags 34-67</span></div>
+    </div>
+    <p class="note" style="margin-top:20px">Nas duas últimas aparições: <b>4 rounds em 26 tentativas</b>, com 75 frags contra 136. Isso não é variância, é leitura de adversário. O time perdeu o mapa de casa.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Dois padrões estruturais</h2>
+    <span class="kicker">Entrada fria e incapacidade de fechar</span>
+  </div>
+
+  <h4 style="margin-bottom:14px">Desempenho por ordem na série</h4>
+  <div class="splits">
+    <div class="split bad">
+      <span class="s-lbl">Mapa 1</span>
+      <span class="s-val">2-4</span>
+      <span class="s-sub">rounds 51-66 · saldo -15</span>
+    </div>
+    <div class="split ok">
+      <span class="s-lbl">Mapa 2</span>
+      <span class="s-val">4-2</span>
+      <span class="s-sub">rounds 68-49 · saldo +19</span>
+    </div>
+    <div class="split mid">
+      <span class="s-lbl">Mapa 3</span>
+      <span class="s-val">1-1</span>
+      <span class="s-sub">rounds 27-22 · saldo +5</span>
+    </div>
+  </div>
+  <p class="note" style="margin-top:16px">Do mapa 2 em diante o Canadá é <b>5-3 com +24 de saldo</b>. No mapa 1 é 2-4 com -15. Sintoma clássico de aquecimento insuficiente ou de plano de jogo decorado que não sobrevive ao primeiro contato.</p>
+
+  <h4 style="margin:34px 0 14px">Desempenho por margem</h4>
+  <div class="splits">
+    <div class="split bad">
+      <span class="s-lbl">Até 3 rounds</span>
+      <span class="s-val">0-3</span>
+      <span class="s-sub">Mirage 11-13 · Dust II 14-16 · Anubis 10-13</span>
+    </div>
+    <div class="split ok">
+      <span class="s-lbl">4 a 5 rounds</span>
+      <span class="s-val">3-1</span>
+      <span class="s-sub">saldo +10</span>
+    </div>
+    <div class="split mid">
+      <span class="s-lbl">6 ou mais</span>
+      <span class="s-val">4-3</span>
+      <span class="s-sub">saldo +14</span>
+    </div>
+  </div>
+  <p class="note" style="margin-top:16px">Zero vitórias em mapa apertado no split. Três jogos que estavam ganhos e viraram. O mais indigesto é o Dust II 14-16, perdido em prorrogação com <b>frag paridade de 103 a 105</b>: problema de conversão econômica e de fechamento de round, não de duelo.</p>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Profundidade</h2>
+    <span class="kicker">A conclusão que resume o split</span>
+  </div>
+
+  <p class="lead">Comparando o top fragger com a soma do 4º e 5º colocado do mapa, em kills por round. Se a diferença entre vencer e perder fosse a estrela, a coluna clara cairia junto.</p>
+
+  <div class="depth">
+    <div class="dpanel win">
+      <h4>Nas 7 vitórias</h4>
+      <div class="dplot">
+        <div class="dpair star"><span class="dv num">1.20</span><span class="dcol" style="height:100%"></span></div>
+        <div class="dpair tail"><span class="dv num">1.17</span><span class="dcol" style="height:97.5%"></span></div>
+      </div>
+      <div class="dlabels"><div>Top fragger</div><div>4º + 5º</div></div>
+    </div>
+    <div class="dpanel loss">
+      <h4>Nas 7 derrotas</h4>
+      <div class="dplot">
+        <div class="dpair star"><span class="dv num">1.08</span><span class="dcol" style="height:90%"></span></div>
+        <div class="dpair tail"><span class="dv num">0.72</span><span class="dcol" style="height:60%"></span></div>
+      </div>
+      <div class="dlabels"><div>Top fragger</div><div>4º + 5º</div></div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <p>Quando o Canadá perde, o top fragger cai <b>10%</b>. O 4º e o 5º caem <b>38%</b>. A diferença entre ganhar e perder não passa pela estrela, passa pelo fundo do lineup: dois jogadores de nível de liga, um terceiro sólido e duas vagas que só produzem quando o mapa já está ganho. É exatamente por isso que o time não fecha jogo apertado. Em round de decisão sobra pouca gente viva capaz de ganhar duelo.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Jogadores</h2>
+    <span class="kicker">Agregado dos 14 mapas · Impact = 2.13·KPR + 0.42·APR − 0.41</span>
+  </div>
+
+  <div class="panel">
+    <div class="tscroll">
+      <table>
+        <thead>
+          <tr><th>Jogador</th><th>M</th><th>K</th><th>A</th><th>D</th><th>K/D</th><th>+/−</th><th>KPR</th><th>DPR</th><th>Impact</th></tr>
+        </thead>
+        <tbody>
+          <tr class="hi">
+            <td>iBiS Cellin</td><td class="dim">14</td><td>297</td><td>65</td><td>179</td>
+            <td class="pos">1.66</td><td class="pos">+118</td>
+            <td><span class="kprcell"><span class="kprbar"><i style="width:95.5%"></i></span>1.05</span></td>
+            <td class="dim">0.63</td><td class="pos">1.92</td>
+          </tr>
+          <tr>
+            <td>-dIAGNOSTIC</td><td class="dim">3</td><td>67</td><td>12</td><td>43</td>
+            <td class="pos">1.56</td><td class="pos">+24</td>
+            <td><span class="kprcell"><span class="kprbar"><i style="width:80%"></i></span>0.88</span></td>
+            <td class="dim">0.57</td><td class="pos">1.53</td>
+          </tr>
+          <tr class="hi">
+            <td>Loirin do KND 045</td><td class="dim">14</td><td>225</td><td>94</td><td>213</td>
+            <td class="pos">1.06</td><td class="pos">+12</td>
+            <td><span class="kprcell"><span class="kprbar"><i style="width:72.7%"></i></span>0.80</span></td>
+            <td class="dim">0.75</td><td class="pos">1.42</td>
+          </tr>
+          <tr class="hi">
+            <td>JB</td><td class="dim">9</td><td>121</td><td>27</td><td>100</td>
+            <td class="pos">1.21</td><td class="pos">+21</td>
+            <td><span class="kprcell"><span class="kprbar"><i style="width:67.3%"></i></span>0.74</span></td>
+            <td class="dim">0.61</td><td>1.23</td>
+          </tr>
+          <tr>
+            <td>vini</td><td class="dim">14</td><td>162</td><td>84</td><td>208</td>
+            <td class="neg">0.78</td><td class="neg">−46</td>
+            <td><span class="kprcell"><span class="kprbar"><i style="width:51.8%"></i></span>0.57</span></td>
+            <td class="dim">0.73</td><td class="neg">0.93</td>
+          </tr>
+          <tr>
+            <td>josé</td><td class="dim">14</td><td>132</td><td>67</td><td>212</td>
+            <td class="neg">0.62</td><td class="neg">−80</td>
+            <td><span class="kprcell"><span class="kprbar"><i style="width:42.7%"></i></span>0.47</span></td>
+            <td class="dim">0.75</td><td class="neg">0.68</td>
+          </tr>
+          <tr>
+            <td>pedrin nu cs</td><td class="dim">2</td><td>20</td><td>13</td><td>31</td>
+            <td class="neg">0.65</td><td class="neg">−11</td>
+            <td><span class="kprcell"><span class="kprbar"><i style="width:42.7%"></i></span>0.47</span></td>
+            <td class="dim">0.72</td><td class="neg">0.71</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h4 style="margin-bottom:16px">KPR em vitória contra KPR em derrota</h4>
+    <div class="tscroll">
+      <table style="min-width:460px">
+        <thead>
+          <tr><th>Jogador</th><th>Vitória</th><th>Derrota</th><th>Delta</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>JB</td><td>0.85</td><td>0.50</td><td class="pos">+0.35</td></tr>
+          <tr><td>josé</td><td>0.63</td><td>0.32</td><td class="pos">+0.30</td></tr>
+          <tr><td>Loirin do KND 045</td><td>0.94</td><td>0.66</td><td class="pos">+0.28</td></tr>
+          <tr><td>-dIAGNOSTIC</td><td>1.05</td><td>0.81</td><td class="pos">+0.23</td></tr>
+          <tr><td>iBiS Cellin</td><td>1.13</td><td>0.97</td><td class="pos">+0.16</td></tr>
+          <tr class="hi"><td>vini</td><td>0.56</td><td>0.58</td><td class="neg">−0.02</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h4 style="margin-bottom:12px">Leitura individual</h4>
+    <p class="note"><b>iBiS Cellin</b> é o melhor jogador da série inteira, dos dois lados. 1.05 KPR, +118 de saldo, 31.4% dos frags do time em média e mais de 1.00 KPR em 8 dos 14 mapas. Impact de 1.92 é número de estrela real, não inflado por mapa fácil.</p>
+    <p class="note" style="margin-top:14px"><b>Loirin</b> é o segundo pilar e o melhor de suporte: 94 assistências e 0.33 APR, os maiores do time. Mas 213 mortes e DPR de 0.75 mostram que ele paga caro pelo espaço que abre.</p>
+    <p class="note" style="margin-top:14px"><b>JB</b> entrou na semana 3 no lugar do -dIAGNOSTIC e o time foi <b>6-3 com ele em quadra</b>. 1.21 de K/D e DPR de 0.61, o segundo mais econômico do lineup. Contratação validada.</p>
+    <p class="note" style="margin-top:14px"><b>josé</b> é o gargalo estatístico: 0.47 KPR, −80 de saldo e queda para <b>0.32 KPR em derrota</b>, ou seja um frag a cada três rounds. <b>vini</b> é o caso mais curioso, o único que não melhora em vitória (delta de −0.02), o que aponta função mal definida e não falta de habilidade. Prova disso: nos dois mapas em que o time inteiro afundou, Mirage 1x13 e Anubis 9x13 da semana 6, vini foi o top fragger.</p>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Adversário</h2>
+    <span class="kicker">SM Assistência · elenco com rotação pelas semanas</span>
+  </div>
+
+  <div class="panel">
+    <div class="tscroll">
+      <table style="min-width:520px">
+        <thead>
+          <tr><th>Jogador</th><th>M</th><th>K/D</th><th>KPR</th><th>DPR</th><th>Impact</th></tr>
+        </thead>
+        <tbody>
+          <tr class="hi">
+            <td>Furebis young</td><td class="dim">14</td><td>1.33</td>
+            <td><span class="kprcell"><span class="kprbar op"><i style="width:83.6%"></i></span>0.92</span></td>
+            <td class="dim">0.69</td><td>1.65</td>
+          </tr>
+          <tr><td>mth</td><td class="dim">2</td><td>1.46</td>
+            <td><span class="kprcell"><span class="kprbar op"><i style="width:86.4%"></i></span>0.95</span></td>
+            <td class="dim">0.65</td><td>1.73</td>
+          </tr>
+          <tr><td>Bito_Lodoyy</td><td class="dim">14</td><td>0.91</td>
+            <td><span class="kprcell"><span class="kprbar op"><i style="width:64.5%"></i></span>0.71</span></td>
+            <td class="dim">0.78</td><td>1.18</td>
+          </tr>
+          <tr><td>KAIQUE_SKINS</td><td class="dim">14</td><td>0.95</td>
+            <td><span class="kprcell"><span class="kprbar op"><i style="width:63.6%"></i></span>0.70</span></td>
+            <td class="dim">0.73</td><td>1.16</td>
+          </tr>
+          <tr><td>QUICO STALLONE</td><td class="dim">9</td><td>0.88</td>
+            <td><span class="kprcell"><span class="kprbar op"><i style="width:56.4%"></i></span>0.62</span></td>
+            <td class="dim">0.70</td><td>1.00</td>
+          </tr>
+          <tr><td>Nikolas</td><td class="dim">12</td><td class="neg">0.57</td>
+            <td><span class="kprcell"><span class="kprbar op"><i style="width:41.8%"></i></span>0.46</span></td>
+            <td class="dim">0.80</td><td class="neg">0.66</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h4 style="margin:30px 0 0">O gatilho: Furebis young</h4>
+  <div class="trigger">
+    <div class="tcard up">
+      <span class="t-cond">Furebis acima de 1.00 KPR</span>
+      <span class="t-rec">4-1</span>
+      <span class="t-sub">Nas duas derrotas do Canadá na semana 6 ele fez 19 e 21 kills.</span>
+    </div>
+    <div class="tcard down">
+      <span class="t-cond">Furebis abaixo de 1.00 KPR</span>
+      <span class="t-rec">3-6</span>
+      <span class="t-sub">Nas duas vitórias do Canadá na semana 4 ele fez 14 e 7 kills.</span>
+    </div>
+  </div>
+  <p class="note" style="margin-top:16px">Não é coincidência, é dependência. Do outro lado, <b>Nikolas é o alvo</b>: 0.46 KPR, −84 de saldo, DPR de 0.80, o jogador mais explorável entre os dados que existem.</p>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Plano de ação</h2>
+    <span class="kicker">Em ordem de prioridade</span>
+  </div>
+
+  <div class="plan">
+    <div class="step">
+      <span class="s-n num">1</span>
+      <div>
+        <h3>Aposentar o Mirage do pick</h3>
+        <p>Quatro rounds nos dois últimos jogos é veredito, não azar. Ou vira ban, ou entra em reconstrução total de setup fora de série oficial.</p>
+      </div>
+    </div>
+    <div class="step">
+      <span class="s-n num">2</span>
+      <div>
+        <h3>Ancient como pick nº1, Inferno como nº2</h3>
+        <p>Juntos são <b>4-1 com +23 de saldo</b>. É onde o time joga o CS que sabe jogar.</p>
+      </div>
+    </div>
+    <div class="step">
+      <span class="s-n num">3</span>
+      <div>
+        <h3>Banir Anubis e Dust II</h3>
+        <p><b>0-3 combinado</b>, sem nenhum sinal de que a curva de aprendizado esteja andando.</p>
+      </div>
+    </div>
+    <div class="step">
+      <span class="s-n num">4</span>
+      <div>
+        <h3>Treinar o mapa 1</h3>
+        <p>2-4 no primeiro mapa contra 5-3 depois. Rotina de aquecimento antes da série e plano de jogo mais simples na abertura, com menos call decorado.</p>
+      </div>
+    </div>
+    <div class="step">
+      <span class="s-n num">5</span>
+      <div>
+        <h3>Treinar round apertado de forma específica</h3>
+        <p>0-3 em margem de até 3 rounds e uma prorrogação perdida com frag paridade. Isso é retake, gestão de economia e decisão de 1v1 e 2v2 no clutch. Precisa de treino dirigido, não de scrim solto.</p>
+      </div>
+    </div>
+    <div class="step">
+      <span class="s-n num">6</span>
+      <div>
+        <h3>Redefinir função do vini e do josé</h3>
+        <p>Não é caso de corte automático. O vini não piora em derrota, o que indica papel errado e não jogador ruim. O josé cai 49% em derrota, o que indica jogador que precisa de mapa confortável. Testar troca: <b>vini em entrada mais agressiva, josé em anchor puro com menos exposição</b>.</p>
+      </div>
+    </div>
+    <div class="step">
+      <span class="s-n num">7</span>
+      <div>
+        <h3>Contra a SM, conter o Furebis é prioridade absoluta</h3>
+        <p>Duplas nas posições de agressão dele e negar o primeiro frag. Abaixo de 1.00 KPR, o time dele é <b>3-6</b>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Fonte: dados publicados no placar da Liga KND 2026. 14 mapas com K, A e D por jogador. KPR, DPR e APR calculados sobre o total de rounds de cada mapa.</p>
+  <p>Ressalva: o lado adversário tem rotação de elenco pelas semanas (FACÃO DO GOLEIRO BRUNO nas três primeiras, mth na semana 2, Fl_Darknnes na semana 4), então parte da amostra pode ser mais de um time. Sem dados de round, ADR ou KAST, não há rating 2.0 completo; o Impact usa a fórmula pública.</p>
+</footer>
+
+</div>
+</body>
+</html>
