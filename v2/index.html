@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KND League</title>
+<meta name="description" content="Placar, estatisticas e ranking da KND League.">
+<meta name="theme-color" content="#0a0d13">
+<link rel="icon" href="assets/liga.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="nav"><div class="wrap nav-in">
+  <a class="nav-logo" href="#/">
+    <img src="assets/liga.png" alt="KND League">
+    <b>KND League</b>
+  </a>
+  <div class="nav-links">
+    <a href="#/">Visão geral</a>
+    <a href="#/jogadores">Jogadores</a>
+    <a href="#/partidas">Partidas</a>
+  </div>
+  <span class="season-pill" id="seasonPill">Season 1</span>
+</div></nav>
+
+<main class="wrap" id="app"></main>
+
+<div class="wrap"><footer>
+  <span>KND League · placar e estatísticas</span>
+  <span>números calculados a partir do placar de cada mapa</span>
+</footer></div>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-bd" onclick="fecharMapa()"></div>
+  <div class="modal-pn" id="modalPanel"></div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

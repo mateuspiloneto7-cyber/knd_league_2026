@@ -1,0 +1,2034 @@
+{
+ "liga": {
+  "nome": "KND League",
+  "logo": "assets/liga.png"
+ },
+ "season": 1,
+ "encerrada": true,
+ "patrocinador": {
+  "img": "assets/patrocinador.jpg",
+  "link": ""
+ },
+ "times": [
+  {
+   "id": "canada",
+   "nome": "CANADÁ",
+   "logo": "assets/times/canada.jpg",
+   "cor": "#c3f53c"
+  },
+  {
+   "id": "sm",
+   "nome": "SM ASSISTÊNCIA",
+   "logo": "assets/times/sm.jpg",
+   "cor": "#38bdf8"
+  }
+ ],
+ "jogadores": [
+  {
+   "id": "ibis-cellin",
+   "nome": "iBiS Cellin",
+   "time": "canada",
+   "foto": "assets/jogadores/ibis-cellin.jpg",
+   "aliases": []
+  },
+  {
+   "id": "loirin-do-knd-045-vida",
+   "nome": "Loirin do KND 045 #vida",
+   "time": "canada",
+   "foto": null,
+   "aliases": []
+  },
+  {
+   "id": "jb",
+   "nome": "JB",
+   "time": "canada",
+   "foto": null,
+   "aliases": []
+  },
+  {
+   "id": "vini",
+   "nome": "vini",
+   "time": "canada",
+   "foto": null,
+   "aliases": []
+  },
+  {
+   "id": "jose",
+   "nome": "josé",
+   "time": "canada",
+   "foto": null,
+   "aliases": []
+  },
+  {
+   "id": "pedrin-nu-cs",
+   "nome": "pedrin nu cs",
+   "time": "canada",
+   "foto": null,
+   "aliases": []
+  },
+  {
+   "id": "furebis-young",
+   "nome": "Furebis young",
+   "time": "sm",
+   "foto": "assets/jogadores/furebis-young.png",
+   "aliases": []
+  },
+  {
+   "id": "bito-lodoyy",
+   "nome": "Bito_Lodoyy",
+   "time": "sm",
+   "foto": null,
+   "aliases": []
+  },
+  {
+   "id": "quico-stallone",
+   "nome": "QUICO STALLONE",
+   "time": "sm",
+   "foto": null,
+   "aliases": []
+  },
+  {
+   "id": "kaique-skins",
+   "nome": "KAIQUE_SKINS",
+   "time": "sm",
+   "foto": null,
+   "aliases": []
+  },
+  {
+   "id": "nikolas",
+   "nome": "Nikolas",
+   "time": "sm",
+   "foto": null,
+   "aliases": []
+  },
+  {
+   "id": "dante-catarina",
+   "nome": "Dante Catarina",
+   "time": "sm",
+   "foto": null,
+   "aliases": []
+  },
+  {
+   "id": "mth",
+   "nome": "mth",
+   "time": "sm",
+   "foto": null,
+   "aliases": []
+  },
+  {
+   "id": "fl-darknnes",
+   "nome": "Fl_Darknnes",
+   "time": "sm",
+   "foto": null,
+   "aliases": []
+  },
+  {
+   "id": "diagnostic",
+   "nome": "-dIAGNOSTIC",
+   "time": "canada",
+   "foto": null,
+   "aliases": []
+  },
+  {
+   "id": "facao-do-goleiro-bruno",
+   "nome": "FACÃO DO GOLEIRO BRUNO",
+   "time": "sm",
+   "foto": null,
+   "aliases": []
+  }
+ ],
+ "partidas": [
+  {
+   "semana": 1,
+   "nome": "Semana 1",
+   "data": null,
+   "serie": "1x2",
+   "mapas": [
+    {
+     "mapa": "Mirage",
+     "rounds_canada": 11,
+     "rounds_sm": 13,
+     "vencedor": "sm",
+     "stats": [
+      {
+       "jogador": "ibis-cellin",
+       "time": "canada",
+       "k": 24,
+       "a": 8,
+       "d": 17,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "diagnostic",
+       "time": "canada",
+       "k": 17,
+       "a": 7,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "loirin-do-knd-045-vida",
+       "time": "canada",
+       "k": 14,
+       "a": 9,
+       "d": 20,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "vini",
+       "time": "canada",
+       "k": 10,
+       "a": 7,
+       "d": 19,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jose",
+       "time": "canada",
+       "k": 10,
+       "a": 1,
+       "d": 18,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "furebis-young",
+       "time": "sm",
+       "k": 32,
+       "a": 12,
+       "d": 12,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "kaique-skins",
+       "time": "sm",
+       "k": 19,
+       "a": 5,
+       "d": 12,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "bito-lodoyy",
+       "time": "sm",
+       "k": 16,
+       "a": 7,
+       "d": 19,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "facao-do-goleiro-bruno",
+       "time": "sm",
+       "k": 13,
+       "a": 4,
+       "d": 15,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "nikolas",
+       "time": "sm",
+       "k": 10,
+       "a": 5,
+       "d": 18,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      }
+     ]
+    },
+    {
+     "mapa": "Inferno",
+     "rounds_canada": 13,
+     "rounds_sm": 9,
+     "vencedor": "canada",
+     "stats": [
+      {
+       "jogador": "loirin-do-knd-045-vida",
+       "time": "canada",
+       "k": 22,
+       "a": 12,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "ibis-cellin",
+       "time": "canada",
+       "k": 19,
+       "a": 8,
+       "d": 12,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "diagnostic",
+       "time": "canada",
+       "k": 23,
+       "a": 0,
+       "d": 12,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jose",
+       "time": "canada",
+       "k": 16,
+       "a": 3,
+       "d": 15,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "vini",
+       "time": "canada",
+       "k": 6,
+       "a": 9,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "furebis-young",
+       "time": "sm",
+       "k": 23,
+       "a": 3,
+       "d": 15,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "bito-lodoyy",
+       "time": "sm",
+       "k": 12,
+       "a": 6,
+       "d": 17,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "facao-do-goleiro-bruno",
+       "time": "sm",
+       "k": 11,
+       "a": 5,
+       "d": 15,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "nikolas",
+       "time": "sm",
+       "k": 12,
+       "a": 3,
+       "d": 20,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "kaique-skins",
+       "time": "sm",
+       "k": 10,
+       "a": 5,
+       "d": 19,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      }
+     ]
+    },
+    {
+     "mapa": "Dust II",
+     "rounds_canada": 14,
+     "rounds_sm": 16,
+     "vencedor": "sm",
+     "stats": [
+      {
+       "jogador": "ibis-cellin",
+       "time": "canada",
+       "k": 33,
+       "a": 6,
+       "d": 20,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "diagnostic",
+       "time": "canada",
+       "k": 27,
+       "a": 5,
+       "d": 15,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "loirin-do-knd-045-vida",
+       "time": "canada",
+       "k": 19,
+       "a": 13,
+       "d": 25,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "vini",
+       "time": "canada",
+       "k": 12,
+       "a": 12,
+       "d": 24,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jose",
+       "time": "canada",
+       "k": 12,
+       "a": 6,
+       "d": 22,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "facao-do-goleiro-bruno",
+       "time": "sm",
+       "k": 22,
+       "a": 7,
+       "d": 15,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "furebis-young",
+       "time": "sm",
+       "k": 26,
+       "a": 7,
+       "d": 19,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "bito-lodoyy",
+       "time": "sm",
+       "k": 25,
+       "a": 5,
+       "d": 20,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "kaique-skins",
+       "time": "sm",
+       "k": 18,
+       "a": 11,
+       "d": 26,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "nikolas",
+       "time": "sm",
+       "k": 14,
+       "a": 7,
+       "d": 24,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "semana": 2,
+   "nome": "Semana 2",
+   "data": null,
+   "serie": "0x2",
+   "mapas": [
+    {
+     "mapa": "Anubis",
+     "rounds_canada": 10,
+     "rounds_sm": 13,
+     "vencedor": "sm",
+     "stats": [
+      {
+       "jogador": "loirin-do-knd-045-vida",
+       "time": "canada",
+       "k": 29,
+       "a": 5,
+       "d": 17,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "ibis-cellin",
+       "time": "canada",
+       "k": 19,
+       "a": 3,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "pedrin-nu-cs",
+       "time": "canada",
+       "k": 13,
+       "a": 5,
+       "d": 15,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "vini",
+       "time": "canada",
+       "k": 14,
+       "a": 6,
+       "d": 18,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jose",
+       "time": "canada",
+       "k": 7,
+       "a": 4,
+       "d": 19,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "furebis-young",
+       "time": "sm",
+       "k": 23,
+       "a": 5,
+       "d": 13,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "kaique-skins",
+       "time": "sm",
+       "k": 21,
+       "a": 5,
+       "d": 15,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "bito-lodoyy",
+       "time": "sm",
+       "k": 23,
+       "a": 1,
+       "d": 19,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "nikolas",
+       "time": "sm",
+       "k": 9,
+       "a": 8,
+       "d": 18,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "mth",
+       "time": "sm",
+       "k": 9,
+       "a": 8,
+       "d": 17,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      }
+     ]
+    },
+    {
+     "mapa": "Inferno",
+     "rounds_canada": 7,
+     "rounds_sm": 13,
+     "vencedor": "sm",
+     "stats": [
+      {
+       "jogador": "ibis-cellin",
+       "time": "canada",
+       "k": 23,
+       "a": 2,
+       "d": 14,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "loirin-do-knd-045-vida",
+       "time": "canada",
+       "k": 16,
+       "a": 4,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "pedrin-nu-cs",
+       "time": "canada",
+       "k": 7,
+       "a": 8,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "vini",
+       "time": "canada",
+       "k": 10,
+       "a": 5,
+       "d": 18,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jose",
+       "time": "canada",
+       "k": 5,
+       "a": 5,
+       "d": 17,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "mth",
+       "time": "sm",
+       "k": 32,
+       "a": 3,
+       "d": 11,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "furebis-young",
+       "time": "sm",
+       "k": 19,
+       "a": 6,
+       "d": 13,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "nikolas",
+       "time": "sm",
+       "k": 9,
+       "a": 8,
+       "d": 14,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "kaique-skins",
+       "time": "sm",
+       "k": 11,
+       "a": 3,
+       "d": 12,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "bito-lodoyy",
+       "time": "sm",
+       "k": 10,
+       "a": 2,
+       "d": 12,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "semana": 3,
+   "nome": "Semana 3",
+   "data": null,
+   "serie": "2x0",
+   "mapas": [
+    {
+     "mapa": "Mirage",
+     "rounds_canada": 13,
+     "rounds_sm": 5,
+     "vencedor": "canada",
+     "stats": [
+      {
+       "jogador": "jb",
+       "time": "canada",
+       "k": 19,
+       "a": 5,
+       "d": 11,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "ibis-cellin",
+       "time": "canada",
+       "k": 24,
+       "a": 1,
+       "d": 9,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "loirin-do-knd-045-vida",
+       "time": "canada",
+       "k": 15,
+       "a": 7,
+       "d": 12,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "vini",
+       "time": "canada",
+       "k": 13,
+       "a": 4,
+       "d": 11,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jose",
+       "time": "canada",
+       "k": 11,
+       "a": 6,
+       "d": 12,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "quico-stallone",
+       "time": "sm",
+       "k": 14,
+       "a": 3,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "furebis-young",
+       "time": "sm",
+       "k": 13,
+       "a": 6,
+       "d": 17,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "kaique-skins",
+       "time": "sm",
+       "k": 12,
+       "a": 3,
+       "d": 17,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "bito-lodoyy",
+       "time": "sm",
+       "k": 9,
+       "a": 1,
+       "d": 17,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "nikolas",
+       "time": "sm",
+       "k": 6,
+       "a": 2,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      }
+     ]
+    },
+    {
+     "mapa": "Ancient",
+     "rounds_canada": 13,
+     "rounds_sm": 8,
+     "vencedor": "canada",
+     "stats": [
+      {
+       "jogador": "ibis-cellin",
+       "time": "canada",
+       "k": 25,
+       "a": 4,
+       "d": 12,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "loirin-do-knd-045-vida",
+       "time": "canada",
+       "k": 20,
+       "a": 9,
+       "d": 14,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jb",
+       "time": "canada",
+       "k": 15,
+       "a": 3,
+       "d": 9,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jose",
+       "time": "canada",
+       "k": 12,
+       "a": 7,
+       "d": 14,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "vini",
+       "time": "canada",
+       "k": 11,
+       "a": 8,
+       "d": 13,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "bito-lodoyy",
+       "time": "sm",
+       "k": 15,
+       "a": 5,
+       "d": 17,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "furebis-young",
+       "time": "sm",
+       "k": 14,
+       "a": 1,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "kaique-skins",
+       "time": "sm",
+       "k": 14,
+       "a": 1,
+       "d": 17,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "quico-stallone",
+       "time": "sm",
+       "k": 8,
+       "a": 6,
+       "d": 15,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "nikolas",
+       "time": "sm",
+       "k": 8,
+       "a": 6,
+       "d": 19,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "semana": 4,
+   "nome": "Semana 4",
+   "data": null,
+   "serie": "2x0",
+   "mapas": [
+    {
+     "mapa": "Mirage",
+     "rounds_canada": 13,
+     "rounds_sm": 9,
+     "vencedor": "canada",
+     "stats": [
+      {
+       "jogador": "ibis-cellin",
+       "time": "canada",
+       "k": 26,
+       "a": 7,
+       "d": 13,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "loirin-do-knd-045-vida",
+       "time": "canada",
+       "k": 20,
+       "a": 1,
+       "d": 13,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "vini",
+       "time": "canada",
+       "k": 17,
+       "a": 4,
+       "d": 14,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jb",
+       "time": "canada",
+       "k": 15,
+       "a": 1,
+       "d": 12,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jose",
+       "time": "canada",
+       "k": 7,
+       "a": 7,
+       "d": 19,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "kaique-skins",
+       "time": "sm",
+       "k": 18,
+       "a": 5,
+       "d": 17,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "bito-lodoyy",
+       "time": "sm",
+       "k": 16,
+       "a": 2,
+       "d": 18,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "quico-stallone",
+       "time": "sm",
+       "k": 14,
+       "a": 6,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "furebis-young",
+       "time": "sm",
+       "k": 14,
+       "a": 2,
+       "d": 19,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "fl-darknnes",
+       "time": "sm",
+       "k": 8,
+       "a": 4,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      }
+     ]
+    },
+    {
+     "mapa": "Inferno",
+     "rounds_canada": 13,
+     "rounds_sm": 1,
+     "vencedor": "canada",
+     "stats": [
+      {
+       "jogador": "loirin-do-knd-045-vida",
+       "time": "canada",
+       "k": 18,
+       "a": 5,
+       "d": 8,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jb",
+       "time": "canada",
+       "k": 13,
+       "a": 2,
+       "d": 6,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "ibis-cellin",
+       "time": "canada",
+       "k": 13,
+       "a": 5,
+       "d": 5,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jose",
+       "time": "canada",
+       "k": 12,
+       "a": 4,
+       "d": 9,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "vini",
+       "time": "canada",
+       "k": 7,
+       "a": 6,
+       "d": 8,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "kaique-skins",
+       "time": "sm",
+       "k": 10,
+       "a": 1,
+       "d": 14,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "bito-lodoyy",
+       "time": "sm",
+       "k": 8,
+       "a": 3,
+       "d": 13,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "furebis-young",
+       "time": "sm",
+       "k": 7,
+       "a": 3,
+       "d": 13,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "quico-stallone",
+       "time": "sm",
+       "k": 5,
+       "a": 2,
+       "d": 14,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "fl-darknnes",
+       "time": "sm",
+       "k": 4,
+       "a": 1,
+       "d": 11,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "semana": 5,
+   "nome": "Semana 5",
+   "data": null,
+   "serie": "2x1",
+   "mapas": [
+    {
+     "mapa": "Mirage",
+     "rounds_canada": 3,
+     "rounds_sm": 13,
+     "vencedor": "sm",
+     "stats": [
+      {
+       "jogador": "ibis-cellin",
+       "time": "canada",
+       "k": 16,
+       "a": 7,
+       "d": 13,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jb",
+       "time": "canada",
+       "k": 9,
+       "a": 0,
+       "d": 11,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "loirin-do-knd-045-vida",
+       "time": "canada",
+       "k": 7,
+       "a": 7,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "vini",
+       "time": "canada",
+       "k": 5,
+       "a": 3,
+       "d": 14,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jose",
+       "time": "canada",
+       "k": 4,
+       "a": 3,
+       "d": 15,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "furebis-young",
+       "time": "sm",
+       "k": 17,
+       "a": 5,
+       "d": 8,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "bito-lodoyy",
+       "time": "sm",
+       "k": 14,
+       "a": 3,
+       "d": 9,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "kaique-skins",
+       "time": "sm",
+       "k": 14,
+       "a": 5,
+       "d": 7,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "quico-stallone",
+       "time": "sm",
+       "k": 13,
+       "a": 3,
+       "d": 7,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "nikolas",
+       "time": "sm",
+       "k": 11,
+       "a": 6,
+       "d": 10,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      }
+     ]
+    },
+    {
+     "mapa": "Ancient",
+     "rounds_canada": 13,
+     "rounds_sm": 5,
+     "vencedor": "canada",
+     "stats": [
+      {
+       "jogador": "ibis-cellin",
+       "time": "canada",
+       "k": 23,
+       "a": 5,
+       "d": 7,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jb",
+       "time": "canada",
+       "k": 16,
+       "a": 2,
+       "d": 11,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "loirin-do-knd-045-vida",
+       "time": "canada",
+       "k": 14,
+       "a": 4,
+       "d": 11,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "vini",
+       "time": "canada",
+       "k": 11,
+       "a": 7,
+       "d": 13,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jose",
+       "time": "canada",
+       "k": 10,
+       "a": 7,
+       "d": 11,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "furebis-young",
+       "time": "sm",
+       "k": 16,
+       "a": 3,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "bito-lodoyy",
+       "time": "sm",
+       "k": 13,
+       "a": 5,
+       "d": 17,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "quico-stallone",
+       "time": "sm",
+       "k": 10,
+       "a": 5,
+       "d": 12,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "kaique-skins",
+       "time": "sm",
+       "k": 8,
+       "a": 4,
+       "d": 15,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "nikolas",
+       "time": "sm",
+       "k": 6,
+       "a": 3,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      }
+     ]
+    },
+    {
+     "mapa": "Nuke",
+     "rounds_canada": 13,
+     "rounds_sm": 6,
+     "vencedor": "canada",
+     "stats": [
+      {
+       "jogador": "ibis-cellin",
+       "time": "canada",
+       "k": 22,
+       "a": 4,
+       "d": 12,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jb",
+       "time": "canada",
+       "k": 17,
+       "a": 7,
+       "d": 10,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "loirin-do-knd-045-vida",
+       "time": "canada",
+       "k": 17,
+       "a": 6,
+       "d": 14,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jose",
+       "time": "canada",
+       "k": 16,
+       "a": 3,
+       "d": 11,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "vini",
+       "time": "canada",
+       "k": 10,
+       "a": 9,
+       "d": 10,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "furebis-young",
+       "time": "sm",
+       "k": 16,
+       "a": 6,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "kaique-skins",
+       "time": "sm",
+       "k": 16,
+       "a": 4,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "quico-stallone",
+       "time": "sm",
+       "k": 12,
+       "a": 4,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "bito-lodoyy",
+       "time": "sm",
+       "k": 10,
+       "a": 4,
+       "d": 18,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "nikolas",
+       "time": "sm",
+       "k": 3,
+       "a": 2,
+       "d": 18,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "semana": 6,
+   "nome": "Semana 6",
+   "data": null,
+   "serie": "0x2",
+   "mapas": [
+    {
+     "mapa": "Mirage",
+     "rounds_canada": 1,
+     "rounds_sm": 13,
+     "vencedor": "sm",
+     "stats": [
+      {
+       "jogador": "vini",
+       "time": "canada",
+       "k": 9,
+       "a": 2,
+       "d": 13,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "loirin-do-knd-045-vida",
+       "time": "canada",
+       "k": 8,
+       "a": 4,
+       "d": 13,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jb",
+       "time": "canada",
+       "k": 8,
+       "a": 4,
+       "d": 14,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "ibis-cellin",
+       "time": "canada",
+       "k": 6,
+       "a": 2,
+       "d": 14,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jose",
+       "time": "canada",
+       "k": 3,
+       "a": 5,
+       "d": 14,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "furebis-young",
+       "time": "sm",
+       "k": 19,
+       "a": 2,
+       "d": 5,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "bito-lodoyy",
+       "time": "sm",
+       "k": 13,
+       "a": 0,
+       "d": 9,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "kaique-skins",
+       "time": "sm",
+       "k": 12,
+       "a": 2,
+       "d": 6,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "nikolas",
+       "time": "sm",
+       "k": 12,
+       "a": 5,
+       "d": 9,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "quico-stallone",
+       "time": "sm",
+       "k": 11,
+       "a": 4,
+       "d": 6,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      }
+     ]
+    },
+    {
+     "mapa": "Anubis",
+     "rounds_canada": 9,
+     "rounds_sm": 13,
+     "vencedor": "sm",
+     "stats": [
+      {
+       "jogador": "vini",
+       "time": "canada",
+       "k": 27,
+       "a": 2,
+       "d": 17,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "ibis-cellin",
+       "time": "canada",
+       "k": 24,
+       "a": 3,
+       "d": 15,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jb",
+       "time": "canada",
+       "k": 9,
+       "a": 3,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jose",
+       "time": "canada",
+       "k": 7,
+       "a": 6,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "loirin-do-knd-045-vida",
+       "time": "canada",
+       "k": 6,
+       "a": 8,
+       "d": 18,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "furebis-young",
+       "time": "sm",
+       "k": 21,
+       "a": 6,
+       "d": 14,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "bito-lodoyy",
+       "time": "sm",
+       "k": 18,
+       "a": 1,
+       "d": 17,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "quico-stallone",
+       "time": "sm",
+       "k": 14,
+       "a": 6,
+       "d": 13,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "kaique-skins",
+       "time": "sm",
+       "k": 14,
+       "a": 7,
+       "d": 15,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "nikolas",
+       "time": "sm",
+       "k": 13,
+       "a": 4,
+       "d": 15,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "semana": 7,
+   "nome": "Semana 7",
+   "data": null,
+   "serie": "2x0",
+   "mapas": [
+    {
+     "mapa": "Inferno",
+     "rounds_canada": 13,
+     "rounds_sm": 7,
+     "vencedor": "canada",
+     "stats": [
+      {
+       "jogador": "jb",
+       "time": "canada",
+       "k": 24,
+       "a": 4,
+       "d": 11,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "ibis-cellin",
+       "time": "canada",
+       "k": 19,
+       "a": 7,
+       "d": 7,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "loirin-do-knd-045-vida",
+       "time": "canada",
+       "k": 17,
+       "a": 5,
+       "d": 11,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "vini",
+       "time": "canada",
+       "k": 11,
+       "a": 7,
+       "d": 12,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jose",
+       "time": "canada",
+       "k": 8,
+       "a": 8,
+       "d": 14,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "bito-lodoyy",
+       "time": "sm",
+       "k": 14,
+       "a": 1,
+       "d": 15,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "furebis-young",
+       "time": "sm",
+       "k": 12,
+       "a": 3,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "quico-stallone",
+       "time": "sm",
+       "k": 11,
+       "a": 6,
+       "d": 15,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "dante-catarina",
+       "time": "sm",
+       "k": 10,
+       "a": 4,
+       "d": 17,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "nikolas",
+       "time": "sm",
+       "k": 8,
+       "a": 4,
+       "d": 19,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      }
+     ]
+    },
+    {
+     "mapa": "Dust II",
+     "rounds_canada": 15,
+     "rounds_sm": 15,
+     "vencedor": null,
+     "stats": [
+      {
+       "jogador": "ibis-cellin",
+       "time": "canada",
+       "k": 34,
+       "a": 8,
+       "d": 19,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "loirin-do-knd-045-vida",
+       "time": "canada",
+       "k": 29,
+       "a": 7,
+       "d": 22,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "vini",
+       "time": "canada",
+       "k": 25,
+       "a": 8,
+       "d": 21,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jb",
+       "time": "canada",
+       "k": 13,
+       "a": 11,
+       "d": 24,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jose",
+       "time": "canada",
+       "k": 9,
+       "a": 5,
+       "d": 25,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "quico-stallone",
+       "time": "sm",
+       "k": 28,
+       "a": 6,
+       "d": 20,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "furebis-young",
+       "time": "sm",
+       "k": 26,
+       "a": 12,
+       "d": 24,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "bito-lodoyy",
+       "time": "sm",
+       "k": 22,
+       "a": 5,
+       "d": 22,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "dante-catarina",
+       "time": "sm",
+       "k": 21,
+       "a": 9,
+       "d": 22,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "nikolas",
+       "time": "sm",
+       "k": 11,
+       "a": 11,
+       "d": 25,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      }
+     ]
+    },
+    {
+     "mapa": "Ancient",
+     "rounds_canada": 15,
+     "rounds_sm": 15,
+     "vencedor": null,
+     "stats": [
+      {
+       "jogador": "ibis-cellin",
+       "time": "canada",
+       "k": 28,
+       "a": 7,
+       "d": 18,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "loirin-do-knd-045-vida",
+       "time": "canada",
+       "k": 23,
+       "a": 10,
+       "d": 21,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jose",
+       "time": "canada",
+       "k": 20,
+       "a": 7,
+       "d": 25,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "jb",
+       "time": "canada",
+       "k": 20,
+       "a": 4,
+       "d": 18,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "vini",
+       "time": "canada",
+       "k": 17,
+       "a": 9,
+       "d": 24,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "furebis-young",
+       "time": "sm",
+       "k": 28,
+       "a": 9,
+       "d": 21,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "quico-stallone",
+       "time": "sm",
+       "k": 24,
+       "a": 8,
+       "d": 23,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "nikolas",
+       "time": "sm",
+       "k": 17,
+       "a": 6,
+       "d": 22,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "bito-lodoyy",
+       "time": "sm",
+       "k": 17,
+       "a": 6,
+       "d": 21,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      },
+      {
+       "jogador": "dante-catarina",
+       "time": "sm",
+       "k": 16,
+       "a": 6,
+       "d": 23,
+       "mvps": null,
+       "hs": null,
+       "score": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

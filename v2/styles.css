@@ -1,0 +1,252 @@
+/* KND League - folha de estilo
+   Paleta e medidas ficam aqui em cima. Mexer so nestes tokens muda o site inteiro. */
+
+:root{
+  /* superficies */
+  --bg:#0a0d13;
+  --bg-2:#0e1219;
+  --panel:#141924;
+  --panel-2:#1a2130;
+  --line:#242d3d;
+  --line-soft:#1c2432;
+
+  /* texto */
+  --txt:#eef3fa;
+  --txt-2:#9aa6b8;
+  --txt-3:#61708a;
+
+  /* marca */
+  --acc:#c3f53c;
+  --acc-dim:rgba(195,245,60,.14);
+  --canada:#c3f53c;
+  --sm:#38bdf8;
+  --win:#4ade80;
+  --loss:#f2506e;
+  --draw:#fbbf24;
+
+  /* medidas */
+  --r:14px;
+  --r-sm:9px;
+  --max:1240px;
+  --gut:20px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--txt);
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";position:fixed;inset:0 0 auto 0;height:2px;z-index:200;
+  background:linear-gradient(90deg,var(--acc),var(--sm) 55%,transparent);
+}
+a{color:inherit;text-decoration:none}
+.num{font-variant-numeric:tabular-nums}
+
+h1,h2,h3,h4,.cond{
+  font-family:'Barlow Condensed','Inter',sans-serif;
+  text-transform:uppercase;letter-spacing:.02em;margin:0;font-weight:700;
+}
+
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gut)}
+
+/* ---------- topo ---------- */
+.nav{
+  position:sticky;top:0;z-index:100;background:rgba(10,13,19,.88);
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--line-soft);
+}
+.nav-in{display:flex;align-items:center;gap:26px;height:62px}
+.nav-logo{display:flex;align-items:center;gap:11px;flex:none}
+.nav-logo img{height:34px;width:auto;display:block}
+.nav-logo b{font-family:'Barlow Condensed',sans-serif;font-size:21px;letter-spacing:.06em;
+  text-transform:uppercase;font-weight:800}
+.nav-links{display:flex;gap:4px;flex:1;overflow-x:auto;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{
+  padding:7px 13px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--txt-2);
+  white-space:nowrap;transition:.15s;letter-spacing:.03em;text-transform:uppercase;
+  font-family:'Barlow Condensed',sans-serif;font-size:14px;
+}
+.nav-links a:hover{color:var(--txt);background:var(--panel)}
+.nav-links a.on{color:#0a0d13;background:var(--acc)}
+.season-pill{
+  flex:none;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--txt-3);
+  border:1px solid var(--line);border-radius:999px;padding:5px 12px;
+}
+
+/* ---------- blocos ---------- */
+.sec{margin:46px 0}
+.sec-h{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}
+.sec-h h2{font-size:23px}
+.sec-h .hint{font-size:12px;color:var(--txt-3);font-weight:500;letter-spacing:0;
+  text-transform:none;font-family:'Inter',sans-serif}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r)}
+.pad{padding:18px 20px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+/* ---------- hero do confronto ---------- */
+.hero{
+  position:relative;overflow:hidden;border-radius:var(--r);border:1px solid var(--line);
+  background:linear-gradient(160deg,var(--panel-2),var(--panel) 60%);margin-top:28px;
+}
+.hero::after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background:radial-gradient(620px 300px at 12% -30%,var(--acc-dim),transparent 65%),
+             radial-gradient(620px 300px at 88% -30%,rgba(56,189,248,.13),transparent 65%);
+}
+.hero-in{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto 1fr;
+  align-items:center;gap:26px;padding:34px 30px}
+.hero-team{display:flex;flex-direction:column;align-items:center;gap:13px;min-width:0}
+.hero-team img{width:118px;height:118px;object-fit:contain;border-radius:12px}
+.hero-team .tn{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:24px;
+  text-transform:uppercase;text-align:center;letter-spacing:.03em;line-height:1.1}
+.hero-team.ca .tn{color:var(--canada)} .hero-team.sm .tn{color:var(--sm)}
+.hero-team .sub{font-size:11.5px;color:var(--txt-3);letter-spacing:.06em;text-transform:uppercase;
+  font-weight:600}
+.hero-score{display:flex;align-items:center;gap:14px}
+.hero-score .n{font-family:'Barlow Condensed',sans-serif;font-size:74px;font-weight:800;line-height:.9;
+  font-variant-numeric:tabular-nums}
+.hero-score .n.ca{color:var(--canada)} .hero-score .n.sm{color:var(--sm)}
+.hero-score .x{color:var(--txt-3);font-size:26px;font-weight:300}
+.hero-label{position:relative;z-index:1;text-align:center;padding:0 16px 22px;line-height:1.7;
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--txt-3);font-weight:700}
+
+/* ---------- tabelas ---------- */
+table{width:100%;border-collapse:collapse}
+thead th{
+  font-family:'Barlow Condensed',sans-serif;font-size:12.5px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--txt-3);text-align:right;padding:9px 10px;
+  border-bottom:1px solid var(--line);white-space:nowrap;
+}
+thead th:first-child{text-align:left}
+tbody td{padding:10px;border-bottom:1px solid var(--line-soft);text-align:right;
+  font-variant-numeric:tabular-nums;font-size:14px}
+tbody td:first-child{text-align:left}
+tbody tr:last-child td{border-bottom:none}
+tbody tr.link{cursor:pointer;transition:.12s}
+tbody tr.link:hover{background:var(--panel-2)}
+td.strong{font-weight:700;color:#fff}
+.dimmed{color:var(--txt-3)}
+
+.ply{display:flex;align-items:center;gap:10px;min-width:0}
+.ply .av{width:29px;height:29px;border-radius:7px;flex:none;object-fit:cover;background:var(--panel-2);
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--txt-3)}
+.ply .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ply .tag{flex:none;width:3px;height:22px;border-radius:2px}
+.tag.ca{background:var(--canada)} .tag.sm{background:var(--sm)}
+
+/* ---------- classificacao / mappool ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.bar-row{display:flex;align-items:center;gap:10px;padding:8px 0}
+.bar-row .lbl{width:78px;flex:none;font-size:13px;font-weight:600}
+.bar-wrap{flex:1;min-width:0;display:flex}
+.bar-track{height:22px;border-radius:6px;background:var(--panel-2);overflow:hidden;display:flex}
+.bar-track i{display:block;height:100%}
+.bar-track i.w{background:var(--canada)}
+.bar-track i.e{background:var(--txt-3);opacity:.45}
+.bar-track i.l{background:var(--sm)}
+.bar-row .rec{width:74px;flex:none;text-align:right;font-size:12.5px;color:var(--txt-2);
+  font-variant-numeric:tabular-nums}
+
+/* ---------- semanas ---------- */
+.weeks{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:13px}
+.wk{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.wk-h{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;
+  border-bottom:1px solid var(--line-soft)}
+.wk-h .t{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.08em;
+  color:var(--txt-2)}
+.wk-h .s{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:800;
+  font-variant-numeric:tabular-nums}
+.wk-maps{padding:7px 8px 9px}
+.wk-map{display:flex;align-items:center;gap:8px;padding:6px 6px;border-radius:7px;cursor:pointer;
+  transition:.12s}
+.wk-map:hover{background:var(--panel-2)}
+.wk-map .mn{flex:1;font-size:13px;color:var(--txt-2);white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis}
+.wk-map .ms{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+.wk-map .dot{width:6px;height:6px;border-radius:50%;flex:none}
+.dot.w{background:var(--win)} .dot.l{background:var(--loss)} .dot.e{background:var(--draw)}
+
+/* ---------- MVP ---------- */
+.mvp{display:grid;grid-template-columns:200px 1fr;gap:26px;align-items:center}
+.mvp-photo{width:100%;aspect-ratio:3/4;border-radius:12px;object-fit:cover;object-position:center top;
+  background:var(--panel-2);display:flex;align-items:center;justify-content:center;
+  font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:800;color:var(--txt-3);
+  box-shadow:inset 0 0 0 2px rgba(195,245,60,.3)}
+.mvp-name{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:800;line-height:1;
+  text-transform:uppercase}
+.mvp-badge{display:inline-block;background:var(--acc);color:#0a0d13;font-family:'Barlow Condensed',sans-serif;
+  font-size:12px;font-weight:800;letter-spacing:.14em;padding:4px 11px;border-radius:6px;margin-bottom:9px}
+.mvp-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:11px;margin-top:18px}
+.stat{background:var(--panel-2);border:1px solid var(--line-soft);border-radius:10px;padding:11px 13px}
+.stat .v{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:800;line-height:1;
+  font-variant-numeric:tabular-nums}
+.stat .k{font-size:10.5px;color:var(--txt-3);letter-spacing:.09em;text-transform:uppercase;
+  font-weight:700;margin-top:4px}
+
+/* ---------- pagina do jogador ---------- */
+.pl-head{display:grid;grid-template-columns:230px 1fr;gap:28px;align-items:stretch}
+.pl-photo{width:100%;aspect-ratio:3/4;border-radius:var(--r);object-fit:cover;object-position:center top;
+  background:var(--panel-2);display:flex;align-items:center;justify-content:center;
+  font-family:'Barlow Condensed',sans-serif;font-size:68px;font-weight:800;color:var(--txt-3)}
+.pl-id .nm{font-family:'Barlow Condensed',sans-serif;font-size:46px;font-weight:800;line-height:1;
+  text-transform:uppercase}
+.pl-id .tm{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-top:7px}
+.radar-box{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:28px;align-items:center}
+.radar-legend{font-size:12px;color:var(--txt-3);line-height:1.7}
+.radar-legend b{color:var(--txt);font-weight:600}
+svg.radar{width:100%;max-width:500px;height:auto;display:block;margin:0 auto}
+
+.back{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--txt-3);
+  font-weight:600;margin:26px 0 4px;cursor:pointer;transition:.15s}
+.back:hover{color:var(--acc)}
+
+/* ---------- modal ---------- */
+.modal{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:18px}
+.modal[hidden]{display:none}
+.modal-bd{position:absolute;inset:0;background:rgba(4,6,10,.72);backdrop-filter:blur(3px)}
+.modal-pn{position:relative;z-index:1;background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--r);max-width:980px;width:100%;max-height:88vh;overflow:auto;padding:22px 24px;
+  box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.modal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px}
+.modal-h h3{font-size:22px}
+.modal-x{cursor:pointer;color:var(--txt-3);font-size:19px;padding:2px 9px;border-radius:7px}
+.modal-x:hover{color:var(--loss)}
+
+/* ---------- patrocinador / rodape ---------- */
+.sponsor{display:block;width:100%;border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
+.sponsor img{width:100%;display:block}
+footer{margin:56px 0 40px;padding-top:22px;border-top:1px solid var(--line-soft);
+  color:var(--txt-3);font-size:12px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+/* ---------- responsivo ---------- */
+@media(max-width:900px){
+  .grid2,.radar-box{grid-template-columns:1fr}
+  .pl-head{grid-template-columns:150px 1fr;gap:18px}
+  .pl-id .nm{font-size:32px}
+  .mvp{grid-template-columns:140px 1fr;gap:18px}
+}
+@media(max-width:640px){
+  :root{--gut:14px}
+  .pad{padding:14px 13px}
+  .bar-row{gap:8px}
+  .bar-row .lbl{width:62px;font-size:12.5px}
+  .bar-row .rec{width:62px;font-size:11.5px}
+  .mp-n{display:none}
+  .mvp-stats{grid-template-columns:repeat(2,1fr)}
+  .nav-in{gap:14px}
+  .nav-logo b{font-size:18px}
+  .hero-in{grid-template-columns:1fr;gap:20px;padding:26px 18px}
+  .hero-score{justify-content:center}
+  .hero-score .n{font-size:58px}
+  .hero-team img{width:88px;height:88px}
+  .mvp{grid-template-columns:1fr}
+  .mvp-photo{max-width:190px}
+  .pl-head{grid-template-columns:1fr}
+  .pl-photo{max-width:200px}
+  .sec{margin:34px 0}
+  thead th,tbody td{padding:8px 6px;font-size:13px}
+  .hide-sm{display:none}
+}
