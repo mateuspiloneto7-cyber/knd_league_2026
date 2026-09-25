@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KND League</title>
-<meta name="description" content="Placar, estatisticas e ranking da KND League.">
+<meta name="description" content="Placar e estatisticas da KND League.">
 <meta name="theme-color" content="#0f131b">
 <link rel="icon" href="assets/liga.png">
 <link rel="stylesheet" href="styles.css">
@@ -12,24 +12,47 @@
 <body>
 
 <div class="wrap">
-  <div class="brand"><a href="#/"><img src="assets/liga.png" alt="KND League"></a></div>
-  <h1 class="comp" id="comp"></h1>
 
-  <main id="app"></main>
+  <div class="brand"><img id="brandLogo" src="assets/liga.png" alt="KND League"></div>
 
-  <footer>
-    <span>KND League</span>
-    <span>
-      <a href="#/">Visão geral</a> ·
-      <a href="#/jogadores">Jogadores</a> ·
-      <a href="#/partidas">Partidas</a>
-    </span>
-  </footer>
+  <div class="top"><div class="comp" id="comp"></div></div>
+
+  <div class="match">
+    <div class="team a">
+      <div class="logo" id="logoA"></div>
+      <div class="tname" id="nameA"></div>
+    </div>
+    <div class="score">
+      <div class="snum" id="scoreA">0</div>
+      <div class="vs">&times;</div>
+      <div class="snum" id="scoreB">0</div>
+    </div>
+    <div class="team b">
+      <div class="logo" id="logoB"></div>
+      <div class="tname" id="nameB"></div>
+    </div>
+  </div>
+
+  <div class="sec-label">Semanas</div>
+  <div class="weeks" id="weeks"></div>
+
+  <div class="sec-label" id="statsLabel"></div>
+  <div class="stats">
+    <div class="tpanel a"><h3 id="stTitleA"></h3><div id="statsA"></div></div>
+    <div class="tpanel b"><h3 id="stTitleB"></h3><div id="statsB"></div></div>
+  </div>
+
+  <div class="sec-label">MVP da série</div>
+  <div id="mvp" class="mvpcard"></div>
+
+  <div class="sec-label" id="sponsorLabel">Patrocinador</div>
+  <div id="sponsor"></div>
+
 </div>
 
-<div class="modal" id="modal" hidden>
-  <div class="modal-bd" onclick="fecharMapa()"></div>
-  <div class="modal-pn" id="modalPanel"></div>
+<div id="mapModal" class="mapmodal" hidden>
+  <div class="mm-backdrop" onclick="closeMapModal()"></div>
+  <div class="mm-panel" id="mmPanel"></div>
 </div>
 
 <script src="app.js"></script>
