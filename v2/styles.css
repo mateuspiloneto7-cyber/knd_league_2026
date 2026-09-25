@@ -79,6 +79,51 @@ body::before{content:"";position:fixed;left:0;right:0;top:0;height:3px;z-index:1
               overflow:hidden;text-overflow:ellipsis}
 .mvp-chip .rt{flex:none;font-size:12px;font-weight:800;color:var(--a);font-variant-numeric:tabular-nums}
 
+/* ---------- pagina do jogador ---------- */
+.pl-head{display:grid;grid-template-columns:230px 1fr;gap:26px;align-items:stretch}
+.pl-photo{width:100%;aspect-ratio:3/4;border-radius:14px;object-fit:cover;object-position:center top;
+          background:var(--panel2);display:flex;align-items:center;justify-content:center;
+          font-size:64px;font-weight:900;color:rgba(13,16,23,.34);
+          box-shadow:inset 0 0 0 2px rgba(195,245,60,.22)}
+.pl-photo.a{background:linear-gradient(170deg,#d7ff5c,#9ecf1f)}
+.pl-photo.b{background:linear-gradient(170deg,#7dd3fc,#1f9fd8);
+            box-shadow:inset 0 0 0 2px rgba(56,189,248,.22)}
+.pl-id{display:flex;flex-direction:column;justify-content:center;min-width:0}
+.pl-id .nm{font-size:40px;font-weight:900;line-height:1;text-transform:uppercase;
+           word-break:break-word}
+.pl-id .tm{font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+           margin-top:8px;cursor:pointer}
+.pl-id .tm:hover{text-decoration:underline}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:10px;margin-top:20px}
+.stat{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+.stat .v{font-size:25px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.stat .k{font-size:10px;color:var(--mut);letter-spacing:1.2px;text-transform:uppercase;
+         font-weight:700;margin-top:4px}
+.radar-box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;
+           display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:26px;align-items:center}
+svg.radar{width:100%;max-width:470px;height:auto;display:block;margin:0 auto}
+.radar-legend{font-size:12px;color:var(--mut);line-height:1.65}
+.radar-legend b{color:var(--txt);font-weight:700}
+.radar-legend p{margin:0 0 11px}
+
+/* qualquer coisa clicavel que leva pra uma ficha */
+tr.link{cursor:pointer;transition:.12s}
+tr.link:hover{background:var(--panel2)}
+.link{cursor:pointer}
+.mvp-chip.link:hover{border-color:var(--a)}
+.mvp-name.link:hover,.mvpweek .nome.link:hover{text-decoration:underline}
+.rcard{cursor:pointer;transition:.15s}
+.rcard:hover{transform:translateY(-3px)}
+
+@media(max-width:860px){
+  .pl-head,.radar-box{grid-template-columns:1fr}
+  .pl-id .nm{font-size:28px}
+}
+@media(max-width:560px){
+  .pl-photo{max-width:190px}
+  .stats-row{grid-template-columns:repeat(3,1fr)}
+}
+
 /* ---------- pagina do time ---------- */
 .back{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--mut);
       font-weight:600;margin:4px 0 18px;cursor:pointer}

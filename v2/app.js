@@ -20,6 +20,7 @@ function initials(n){
 }
 
 function timeDe(id){ return D.times.find(t=>t.id===id) || {nome:id}; }
+function irJogador(id){ location.hash = '#/jogador/' + id; }
 
 /* sigla de 3 letras do mapa, pro chip compacto */
 const SIGLAS = {
@@ -101,7 +102,7 @@ function renderWeeks(){
 /* ---------- tabelas de estatistica ---------- */
 function renderStats(letra, tid){
   const rows = elenco(tid).map(p=>`
-    <tr><td class="name">${esc(p.nome)}</td>
+    <tr class="link" onclick="irJogador('${p.id}')"><td class="name">${esc(p.nome)}</td>
       <td>${p.k}</td><td>${p.a}</td><td>${p.d}</td>
       <td class="der"><b>${f2(kd(p))}</b></td>
       <td class="der">${f2(kda(p))}</td></tr>`).join('');
@@ -143,7 +144,7 @@ function renderMVP(){
     `<div class="mvp-top">
        <div class="mvp-title">
          <span class="mvp-dot"></span>
-         <span class="mvp-name">${esc(mvp.j.nome)}</span>
+         <span class="mvp-name link" onclick="irJogador('${mvp.j.id}')">${esc(mvp.j.nome)}</span>
          <span class="mvp-teaminline">${esc(timeDe(mvp.j.time).nome)}</span>
        </div>
        <div class="mvp-tag">✦ MVP DA SÉRIE</div>
@@ -237,7 +238,7 @@ function renderMVPSemana(){
                 : `<div class="foto">${esc(initials(j.nome))}</div>`}
        <div>
          <span class="badge">✦ MVP</span>
-         <div class="nome">${esc(j.nome)}</div>
+         <div class="nome link" onclick="irJogador('${j.id}')">${esc(j.nome)}</div>
          <div class="sub">${esc(timeDe(j.time).nome)} · ${c.t.mapas} mapas na semana</div>
          <div class="boxes">
            <div class="box"><div class="v">${f2(c.r)}</div><div class="k">Rating</div></div>
@@ -255,7 +256,7 @@ function renderStrip(){
   document.getElementById('mvpStrip').innerHTML =
     D.partidas.filter(p=>p.mapas.length).map(p=>{
       const c = melhores(p.semana)[0];
-      return `<div class="mvp-chip">${avatarDe(c.j)}
+      return `<div class="mvp-chip link" onclick="irJogador('${c.j.id}')">${avatarDe(c.j)}
         <div><div class="wk">${esc(p.nome)}</div><div class="nm">${esc(c.j.nome)}</div></div>
         <span class="rt">${f2(c.r)}</span></div>`;
     }).join('');
@@ -264,7 +265,7 @@ function renderStrip(){
 function renderRanking(){
   const corte = minRounds();
   const linhas = melhores().filter(c=>c.t.rounds>=corte).map((c,i)=>`
-    <tr><td class="pos">${i+1}</td>
+    <tr class="link" onclick="irJogador('${c.j.id}')"><td class="pos">${i+1}</td>
       <td><div class="ply"><span class="tag ${c.j.time==='sm'?'b':'a'}"></span>
         ${avatarDe(c.j)}<span class="nm">${esc(c.j.nome)}</span></div></td>
       <td class="forte">${f2(c.r)}</td>
@@ -307,7 +308,7 @@ function renderTime(tid){
 
   /* elenco em cards de foto */
   const cards = elenco(tid).map(j=>`
-    <div class="rcard ${classe}">
+    <div class="rcard ${classe}" onclick="irJogador('${j.id}')" title="ver a ficha de ${esc(j.nome)}">
       ${j.foto ? `<img src="${esc(j.foto)}" alt="${esc(j.nome)}">`
                : `<span class="ini">${esc(initials(j.nome))}</span>`}
       <span class="nick">${esc(j.nome)}</span>
@@ -331,7 +332,7 @@ function renderTime(tid){
 
   /* tabela de K/D do time */
   const linhasStats = elenco(tid).map(j=>`
-    <tr><td class="name">${esc(j.nome)}</td>
+    <tr class="link" onclick="irJogador('${j.id}')"><td class="name">${esc(j.nome)}</td>
       <td>${j.k}</td><td>${j.a}</td><td>${j.d}</td>
       <td class="der"><b>${f2(kd(j))}</b></td>
       <td class="der">${f2(kda(j))}</td></tr>`).join('');
@@ -372,18 +373,171 @@ function renderTime(tid){
         <th>K/D</th><th>KDA</th></tr></thead><tbody>${linhasStats}</tbody></table></div>`;
 }
 
+/* ============================================================
+   Pagina do jogador: #/jogador/{id}
+   ============================================================ */
+
+/** linhas do jogador, mapa a mapa */
+function linhasDoJogador(id){
+  const out = [];
+  D.partidas.forEach(p=>p.mapas.forEach(m=>{
+    const l = m.stats.find(s=>s.jogador===id);
+    if (!l) return;
+    const meu  = l.time==='canada' ? m.rounds_canada : m.rounds_sm;
+    const dele = l.time==='canada' ? m.rounds_sm : m.rounds_canada;
+    out.push({semana:p.semana, nomeSemana:p.nome, mapa:m.mapa, rounds:meu+dele,
+              placar:`${meu}x${dele}`, res: meu>dele?'w':(dele>meu?'l':'e'),
+              k:l.k, a:l.a, d:l.d});
+  }));
+  return out;
+}
+
+/** rating de um mapa isolado, pra tabela e pra regularidade */
+function ratingDaLinha(l){
+  const r = Math.max(l.rounds,1);
+  return ratingKND({kpr:l.k/r, spr:(r-l.d)/r, apr:l.a/r});
+}
+
+/** regularidade: quanto o rating dele oscila de mapa pra mapa */
+function regularidade(linhas){
+  if (linhas.length < 3) return null;
+  const rs = linhas.map(ratingDaLinha);
+  const mu = rs.reduce((a,b)=>a+b,0)/rs.length;
+  if (mu <= 0) return null;
+  const dp = Math.sqrt(rs.reduce((s,r)=>s+(r-mu)**2,0)/rs.length);
+  return Math.max(0, Math.min(1, 1 - dp/mu));
+}
+
+function percentil(valor, lista){
+  const abaixo = lista.filter(v=>v<valor).length;
+  return lista.length>1 ? abaixo/(lista.length-1) : .5;
+}
+
+function radarSVG(eixos){
+  const S=440, C=S/2, R=128, N=eixos.length;
+  const ponto=(i,raio)=>{
+    const ang = -Math.PI/2 + i*2*Math.PI/N;
+    return [C+Math.cos(ang)*raio, C+Math.sin(ang)*raio];
+  };
+  let g='';
+  [.25,.5,.75,1].forEach(f=>{
+    g += `<polygon points="${eixos.map((_,i)=>ponto(i,R*f).map(n=>n.toFixed(1)).join(',')).join(' ')}"
+           fill="none" stroke="#2b3441" stroke-width="1"/>`;
+  });
+  eixos.forEach((_,i)=>{
+    const [x,y]=ponto(i,R);
+    g += `<line x1="${C}" y1="${C}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"
+           stroke="#222a36" stroke-width="1"/>`;
+  });
+  g += `<polygon points="${eixos.map((e,i)=>ponto(i,R*Math.max(.06,e.p)).map(n=>n.toFixed(1)).join(',')).join(' ')}"
+         fill="rgba(195,245,60,.16)" stroke="#c3f53c" stroke-width="2" stroke-linejoin="round"/>`;
+  eixos.forEach((e,i)=>{
+    const [x,y]=ponto(i,R*Math.max(.06,e.p));
+    g += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.2" fill="#c3f53c"/>`;
+  });
+  eixos.forEach((e,i)=>{
+    const [x,y]=ponto(i,R+30);
+    const anc = x<C-8 ? 'end' : (x>C+8 ? 'start' : 'middle');
+    g += `<text x="${x.toFixed(1)}" y="${(y-3).toFixed(1)}" text-anchor="${anc}" font-size="16"
+           font-weight="800" fill="#eaf0f7" font-family="Segoe UI,sans-serif">${esc(e.v)}</text>
+          <text x="${x.toFixed(1)}" y="${(y+12).toFixed(1)}" text-anchor="${anc}" font-size="9.5"
+           fill="#5d6779" letter-spacing=".8" font-weight="700"
+           font-family="Segoe UI,sans-serif">${esc(e.nome.toUpperCase())}</text>`;
+  });
+  return `<svg class="radar" viewBox="0 0 ${S} ${S}" role="img">${g}</svg>`;
+}
+
+function renderJogador(id){
+  const j = D.jogadores.find(x=>x.id===id);
+  if (!j){ location.hash = '#/'; return; }
+  const t = totalComRounds(id);
+  if (!t.mapas){ location.hash = '#/'; return; }
+
+  const tm = timeDe(j.time);
+  const cor = j.time==='canada' ? 'var(--a)' : 'var(--b)';
+  const linhas = linhasDoJogador(id);
+  const corte = minRounds();
+  const aptos = melhores().filter(c=>c.t.rounds>=corte);
+  const apto = t.rounds >= corte;
+  const pos = aptos.findIndex(c=>c.j.id===id) + 1;
+  const reg = regularidade(linhas);
+  const r = ratingKND(t);
+
+  const eixo = (nome, valor, ler) =>
+    ({nome, v:valor, p: percentil(ler({t, r, reg}), aptos.map(c=>ler({
+      t:c.t, r:c.r, reg:regularidade(linhasDoJogador(c.j.id))})))});
+  const eixos = [
+    eixo('Rating',    f2(r),                    x=>x.r),
+    eixo('K/rnd',     f2(t.kpr),                x=>x.t.kpr),
+    eixo('K/D',       f2(t.kd),                 x=>x.t.kd),
+    eixo('Sobrevida', Math.round(t.spr*100)+'%',x=>x.t.spr),
+    eixo('Assist',    f2(t.apr),                x=>x.t.apr),
+  ];
+  if (reg != null) eixos.push(eixo('Regular.', Math.round(reg*100)+'%', x=>x.reg||0));
+
+  const ultimos = linhas.slice().reverse().map(l=>{
+    const c = l.res==='w' ? 'var(--win)' : (l.res==='l' ? 'var(--loss)' : 'var(--draw)');
+    return `<tr><td style="color:${c};font-weight:800">${l.placar}</td>
+      <td>${esc(l.mapa)}</td>
+      <td class="dim hide-sm">${esc(l.nomeSemana)}</td>
+      <td>${l.k}-${l.d}</td><td class="hide-sm">${l.a}</td>
+      <td class="der"><b>${f2(ratingDaLinha(l))}</b></td></tr>`;
+  }).join('');
+
+  document.getElementById('jogPage').innerHTML = `
+    <div class="back" onclick="location.hash='#/time/${j.time}'">← voltar pro ${esc(tm.nome)}</div>
+
+    <div class="pl-head">
+      ${j.foto ? `<img class="pl-photo" src="${esc(j.foto)}" alt="">`
+               : `<div class="pl-photo ${j.time==='canada'?'a':'b'}">${esc(initials(j.nome))}</div>`}
+      <div class="pl-id">
+        <div class="nm">${esc(j.nome)}</div>
+        <div class="tm" style="color:${cor}" onclick="location.hash='#/time/${j.time}'">${esc(tm.nome)}</div>
+        <div class="stats-row">
+          <div class="stat"><div class="v">${f2(r)}</div><div class="k">Rating</div></div>
+          <div class="stat"><div class="v">${apto?('#'+pos):'-'}</div><div class="k">na liga</div></div>
+          <div class="stat"><div class="v">${f2(t.kd)}</div><div class="k">K/D</div></div>
+          <div class="stat"><div class="v">${t.k}</div><div class="k">Kills</div></div>
+          <div class="stat"><div class="v">${t.mapas}</div><div class="k">Mapas</div></div>
+          <div class="stat"><div class="v">${t.rounds}</div><div class="k">Rounds</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-label">Perfil
+      <span class="hint">a distância até a borda é a posição dele contra os outros da liga</span></div>
+    <div class="radar-box">
+      ${radarSVG(eixos)}
+      <div class="radar-legend">
+        <p>O número em cada ponta é o valor real. A distância até a borda mostra o quanto
+           ele está acima dos outros jogadores da liga.</p>
+        <p><b>Rating KND</b> junta kills por round, sobrevivência e assistências.
+           1.00 é exatamente a média da liga.</p>
+        <p><b>Regularidade</b> é o quanto ele repete o mesmo nível mapa após mapa.
+           Alto quer dizer que entrega sempre.</p>
+        ${apto ? '' : `<p style="color:var(--draw)">Jogou menos de ${corte} rounds na season,
+           então fica fora do ranking e a comparação perde peso.</p>`}
+      </div>
+    </div>
+
+    <div class="sec-label">Mapa a mapa</div>
+    <div class="tpanel"><table>
+      <thead><tr><th>Placar</th><th>Mapa</th><th class="hide-sm">Rodada</th>
+        <th>K-D</th><th class="hide-sm">A</th><th>Rating</th></tr></thead>
+      <tbody>${ultimos}</tbody></table></div>`;
+}
+
 /* ---------- roteador ---------- */
 function rota(){
   const [tela, arg] = location.hash.replace(/^#\/?/,'').split('/');
-  const home = document.getElementById('home');
-  const pag  = document.getElementById('timePage');
+  const telas = {home:document.getElementById('home'),
+                 time:document.getElementById('timePage'),
+                 jogador:document.getElementById('jogPage')};
+  const alvo = (tela==='time' || tela==='jogador') && arg ? tela : 'home';
+  Object.entries(telas).forEach(([k,el])=>{ el.hidden = k !== alvo; });
   window.scrollTo(0,0);
-  if (tela === 'time' && arg){
-    home.hidden = true; pag.hidden = false;
-    renderTime(decodeURIComponent(arg));
-  } else {
-    pag.hidden = true; home.hidden = false;
-  }
+  if (alvo==='time')    renderTime(decodeURIComponent(arg));
+  if (alvo==='jogador') renderJogador(decodeURIComponent(arg));
 }
 
 /* ---------- patrocinador ---------- */
@@ -408,7 +562,7 @@ function openMapModal(semana, idx){
       .slice().sort((x,y)=>y.k-x.k)
       .map(s=>{
         const j = jogadorDe(s.jogador);
-        return `<tr><td class="name">${esc(j.nome)}</td>
+        return `<tr class="link" onclick="closeMapModal();irJogador('${j.id}')"><td class="name">${esc(j.nome)}</td>
           <td>${s.k}</td><td>${s.a}</td><td>${s.d}</td>
           <td class="der"><b>${f2(kd(s))}</b></td>
           <td class="der">${f2(kda(s))}</td></tr>`;
