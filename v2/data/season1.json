@@ -97,7 +97,7 @@
    "time": "canada",
    "foto": null,
    "aliases": [],
-   "elenco": 5,
+   "elenco": null,
    "total": {
     "k": 20,
     "a": 13,
@@ -175,7 +175,7 @@
    "time": "sm",
    "foto": null,
    "aliases": [],
-   "elenco": 5,
+   "elenco": null,
    "total": {
     "k": 47,
     "a": 19,
@@ -188,7 +188,7 @@
    "time": "sm",
    "foto": null,
    "aliases": [],
-   "elenco": 6,
+   "elenco": null,
    "total": {
     "k": 41,
     "a": 11,
@@ -201,7 +201,7 @@
    "time": "sm",
    "foto": null,
    "aliases": [],
-   "elenco": 7,
+   "elenco": null,
    "total": {
     "k": 12,
     "a": 5,
