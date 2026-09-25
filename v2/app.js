@@ -339,72 +339,6 @@ function podio(){
     (jogador, titulo) com o percentil dele naquele traco, ordena do mais forte
     pro mais fraco e vai casando. Quem nao se destaca em nada fica sem titulo,
     o que e melhor do que dar uma frase generica repetida. */
-/* As frases sao caracterizacoes, nao superlativos. Como o titulo escorre pro
-   proximo da fila quando o primeiro ja tem o dele, "o artilheiro da liga" acabaria
-   indo parar no quinto em kills, o que seria mentira. "Volume de fogo" continua
-   verdade pra qualquer um do topo. */
-const TITULOS = [
-  {frase:'Máquina de frag',   ler:e=>e.t.kpr},
-  {frase:'Difícil de matar',  ler:e=>e.t.spr},
-  {frase:'Sempre no lucro',   ler:e=>e.t.kd},
-  {frase:'Joga pro time',     ler:e=>e.t.apr},
-  {frase:'Relógio suíço',     ler:e=>e.reg||0},
-  {frase:'Volume de fogo',    ler:e=>e.t.k},
-  {frase:'Montanha-russa',    ler:e=>1-(e.reg||0)},
-  {frase:'Explosivo',         ler:e=>e.pico},
-  {frase:'Decisivo',          ler:e=>e.mvps},
-];
-const PISO = .6;   // abaixo disso o traco nao e destaque de verdade
-
-let _titulos = null;
-function titulosDaLiga(){
-  if (_titulos) return _titulos;
-  const corte = minRounds();
-  const ss = semanasJogadas();
-
-  // quantas vezes cada um foi MVP da semana
-  const vezes = {};
-  ss.forEach(p=>{ const c = melhores(p.semana)[0]; if (c) vezes[c.j.id] = (vezes[c.j.id]||0)+1; });
-
-  const aptos = D.jogadores.map(j=>{
-    const t = totalComRounds(j.id);
-    const semanais = ss.map(p=>{
-      const tt = totalComRounds(j.id, p.semana);
-      return tt.mapas ? ratingKND(tt) : null;
-    }).filter(v=>v!=null);
-    return {j, t, reg: regularidade(linhasDoJogador(j.id)),
-            pico: semanais.length ? Math.max(...semanais) : 0,
-            mvps: vezes[j.id]||0};
-  }).filter(e=>e.t.rounds >= corte);
-
-  _titulos = {};
-  if (!aptos.length) return _titulos;
-
-  // o lider do ranking leva a frase de lider, e sai da disputa
-  const lider = melhores().filter(c=>c.t.rounds>=corte)[0];
-  const usados = new Set();
-  if (lider){ _titulos[lider.j.id] = 'O melhor da liga'; usados.add(lider.j.id); }
-
-  const pares = [];
-  TITULOS.forEach(cand=>{
-    const lista = aptos.map(cand.ler);
-    aptos.forEach(e=>{
-      const p = percentil(cand.ler(e), lista);
-      if (p >= PISO) pares.push({id:e.j.id, frase:cand.frase, p});
-    });
-  });
-  pares.sort((x,y)=>y.p-x.p);
-
-  const frasesUsadas = new Set();
-  pares.forEach(par=>{
-    if (usados.has(par.id) || frasesUsadas.has(par.frase)) return;
-    _titulos[par.id] = par.frase;
-    usados.add(par.id); frasesUsadas.add(par.frase);
-  });
-  return _titulos;
-}
-function tituloDe(id){ return titulosDaLiga()[id] || null; }
-
 /** evolucao do rating semana a semana, em linha */
 function evolucaoSVG(id, cor){
   const pontos = semanasJogadas().map(p=>{
@@ -844,8 +778,8 @@ function renderJogador(id){
       <div class="pl-id">
         <div class="nm">${esc(j.nome)}</div>
         <div class="tm" onclick="location.hash='#/time/${j.time}'">${esc(tm.nome)}</div>
-        ${(()=>{const tt=tituloDe(id); const fm=forma(id);
-          return (tt||fm) ? `<div class="pl-selos">${tt?`<span class="titulo">${esc(tt)}</span>`:''}${selo(fm)}</div>` : '';})()}
+        ${(()=>{const fm=forma(id);
+          return fm ? `<div class="pl-selos">${selo(fm)}</div>` : '';})()}
         <div class="stats-row">
           <div class="stat"><div class="v">${f2(r)}</div><div class="k">Rating</div></div>
           <div class="stat"><div class="v">${apto?('#'+pos):'-'}</div><div class="k">na liga</div></div>

@@ -235,11 +235,10 @@ td.movcol{width:38px;padding-left:0;padding-right:0}
 .forma.quente{background:rgba(74,222,128,.15);color:var(--win)}
 .forma.frio{background:rgba(242,85,95,.15);color:var(--loss)}
 .forma.estavel{display:none}
+.pl-selos .forma.estavel{display:inline;background:var(--sup2);color:var(--mut)}
 
-/* ---------- titulo e evolucao na ficha ---------- */
+/* ---------- selo de forma e evolucao na ficha ---------- */
 .pl-selos{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
-.titulo{font-size:10px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;
-        color:var(--acc);border:1px solid var(--acc);padding:5px 10px}
 .evo-box{background-color:var(--sup);padding:20px 22px}
 svg.evo{width:100%;height:auto;display:block}
 
