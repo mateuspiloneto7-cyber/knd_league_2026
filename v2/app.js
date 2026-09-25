@@ -294,13 +294,23 @@ function renderMVPSemana(){
 }
 
 function renderStrip(){
-  document.getElementById('mvpStrip').innerHTML =
-    D.partidas.filter(p=>p.mapas.length).map(p=>{
-      const c = melhores(p.semana)[0];
-      return `<div class="mvp-chip link" onclick="irJogador('${c.j.id}')">${avatarDe(c.j)}
-        <div><div class="wk">${esc(p.nome)}</div><div class="nm">${esc(c.j.nome)}</div></div>
-        <span class="rt">${f2(c.r)}</span></div>`;
-    }).join('');
+  // a ultima semana ja e o card grande de MVP da semana, entao a faixa mostra
+  // so as anteriores. Senao sobrava um MVP a mais do que semanas jogadas.
+  const anteriores = D.partidas.filter(p=>p.mapas.length).slice(0, -1);
+  const faixa = document.getElementById('mvpStrip');
+  const label = document.getElementById('stripLabel');
+  if (!anteriores.length){
+    faixa.innerHTML = '';
+    faixa.hidden = true; if (label) label.hidden = true;
+    return;
+  }
+  faixa.hidden = false; if (label) label.hidden = false;
+  faixa.innerHTML = anteriores.map(p=>{
+    const c = melhores(p.semana)[0];
+    return `<div class="mvp-chip link" onclick="irJogador('${c.j.id}')">${avatarDe(c.j)}
+      <div><div class="wk">${esc(p.nome)}</div><div class="nm">${esc(c.j.nome)}</div></div>
+      <span class="rt">${f2(c.r)}</span></div>`;
+  }).join('');
 }
 
 /* ============================================================
