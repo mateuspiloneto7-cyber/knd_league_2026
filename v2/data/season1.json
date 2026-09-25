@@ -43,7 +43,7 @@
    "id": "loirin-do-knd-045-vida",
    "nome": "Loirin do KND 045 #vida",
    "time": "canada",
-   "foto": null,
+   "foto": "assets/jogadores/loirin-do-knd-045-vida.jpg",
    "aliases": [],
    "elenco": 1,
    "total": {
@@ -56,7 +56,7 @@
    "id": "jb",
    "nome": "JB",
    "time": "canada",
-   "foto": null,
+   "foto": "assets/jogadores/jb.jpg",
    "aliases": [],
    "elenco": 2,
    "total": {
@@ -69,7 +69,7 @@
    "id": "vini",
    "nome": "vini",
    "time": "canada",
-   "foto": null,
+   "foto": "assets/jogadores/vini.jpg",
    "aliases": [],
    "elenco": 3,
    "total": {
@@ -82,7 +82,7 @@
    "id": "jose",
    "nome": "josé",
    "time": "canada",
-   "foto": null,
+   "foto": "assets/jogadores/jose.jpg",
    "aliases": [],
    "elenco": 4,
    "total": {
@@ -134,7 +134,7 @@
    "id": "quico-stallone",
    "nome": "QUICO STALLONE",
    "time": "sm",
-   "foto": null,
+   "foto": "assets/jogadores/quico-stallone.jpg",
    "aliases": [],
    "elenco": 2,
    "total": {
@@ -147,7 +147,7 @@
    "id": "kaique-skins",
    "nome": "KAIQUE_SKINS",
    "time": "sm",
-   "foto": null,
+   "foto": "assets/jogadores/kaique-skins.jpg",
    "aliases": [],
    "elenco": 3,
    "total": {
@@ -160,7 +160,7 @@
    "id": "nikolas",
    "nome": "Nikolas",
    "time": "sm",
-   "foto": null,
+   "foto": "assets/jogadores/nikolas.jpg",
    "aliases": [],
    "elenco": 4,
    "total": {
