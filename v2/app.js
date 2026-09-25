@@ -372,6 +372,32 @@ function telaHub(){
         <span class="rt">${f2(c.r)}</span></div>`;
     }).join('')}</div>` : '';
 
+  /* estatisticas da season: dois paineis lado a lado, igual ao original */
+  const painelTime = tid => {
+    const tm = time(sea,tid);
+    const rows = F.filter(f=>f.time===tid)
+      // quem nao bateu o corte de participacao vai pro fim, senao lidera uma lista
+      // ordenada por um rating que nem chega a ser mostrado
+      .sort((a,b)=> (b.apto-a.apto) || (b.apto ? b.rating-a.rating : b.t.k-a.t.k))
+      .map(f=>`
+      <tr class="link" onclick="location.hash='#/jogador/${f.id}'">
+        <td class="name">${esc(f.nome)}${f.apto?'':' <span class="dim" style="font-size:10.5px">(pouco jogo)</span>'}</td>
+        <td class="num">${f.t.k}</td>
+        <td class="num">${f.t.a}</td>
+        <td class="num">${f.t.d}</td>
+        <td class="strong">${f2(f.t.kd)}</td>
+        <td class="dim">${f2(f.t.kda)}</td>
+        <td class="strong">${f.apto?f2(f.rating):'<span class="dim">-</span>'}</td></tr>`).join('');
+    return `<div class="tpanel ${lado(tid)}"><h3>${esc(tm.nome)}</h3>
+      <table><thead><tr><th>Jogador</th><th>K</th><th>A</th><th>D</th>
+        <th>K/D</th><th>KDA</th><th>Rating</th></tr></thead>
+        <tbody>${rows}</tbody></table></div>`;
+  };
+  const estatisticas = `
+    <div class="sec-label">Estatísticas da season
+      <span class="hint">acumulado dos ${sea.partidas.reduce((s,p)=>s+p.mapas.length,0)} mapas · clique num jogador pra abrir a ficha</span></div>
+    <div class="panels">${painelTime('canada')}${painelTime('sm')}</div>`;
+
   /* ranking */
   const temHs = F.some(x=>x.t.hs!=null);
   const linhas = F.filter(f=>f.apto).map((f,i)=>`
@@ -418,12 +444,14 @@ function telaHub(){
            <img src="${esc(sea.patrocinador.img)}" alt="Patrocinador"></a>`
       : `<div class="sponsor"><img src="${esc(sea.patrocinador.img)}" alt="Patrocinador"></div>`}` : '';
 
+  /* ordem dos blocos: a mesma do site original (confronto > semanas > estatisticas > MVP >
+     patrocinador). O que e novo entra depois do MVP, sem mexer no esqueleto. */
   document.getElementById('app').innerHTML =
     match +
     `<div class="sec-label">Semanas <span class="hint">clique num mapa pra ver o placar completo</span></div>
      <div class="weeks">${semanas}</div>` +
-    (sea.encerrada ? cardSeason + cardSemana : cardSemana + cardSeason) +
-    strip + ranking +
+    estatisticas +
+    cardSemana + cardSeason + strip + ranking +
     `<div class="sec-label">Map pool
        <span class="hint">verde = vitória do ${esc(ca.nome)}, azul = ${esc(sm.nome)}. Barra mais curta significa mapa menos jogado</span></div>
      <div class="pool">${poolHtml}</div>` +

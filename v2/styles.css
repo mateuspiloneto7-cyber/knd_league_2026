@@ -115,6 +115,7 @@ tr:last-child td{border-bottom:none}
 tr.link{cursor:pointer;transition:.12s}
 tr.link:hover{background:var(--panel2)}
 td.strong{font-weight:800;color:#fff}
+td.name{font-weight:600}
 .dim{color:var(--mut2)}
 
 .ply{display:flex;align-items:center;gap:9px;min-width:0}
