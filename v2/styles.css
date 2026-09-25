@@ -90,8 +90,15 @@ td.pos{color:#5d6779;width:24px}
 td.dim{color:#5d6779}
 td.forte{font-weight:800;color:#fff}
 
-.weeks{display:flex;gap:10px;flex-wrap:wrap}
-.week{flex:1;min-width:172px;background:var(--panel);border:1px solid var(--line);
+/* Todas as semanas numa linha so. Nunca quebra: quando nao cabe, a faixa desliza
+   na horizontal. Evita a ultima semana sobrar sozinha e esticar na largura toda,
+   e aguenta season com muito mais rodadas. */
+.weeks{display:flex;gap:10px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;
+       scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.weeks::-webkit-scrollbar{height:6px}
+.weeks::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.weeks::-webkit-scrollbar-track{background:transparent}
+.week{flex:1 0 150px;min-width:150px;background:var(--panel);border:1px solid var(--line);
       border-radius:12px;overflow:hidden}
 .week .bar{height:5px;background:linear-gradient(90deg,var(--a),var(--b))}
 .week .body{padding:14px 10px 16px;display:flex;flex-direction:column;align-items:center;gap:8px}
