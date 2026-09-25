@@ -148,6 +148,123 @@ function renderMVP(){
      </div>`;
 }
 
+/* ============================================================
+   Blocos novos: MVP da semana, faixa semana a semana e ranking.
+   Usam metrica por round (o placar do mapa diz quantos rounds teve),
+   diferente do MVP da serie, que segue a conta do site original.
+   ============================================================ */
+
+const CORTE = 0.30;   // so entra no ranking quem jogou 30% dos rounds da season
+
+function roundsDoMapa(m){ return m.rounds_canada + m.rounds_sm; }
+function roundsDaSeason(){
+  return D.partidas.reduce((s,p)=>s+p.mapas.reduce((x,m)=>x+roundsDoMapa(m),0),0);
+}
+function minRounds(){ return Math.max(30, Math.round(roundsDaSeason()*CORTE)); }
+
+/** totais de um jogador, opcionalmente so de uma semana, ja com rounds */
+function totalComRounds(id, semana){
+  const t = {k:0,a:0,d:0,rounds:0,mapas:0};
+  D.partidas.forEach(p=>{
+    if (semana != null && p.semana !== semana) return;
+    p.mapas.forEach(m=>{
+      const l = m.stats.find(s=>s.jogador===id);
+      if (!l) return;
+      t.k+=l.k; t.a+=l.a; t.d+=l.d; t.rounds+=roundsDoMapa(m); t.mapas++;
+    });
+  });
+  const r = Math.max(t.rounds,1);
+  t.kpr=t.k/r; t.dpr=t.d/r; t.apr=t.a/r; t.spr=(r-t.d)/r;
+  t.kd = t.d>0 ? t.k/t.d : t.k;
+  return t;
+}
+
+/** medias da liga entre quem bateu o corte, pra ancorar o Rating KND em 1.00 */
+let _medias = null;
+function medias(){
+  if (_medias) return _medias;
+  const aptos = D.jogadores.map(j=>totalComRounds(j.id)).filter(t=>t.rounds>=minRounds());
+  const m = k => aptos.reduce((s,t)=>s+t[k],0)/Math.max(aptos.length,1);
+  _medias = {kpr:m('kpr')||1, spr:m('spr')||1, apr:m('apr')||1};
+  return _medias;
+}
+
+/** Rating KND: 1.00 = jogador medio da liga */
+function ratingKND(t){
+  const md = medias();
+  return 0.55*(t.kpr/md.kpr) + 0.30*(t.spr/md.spr) + 0.15*(t.apr/md.apr);
+}
+
+/** melhores de uma semana (ou da season, sem argumento) */
+function melhores(semana){
+  return D.jogadores.map(j=>{
+    const t = totalComRounds(j.id, semana);
+    if (!t.mapas) return null;
+    return {j, t, r: ratingKND(t)};
+  }).filter(Boolean).sort((x,y)=>y.r-x.r);
+}
+
+function avatarDe(j){
+  return j.foto ? `<img class="av" src="${esc(j.foto)}" alt="">`
+                : `<div class="av">${esc(initials(j.nome))}</div>`;
+}
+
+function renderMVPSemana(){
+  const semanas = D.partidas.filter(p=>p.mapas.length);
+  if (!semanas.length) return;
+  const ultima = semanas[semanas.length-1];
+  const lista = melhores(ultima.semana);
+  const c = lista[0], j = c.j;
+
+  document.getElementById('mvpWeekHint').textContent = ultima.nome;
+  document.getElementById('mvpWeek').innerHTML =
+    `<div class="mvpweek ${j.time==='sm'?'b':'a'}">
+       ${j.foto ? `<div class="foto" style="background-image:url('${esc(j.foto)}')"></div>`
+                : `<div class="foto">${esc(initials(j.nome))}</div>`}
+       <div>
+         <span class="badge">✦ MVP</span>
+         <div class="nome">${esc(j.nome)}</div>
+         <div class="sub">${esc(timeDe(j.time).nome)} · ${c.t.mapas} mapas na semana</div>
+         <div class="boxes">
+           <div class="box"><div class="v">${f2(c.r)}</div><div class="k">Rating</div></div>
+           <div class="box"><div class="v">${c.t.k}</div><div class="k">Kills</div></div>
+           <div class="box"><div class="v">${f2(c.t.kd)}</div><div class="k">K/D</div></div>
+           <div class="box"><div class="v">${f2(c.t.kpr)}</div><div class="k">K/round</div></div>
+         </div>
+         <div class="atras">Logo atrás: ${
+           lista.slice(1,3).map(x=>`${esc(x.j.nome)} (${f2(x.r)})`).join(', ')}</div>
+       </div>
+     </div>`;
+}
+
+function renderStrip(){
+  document.getElementById('mvpStrip').innerHTML =
+    D.partidas.filter(p=>p.mapas.length).map(p=>{
+      const c = melhores(p.semana)[0];
+      return `<div class="mvp-chip">${avatarDe(c.j)}
+        <div><div class="wk">${esc(p.nome)}</div><div class="nm">${esc(c.j.nome)}</div></div>
+        <span class="rt">${f2(c.r)}</span></div>`;
+    }).join('');
+}
+
+function renderRanking(){
+  const corte = minRounds();
+  const linhas = melhores().filter(c=>c.t.rounds>=corte).map((c,i)=>`
+    <tr><td class="pos">${i+1}</td>
+      <td><div class="ply"><span class="tag ${c.j.time==='sm'?'b':'a'}"></span>
+        ${avatarDe(c.j)}<span class="nm">${esc(c.j.nome)}</span></div></td>
+      <td class="forte">${f2(c.r)}</td>
+      <td>${f2(c.t.kd)}</td>
+      <td>${f2(c.t.kpr)}</td>
+      <td>${Math.round(c.t.spr*100)}%</td>
+      <td class="dim">${c.t.k}</td>
+      <td class="dim">${c.t.mapas}</td></tr>`).join('');
+  document.getElementById('ranking').innerHTML =
+    `<table><thead><tr><th></th><th>Jogador</th><th>Rating</th><th>K/D</th>
+      <th>K/round</th><th>Sobrevida</th><th>Kills</th><th>Mapas</th></tr></thead>
+      <tbody>${linhas}</tbody></table>`;
+}
+
 /* ---------- patrocinador ---------- */
 function renderSponsor(){
   const box = document.getElementById('sponsor');
@@ -207,6 +324,9 @@ fetch(ARQUIVO, {cache:'no-store'})
     renderWeeks();
     renderStats('A','canada');
     renderStats('B','sm');
+    renderMVPSemana();
+    renderStrip();
+    renderRanking();
     renderMVP();
     renderSponsor();
   })

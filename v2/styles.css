@@ -38,7 +38,51 @@ body::before{content:"";position:fixed;left:0;right:0;top:0;height:3px;z-index:1
       border:1px solid var(--line);border-radius:12px;padding:8px 0;font-variant-numeric:tabular-nums}
 .vs{font-size:30px;font-weight:800;color:var(--mut)}
 
-.sec-label{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--mut);margin:26px 4px 10px}
+.sec-label{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--mut);margin:26px 4px 10px;
+           display:flex;align-items:baseline;gap:11px;flex-wrap:wrap}
+.sec-label .hint{text-transform:none;letter-spacing:0;font-size:11.5px;color:#5d6779;font-weight:400}
+
+/* ---------- MVP da semana (card horizontal) ---------- */
+.mvpweek{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px;
+         display:grid;grid-template-columns:150px 1fr;gap:24px;align-items:center}
+.mvpweek .foto{width:100%;aspect-ratio:3/4;border-radius:12px;background:var(--panel2);
+               background-size:cover;background-position:center top;
+               display:flex;align-items:center;justify-content:center;
+               font-size:42px;font-weight:900;color:var(--mut);
+               box-shadow:inset 0 0 0 2px rgba(195,245,60,.3)}
+.mvpweek.b .foto{box-shadow:inset 0 0 0 2px rgba(56,189,248,.3)}
+.mvpweek .badge{display:inline-block;background:var(--ok);color:#0d1017;font-size:10px;font-weight:800;
+                letter-spacing:1.5px;padding:4px 11px;border-radius:6px;margin-bottom:9px}
+.mvpweek .nome{font-size:30px;font-weight:900;line-height:1;text-transform:uppercase;letter-spacing:.3px}
+.mvpweek .sub{font-size:12.5px;color:var(--mut);margin-top:6px}
+.mvpweek .boxes{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:11px;margin-top:16px}
+.mvpweek .box{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:11px 14px}
+.mvpweek .box .v{font-size:24px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.mvpweek .box .k{font-size:10px;color:var(--mut);letter-spacing:1.2px;text-transform:uppercase;
+                 font-weight:700;margin-top:4px}
+.mvpweek .atras{font-size:11.5px;color:#5d6779;margin-top:14px}
+
+/* ---------- faixa de MVP semana a semana ---------- */
+.mvp-strip{display:flex;gap:8px;flex-wrap:wrap}
+.mvp-chip{display:flex;align-items:center;gap:9px;background:var(--panel);border:1px solid var(--line);
+          border-radius:10px;padding:7px 12px 7px 8px}
+.mvp-chip .av{width:26px;height:26px;border-radius:6px;flex:none;object-fit:cover;background:var(--panel2);
+              display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--mut)}
+.mvp-chip .wk{font-size:9.5px;color:#5d6779;letter-spacing:1px;text-transform:uppercase;font-weight:700}
+.mvp-chip .nm{font-size:12.5px;font-weight:700;max-width:140px;white-space:nowrap;
+              overflow:hidden;text-overflow:ellipsis}
+.mvp-chip .rt{font-size:12px;font-weight:800;color:var(--a);font-variant-numeric:tabular-nums}
+
+/* ---------- ranking ---------- */
+.ply{display:flex;align-items:center;gap:9px;min-width:0}
+.ply .tag{flex:none;width:3px;height:20px;border-radius:2px}
+.ply .tag.a{background:var(--a)} .ply .tag.b{background:var(--b)}
+.ply .av{width:26px;height:26px;border-radius:6px;flex:none;object-fit:cover;background:var(--panel2);
+         display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--mut)}
+.ply .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+td.pos{color:#5d6779;width:24px}
+td.dim{color:#5d6779}
+td.forte{font-weight:800;color:#fff}
 
 .weeks{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:10px}
 .week{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
@@ -140,6 +184,8 @@ td.der b{color:var(--txt);font-weight:700}
 
 @media(max-width:860px){
   .stats,.mm-grid{grid-template-columns:1fr}
+  .mvpweek{grid-template-columns:120px 1fr;gap:16px}
+  .mvpweek .nome{font-size:23px}
   .match{grid-template-columns:1fr;gap:24px}
   .score{justify-content:center}
   .mvp-body{grid-template-columns:1fr;gap:16px}
@@ -147,6 +193,9 @@ td.der b{color:var(--txt);font-weight:700}
   .mvp-plot{flex:none;height:200px}
 }
 @media(max-width:560px){
+  .mvpweek{grid-template-columns:1fr}
+  .mvpweek .foto{max-width:180px}
+  .mvpweek .boxes{grid-template-columns:repeat(2,1fr)}
   .wrap{padding:18px 13px 60px}
   .brand img{max-height:120px}
   .comp{font-size:18px}
