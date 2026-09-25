@@ -22,6 +22,24 @@ function initials(n){
 function timeDe(id){ return D.times.find(t=>t.id===id) || {nome:id}; }
 function irJogador(id){ location.hash = '#/jogador/' + id; }
 
+/** troca a logo do topo. Na ficha do jogador entra a do time dele. */
+function marcaDoTopo(tid){
+  const img  = document.getElementById('brandLogo');
+  const link = document.getElementById('brandLink');
+  const t = tid ? timeDe(tid) : null;
+  if (t && t.logo){
+    img.src = t.logo;
+    img.alt = t.nome;
+    img.classList.add('logo-time');
+    link.href = '#/time/' + tid;
+  } else {
+    img.src = (D && D.liga.logo) || 'assets/liga.png';
+    img.alt = (D && D.liga.nome) || 'KND League';
+    img.classList.remove('logo-time');
+    link.href = '#/';
+  }
+}
+
 /* sigla de 3 letras do mapa, pro chip compacto */
 const SIGLAS = {
   'mirage':'MIR', 'inferno':'INF', 'nuke':'NUK', 'ancient':'ANC', 'anubis':'ANU',
@@ -536,8 +554,14 @@ function rota(){
   const alvo = (tela==='time' || tela==='jogador') && arg ? tela : 'home';
   Object.entries(telas).forEach(([k,el])=>{ el.hidden = k !== alvo; });
   window.scrollTo(0,0);
-  if (alvo==='time')    renderTime(decodeURIComponent(arg));
-  if (alvo==='jogador') renderJogador(decodeURIComponent(arg));
+  if (alvo==='time'){ renderTime(decodeURIComponent(arg)); marcaDoTopo(null); }
+  else if (alvo==='jogador'){
+    const id = decodeURIComponent(arg);
+    renderJogador(id);
+    const j = D.jogadores.find(x=>x.id===id);
+    marcaDoTopo(j ? j.time : null);
+  }
+  else marcaDoTopo(null);
 }
 
 /* ---------- patrocinador ---------- */

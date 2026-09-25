@@ -9,13 +9,14 @@
 <link rel="icon" href="assets/liga.png">
 <!-- O ?v= no fim e obrigatorio: sem ele o navegador serve o css/js velho do cache
      mesmo depois de publicar. O numero sobe a cada deploy (scripts/publicar.py). -->
-<link rel="stylesheet" href="styles.css?v=9">
+<link rel="stylesheet" href="styles.css?v=10">
 </head>
 <body>
 
 <div class="wrap">
 
-  <div class="brand"><a href="#/"><img id="brandLogo" src="assets/liga.png" alt="KND League"></a></div>
+  <!-- na ficha de um jogador esta logo vira a do time dele -->
+  <div class="brand"><a id="brandLink" href="#/"><img id="brandLogo" src="assets/liga.png" alt="KND League"></a></div>
 
   <!-- paginas internas, mostradas no lugar da home -->
   <div id="timePage" hidden></div>
@@ -75,6 +76,6 @@
   <div class="mm-panel" id="mmPanel"></div>
 </div>
 
-<script src="app.js?v=9"></script>
+<script src="app.js?v=10"></script>
 </body>
 </html>

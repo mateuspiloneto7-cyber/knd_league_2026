@@ -18,6 +18,8 @@ body::before{content:"";position:fixed;left:0;right:0;top:0;height:3px;z-index:1
 
 .brand{display:flex;justify-content:center;margin-bottom:20px}
 .brand img{max-height:180px;max-width:520px;display:block;object-fit:contain}
+/* logo de time e quadrada: cabe menos altura que a da liga, e ganha cantos */
+.brand img.logo-time{max-height:132px;border-radius:14px}
 
 .top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:22px}
 .comp{font-size:22px;font-weight:800;letter-spacing:.5px;flex:1;min-width:220px}
