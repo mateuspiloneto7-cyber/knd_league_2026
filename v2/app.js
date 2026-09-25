@@ -520,7 +520,8 @@ function percentil(valor, lista){
   return lista.length>1 ? abaixo/(lista.length-1) : .5;
 }
 
-function radarSVG(eixos){
+function radarSVG(eixos, cor){
+  cor = cor || '#ffffff';
   const S=440, C=S/2, R=128, N=eixos.length;
   const ponto=(i,raio)=>{
     const ang = -Math.PI/2 + i*2*Math.PI/N;
@@ -529,27 +530,27 @@ function radarSVG(eixos){
   let g='';
   [.25,.5,.75,1].forEach(f=>{
     g += `<polygon points="${eixos.map((_,i)=>ponto(i,R*f).map(n=>n.toFixed(1)).join(',')).join(' ')}"
-           fill="none" stroke="#2b3441" stroke-width="1"/>`;
+           fill="none" stroke="#1e1e1e" stroke-width="1"/>`;
   });
   eixos.forEach((_,i)=>{
     const [x,y]=ponto(i,R);
     g += `<line x1="${C}" y1="${C}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"
-           stroke="#222a36" stroke-width="1"/>`;
+           stroke="#171717" stroke-width="1"/>`;
   });
   g += `<polygon points="${eixos.map((e,i)=>ponto(i,R*Math.max(.06,e.p)).map(n=>n.toFixed(1)).join(',')).join(' ')}"
-         fill="rgba(195,245,60,.16)" stroke="#c3f53c" stroke-width="2" stroke-linejoin="round"/>`;
+         fill="${cor}22" stroke="${cor}" stroke-width="2" stroke-linejoin="round"/>`;
   eixos.forEach((e,i)=>{
     const [x,y]=ponto(i,R*Math.max(.06,e.p));
-    g += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.2" fill="#c3f53c"/>`;
+    g += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.4" fill="${cor}"/>`;
   });
   eixos.forEach((e,i)=>{
     const [x,y]=ponto(i,R+30);
     const anc = x<C-8 ? 'end' : (x>C+8 ? 'start' : 'middle');
     g += `<text x="${x.toFixed(1)}" y="${(y-3).toFixed(1)}" text-anchor="${anc}" font-size="16"
-           font-weight="800" fill="#eaf0f7" font-family="Segoe UI,sans-serif">${esc(e.v)}</text>
+           font-weight="400" fill="#ffffff" font-family="Anton,sans-serif">${esc(e.v)}</text>
           <text x="${x.toFixed(1)}" y="${(y+12).toFixed(1)}" text-anchor="${anc}" font-size="9.5"
-           fill="#5d6779" letter-spacing=".8" font-weight="700"
-           font-family="Segoe UI,sans-serif">${esc(e.nome.toUpperCase())}</text>`;
+           fill="#5a5a5a" letter-spacing="1.4" font-weight="700"
+           font-family="Inter,sans-serif">${esc(e.nome.toUpperCase())}</text>`;
   });
   return `<svg class="radar" viewBox="0 0 ${S} ${S}" role="img">${g}</svg>`;
 }
@@ -614,7 +615,7 @@ function renderJogador(id){
     <div class="sec-label">Perfil
       <span class="hint">a distância até a borda é a posição dele contra os outros da liga</span></div>
     <div class="radar-box">
-      ${radarSVG(eixos)}
+      ${radarSVG(eixos, j.time==='canada' ? '#c3f53c' : '#38bdf8')}
       <div class="radar-legend">
         <p>O número em cada ponta é o valor real. A distância até a borda mostra o quanto
            ele está acima dos outros jogadores da liga.</p>
