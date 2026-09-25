@@ -7,7 +7,9 @@
 <meta name="description" content="Placar e estatisticas da KND League.">
 <meta name="theme-color" content="#0f131b">
 <link rel="icon" href="assets/liga.png">
-<link rel="stylesheet" href="styles.css">
+<!-- O ?v= no fim e obrigatorio: sem ele o navegador serve o css/js velho do cache
+     mesmo depois de publicar. O numero sobe a cada deploy (scripts/publicar.py). -->
+<link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
 
@@ -65,6 +67,6 @@
   <div class="mm-panel" id="mmPanel"></div>
 </div>
 
-<script src="app.js"></script>
+<script src="app.js?v=6"></script>
 </body>
 </html>
