@@ -190,6 +190,57 @@ tr.link:hover{background:var(--panel2)}
   .rcard .nick{font-size:13px}
 }
 
+/* ---------- comparativo: melhor de cada time ---------- */
+.duelo{background:var(--panel);border:1px solid var(--line);border-radius:16px;
+       padding:20px 22px;position:relative;overflow:hidden}
+.duelo::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.13;
+  background:radial-gradient(420px 220px at 6% -25%,var(--a),transparent 68%),
+             radial-gradient(420px 220px at 94% -25%,var(--b),transparent 68%)}
+.du-topo{position:relative;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+         gap:14px;margin-bottom:20px}
+.du-cara{display:flex;align-items:center;gap:12px;min-width:0;cursor:pointer}
+.du-cara.b{flex-direction:row-reverse;text-align:right}
+.du-cara img,.du-cara .semfoto{width:64px;height:80px;border-radius:9px;flex:none;object-fit:cover;
+  object-position:center top;display:flex;align-items:center;justify-content:center;
+  font-size:24px;font-weight:900;color:rgba(13,16,23,.36)}
+.du-cara .semfoto.a{background:linear-gradient(170deg,#d7ff5c,#9ecf1f)}
+.du-cara .semfoto.b{background:linear-gradient(170deg,#7dd3fc,#1f9fd8)}
+.du-cara img{box-shadow:inset 0 0 0 2px var(--line)}
+.du-info{min-width:0}
+.du-nome{font-size:19px;font-weight:900;letter-spacing:.2px;line-height:1.1;
+         white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.du-cara.a .du-nome{color:var(--a)} .du-cara.b .du-nome{color:var(--b)}
+.du-cara:hover .du-nome{text-decoration:underline}
+.du-time{font-size:10.5px;color:var(--mut);font-weight:700;letter-spacing:1.2px;
+         text-transform:uppercase;margin-top:3px;white-space:nowrap;overflow:hidden;
+         text-overflow:ellipsis}
+.du-vs{font-size:15px;font-weight:900;color:var(--mut);letter-spacing:2px;flex:none}
+
+.du-linhas{position:relative;display:flex;flex-direction:column;gap:9px}
+.du-linha{display:grid;grid-template-columns:76px 1fr 76px;align-items:center;gap:12px}
+.du-val{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--mut)}
+.du-val.esq{text-align:right} .du-val.dir{text-align:left}
+.du-val.vence{font-size:18px}
+.du-val.vence.a{color:var(--a)} .du-val.vence.b{color:var(--b)}
+.du-meio{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}
+.du-barra{width:100%;height:8px;border-radius:4px;overflow:hidden;display:flex;background:var(--panel2)}
+.du-barra i{display:block;height:100%}
+.du-barra i.a{background:var(--a);opacity:.85}
+.du-barra i.b{background:var(--b);opacity:.85}
+.du-k{font-size:10px;color:var(--mut);font-weight:700;letter-spacing:1.2px;text-transform:uppercase}
+.du-rodape{position:relative;margin-top:18px;padding-top:14px;border-top:1px solid var(--line);
+           font-size:12.5px;color:var(--mut);text-align:center}
+.du-rodape b{color:var(--txt)}
+.du-rodape b.a{color:var(--a)} .du-rodape b.b{color:var(--b)}
+
+@media(max-width:560px){
+  .du-cara img,.du-cara .semfoto{width:48px;height:60px}
+  .du-nome{font-size:15px}
+  .du-vs{font-size:12px}
+  .du-linha{grid-template-columns:58px 1fr 58px;gap:8px}
+  .du-val{font-size:14px} .du-val.vence{font-size:15px}
+}
+
 /* ---------- ranking ---------- */
 .ply{display:flex;align-items:center;gap:9px;min-width:0}
 .ply .tag{flex:none;width:3px;height:20px;border-radius:2px}

@@ -280,6 +280,95 @@ function renderStrip(){
     }).join('');
 }
 
+/* ============================================================
+   Comparativo: o melhor de cada time, lado a lado
+   ============================================================ */
+
+/** melhor jogador de um time por Rating KND, entre quem bateu o corte */
+function melhorDoTime(tid){
+  const corte = minRounds();
+  return melhores().find(c => c.j.time === tid && c.t.rounds >= corte) || null;
+}
+
+/** nos mapas em que os dois jogaram, quem foi melhor mais vezes */
+function confrontoDireto(idA, idB){
+  const la = linhasDoJogador(idA), lb = linhasDoJogador(idB);
+  const porMapa = l => l.semana + '|' + l.mapa;
+  const mapaB = new Map(lb.map(l=>[porMapa(l), l]));
+  let a=0, b=0, juntos=0;
+  la.forEach(x=>{
+    const y = mapaB.get(porMapa(x));
+    if (!y) return;
+    juntos++;
+    const ra = ratingDaLinha(x), rb = ratingDaLinha(y);
+    if (ra > rb) a++; else if (rb > ra) b++;
+  });
+  return {juntos, a, b};
+}
+
+function renderDuelo(){
+  const A = melhorDoTime('canada'), B = melhorDoTime('sm');
+  const box = document.getElementById('duelo');
+  if (!A || !B){ box.innerHTML = ''; return; }
+
+  document.getElementById('duelHint').textContent =
+    `${A.j.nome} contra ${B.j.nome}, os melhores rating de cada lado`;
+
+  const LINHAS = [
+    {k:'Rating',        a:A.r,       b:B.r,       fmt:f2},
+    {k:'K/D',           a:A.t.kd,    b:B.t.kd,    fmt:f2},
+    {k:'Kills',         a:A.t.k,     b:B.t.k,     fmt:v=>Math.round(v)},
+    {k:'Kills/round',   a:A.t.kpr,   b:B.t.kpr,   fmt:f2},
+    {k:'Sobrevida',     a:A.t.spr,   b:B.t.spr,   fmt:v=>Math.round(v*100)+'%'},
+    {k:'Assist/round',  a:A.t.apr,   b:B.t.apr,   fmt:f2},
+  ];
+
+  const linhas = LINHAS.map(l=>{
+    const tot = l.a + l.b;
+    const pa = tot > 0 ? l.a/tot*100 : 50;
+    const venceA = l.a > l.b, venceB = l.b > l.a;
+    return `<div class="du-linha">
+      <span class="du-val esq ${venceA?'vence a':''}">${l.fmt(l.a)}</span>
+      <span class="du-meio">
+        <span class="du-barra">
+          <i class="a" style="width:${pa.toFixed(1)}%"></i>
+          <i class="b" style="width:${(100-pa).toFixed(1)}%"></i>
+        </span>
+        <span class="du-k">${l.k}</span>
+      </span>
+      <span class="du-val dir ${venceB?'vence b':''}">${l.fmt(l.b)}</span>
+    </div>`;
+  }).join('');
+
+  const h2h = confrontoDireto(A.j.id, B.j.id);
+  const rodape = h2h.juntos
+    ? `Nos <b>${h2h.juntos} mapas</b> em que se enfrentaram,
+       <b class="a">${esc(A.j.nome)}</b> foi melhor em <b>${h2h.a}</b> e
+       <b class="b">${esc(B.j.nome)}</b> em <b>${h2h.b}</b>${
+         h2h.juntos - h2h.a - h2h.b ? `, com ${h2h.juntos-h2h.a-h2h.b} empate(s)` : ''}.`
+    : '';
+
+  const cabeca = (c, lado) => `
+    <div class="du-cara ${lado}" onclick="irJogador('${c.j.id}')">
+      ${c.j.foto ? `<img src="${esc(c.j.foto)}" alt="">`
+                 : `<div class="semfoto ${lado}">${esc(initials(c.j.nome))}</div>`}
+      <div class="du-info">
+        <div class="du-nome">${esc(c.j.nome)}</div>
+        <div class="du-time">${esc(timeDe(c.j.time).nome)}</div>
+      </div>
+    </div>`;
+
+  box.innerHTML = `<div class="duelo">
+      <div class="du-topo">
+        ${cabeca(A,'a')}
+        <div class="du-vs">VS</div>
+        ${cabeca(B,'b')}
+      </div>
+      <div class="du-linhas">${linhas}</div>
+      ${rodape ? `<div class="du-rodape">${rodape}</div>` : ''}
+    </div>`;
+}
+
 function renderRanking(){
   const corte = minRounds();
   const linhas = melhores().filter(c=>c.t.rounds>=corte).map((c,i)=>`
@@ -625,6 +714,7 @@ fetch(ARQUIVO, {cache:'no-store'})
     renderStats('B','sm');
     renderMVPSemana();
     renderStrip();
+    renderDuelo();
     renderRanking();
     renderMVP();
     renderSponsor();

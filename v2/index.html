@@ -9,7 +9,7 @@
 <link rel="icon" href="assets/liga.png">
 <!-- O ?v= no fim e obrigatorio: sem ele o navegador serve o css/js velho do cache
      mesmo depois de publicar. O numero sobe a cada deploy (scripts/publicar.py). -->
-<link rel="stylesheet" href="styles.css?v=10">
+<link rel="stylesheet" href="styles.css?v=11">
 </head>
 <body>
 
@@ -57,6 +57,10 @@
   <div class="sec-label">MVP semana a semana</div>
   <div class="mvp-strip" id="mvpStrip"></div>
 
+  <div class="sec-label">Melhor de cada time
+    <span class="hint" id="duelHint"></span></div>
+  <div id="duelo"></div>
+
   <div class="sec-label">Ranking da season
     <span class="hint">Rating KND: 1.00 é o jogador médio da liga</span></div>
   <div class="tpanel" id="ranking"></div>
@@ -76,6 +80,6 @@
   <div class="mm-panel" id="mmPanel"></div>
 </div>
 
-<script src="app.js?v=10"></script>
+<script src="app.js?v=11"></script>
 </body>
 </html>
