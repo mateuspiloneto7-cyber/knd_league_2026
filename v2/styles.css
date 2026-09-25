@@ -27,7 +27,7 @@ body::before{content:"";position:fixed;left:0;right:0;top:0;height:3px;z-index:1
 .match{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px;
        display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px;margin-bottom:18px}
 .team{display:flex;flex-direction:column;align-items:center;gap:12px;min-width:0}
-.logo{width:100%;max-width:230px;aspect-ratio:1/1;border:2px solid var(--line);border-radius:14px;
+.logo{width:100%;max-width:230px;aspect-ratio:1/1;border:2px dashed var(--line);border-radius:14px;
       background-size:cover;background-position:center;overflow:hidden}
 .tname{text-align:center;font-size:20px;font-weight:800;letter-spacing:.5px;width:100%}
 .team.a .tname{color:var(--a)}
@@ -84,8 +84,9 @@ td.pos{color:#5d6779;width:24px}
 td.dim{color:#5d6779}
 td.forte{font-weight:800;color:#fff}
 
-.weeks{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:10px}
-.week{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.weeks{display:flex;gap:10px;flex-wrap:wrap}
+.week{flex:1;min-width:172px;background:var(--panel);border:1px solid var(--line);
+      border-radius:12px;overflow:hidden}
 .week .bar{height:5px;background:linear-gradient(90deg,var(--a),var(--b))}
 .week .body{padding:14px 10px 16px;display:flex;flex-direction:column;align-items:center;gap:8px}
 .week .wk-name{width:100%;color:var(--mut);text-align:center;font-size:11px;font-weight:700;
@@ -97,13 +98,20 @@ td.forte{font-weight:800;color:#fff}
             border-top:1px solid var(--line);padding-top:10px}
 .week .maps-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--mut);
                 align-self:flex-start;font-weight:700}
-.week .map{display:flex;gap:6px;align-items:center;width:100%;background:var(--panel2);
-           border:1px solid var(--line);border-radius:6px;padding:6px 8px;cursor:pointer;transition:.15s}
-.week .map:hover{border-color:var(--a)}
+.week .map{display:flex;gap:6px;align-items:center;width:100%}
 .week .map .mp-i{font-size:10px;color:var(--mut);width:12px;text-align:center;font-weight:800;flex:none}
-.week .map .mp-name{flex:1;min-width:0;font-size:12px;white-space:nowrap;overflow:hidden;
-                    text-overflow:ellipsis}
-.week .map .mp-score{flex:none;font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
+.week .map .mp-name{flex:1;min-width:0;background:var(--panel2);border:1px solid var(--line);
+                    border-radius:6px;font-size:12px;padding:6px 8px;
+                    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.week .map .mp-score{width:56px;flex:none;background:var(--panel2);border:1px solid var(--line);
+                     border-radius:6px;text-align:center;font-size:13px;font-weight:800;padding:6px 2px;
+                     font-variant-numeric:tabular-nums}
+.week .map .mp-open{flex:none;width:28px;height:30px;display:flex;align-items:center;justify-content:center;
+                    background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:var(--mut);
+                    cursor:pointer;font-size:12px;transition:.15s;font-family:inherit;padding:0}
+.week .map .mp-open:hover:not(:disabled){border-color:var(--a);color:var(--a)}
+.week .map .mp-open:disabled{opacity:.4;cursor:default}
+.week .map.vazio .mp-name,.week .map.vazio .mp-score{color:#4a5568}
 
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .tpanel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;

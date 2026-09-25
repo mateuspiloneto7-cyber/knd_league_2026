@@ -33,34 +33,25 @@ function totalDoJogador(id){
   return t;
 }
 
-/** elenco de um time com os totais, do maior pro menor em kills */
+/** elenco oficial do time, na ordem e com os totais gravados no site original */
 function elenco(tid){
-  return D.jogadores.filter(j=>j.time===tid)
-    .map(j=>({...j, ...totalDoJogador(j.id)}))
-    .filter(j=>j.mapas > 0)
-    .sort((x,y)=>y.k-x.k);
+  return D.jogadores
+    .filter(j=>j.time===tid && j.elenco != null && j.total)
+    .sort((x,y)=>x.elenco-y.elenco)
+    .map(j=>({...j, ...j.total}));
 }
 
 /* ---------- topo e confronto ---------- */
 function renderTopo(){
   document.getElementById('brandLogo').src = D.liga.logo || 'assets/liga.png';
-  document.getElementById('comp').innerHTML =
-    esc(D.liga.nome) + `<span>Season ${D.season}</span>`;
+  document.getElementById('comp').textContent = D.comp || D.liga.nome;
 
-  let sa = 0, sb = 0;
-  D.partidas.forEach(p=>{
-    let c=0, s=0;
-    p.mapas.forEach(m=>{ if(m.vencedor==='canada')c++; else if(m.vencedor==='sm')s++; });
-    if (!p.mapas.length) return;
-    if (c>s) sa++; else if (s>c) sb++;
-  });
-
-  [['A','canada',sa],['B','sm',sb]].forEach(([letra,tid,pts])=>{
+  [['A','canada'],['B','sm']].forEach(([letra,tid])=>{
     const t = timeDe(tid);
     const el = document.getElementById('logo'+letra);
     if (t.logo) el.style.backgroundImage = `url('${t.logo}')`;
     document.getElementById('name'+letra).textContent  = t.nome;
-    document.getElementById('score'+letra).textContent = pts;
+    document.getElementById('score'+letra).textContent = t.placar;
     document.getElementById('stTitle'+letra).textContent = t.nome;
   });
 }
@@ -68,19 +59,27 @@ function renderTopo(){
 /* ---------- semanas ---------- */
 function renderWeeks(){
   const box = document.getElementById('weeks');
-  box.innerHTML = D.partidas.filter(p=>p.mapas.length).map(p=>{
-    let c=0, s=0;
-    p.mapas.forEach(m=>{ if(m.vencedor==='canada')c++; else if(m.vencedor==='sm')s++; });
+  box.innerHTML = D.partidas.map(p=>{
     const maps = p.mapas.map((m,i)=>`
-      <div class="map" onclick="openMapModal(${p.semana},${i})" title="ver stats do mapa">
+      <div class="map">
         <span class="mp-i">${i+1}</span>
         <span class="mp-name">${esc(m.mapa)}</span>
         <span class="mp-score">${m.rounds_canada}x${m.rounds_sm}</span>
+        <button class="mp-open" onclick="openMapModal(${p.semana},${i})"
+                title="ver stats do mapa">▤</button>
+      </div>`).join('');
+    // as semanas que tiveram menos de 3 mapas mantem a linha vazia, como no original
+    const vazios = Array.from({length: p.mapas_vazios||0}, (_,k)=>`
+      <div class="map vazio">
+        <span class="mp-i">${p.mapas.length+k+1}</span>
+        <span class="mp-name">mapa</span>
+        <span class="mp-score">0x0</span>
+        <button class="mp-open" disabled title="sem stats">▤</button>
       </div>`).join('');
     return `<div class="week"><div class="bar"></div><div class="body">
         <div class="wk-name">${esc(p.nome)}</div>
-        <div class="wk-score">${c}x${s}</div>
-        <div class="maps"><span class="maps-lbl">Mapas</span>${maps}</div>
+        <div class="wk-score">${esc(p.serie||'')}</div>
+        <div class="maps"><span class="maps-lbl">Mapas</span>${maps}${vazios}</div>
       </div></div>`;
   }).join('');
 }
@@ -102,7 +101,8 @@ const MVP_ORDER = ['K','A','D','K/D','KDA','Rating'];
 
 function renderMVP(){
   const box = document.getElementById('mvp');
-  const todos = D.jogadores.map(j=>({j, p:totalDoJogador(j.id)})).filter(e=>e.p.mapas>0);
+  // mesma base do original: o elenco oficial com os totais gravados
+  const todos = D.jogadores.filter(j=>j.elenco != null && j.total).map(j=>({j, p:j.total}));
   if (!todos.length){ box.innerHTML = ''; return; }
 
   todos.forEach(e=>{
@@ -319,7 +319,7 @@ fetch(ARQUIVO, {cache:'no-store'})
   .then(r=>r.json())
   .then(dados=>{
     D = dados;
-    document.getElementById('statsLabel').textContent = 'Estatísticas da season';
+    document.getElementById('statsLabel').textContent = D.statsLabel || '';
     renderTopo();
     renderWeeks();
     renderStats('A','canada');

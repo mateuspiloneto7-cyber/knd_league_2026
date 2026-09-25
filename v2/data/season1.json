@@ -14,13 +14,15 @@
    "id": "canada",
    "nome": "CANADÁ",
    "logo": "assets/times/canada.jpg",
-   "cor": "#c3f53c"
+   "cor": "#c3f53c",
+   "placar": 4
   },
   {
    "id": "sm",
    "nome": "SM ASSISTÊNCIA",
    "logo": "assets/times/sm.jpg",
-   "cor": "#38bdf8"
+   "cor": "#38bdf8",
+   "placar": 3
   }
  ],
  "jogadores": [
@@ -29,112 +31,200 @@
    "nome": "iBiS Cellin",
    "time": "canada",
    "foto": "assets/jogadores/ibis-cellin.jpg",
-   "aliases": []
+   "aliases": [],
+   "elenco": 0,
+   "total": {
+    "k": 378,
+    "a": 87,
+    "d": 223
+   }
   },
   {
    "id": "loirin-do-knd-045-vida",
    "nome": "Loirin do KND 045 #vida",
    "time": "canada",
    "foto": null,
-   "aliases": []
+   "aliases": [],
+   "elenco": 1,
+   "total": {
+    "k": 294,
+    "a": 116,
+    "d": 267
+   }
   },
   {
    "id": "jb",
    "nome": "JB",
    "time": "canada",
    "foto": null,
-   "aliases": []
+   "aliases": [],
+   "elenco": 2,
+   "total": {
+    "k": 245,
+    "a": 61,
+    "d": 196
+   }
   },
   {
    "id": "vini",
    "nome": "vini",
    "time": "canada",
    "foto": null,
-   "aliases": []
+   "aliases": [],
+   "elenco": 3,
+   "total": {
+    "k": 215,
+    "a": 108,
+    "d": 265
+   }
   },
   {
    "id": "jose",
    "nome": "josé",
    "time": "canada",
    "foto": null,
-   "aliases": []
+   "aliases": [],
+   "elenco": 4,
+   "total": {
+    "k": 169,
+    "a": 87,
+    "d": 276
+   }
   },
   {
    "id": "pedrin-nu-cs",
    "nome": "pedrin nu cs",
    "time": "canada",
    "foto": null,
-   "aliases": []
+   "aliases": [],
+   "elenco": 5,
+   "total": {
+    "k": 20,
+    "a": 13,
+    "d": 31
+   }
   },
   {
    "id": "furebis-young",
    "nome": "Furebis young",
    "time": "sm",
    "foto": "assets/jogadores/furebis-young.png",
-   "aliases": []
+   "aliases": [],
+   "elenco": 0,
+   "total": {
+    "k": 326,
+    "a": 91,
+    "d": 257
+   }
   },
   {
    "id": "bito-lodoyy",
    "nome": "Bito_Lodoyy",
    "time": "sm",
    "foto": null,
-   "aliases": []
+   "aliases": [],
+   "elenco": 1,
+   "total": {
+    "k": 255,
+    "a": 57,
+    "d": 280
+   }
   },
   {
    "id": "quico-stallone",
    "nome": "QUICO STALLONE",
    "time": "sm",
    "foto": null,
-   "aliases": []
+   "aliases": [],
+   "elenco": 2,
+   "total": {
+    "k": 210,
+    "a": 75,
+    "d": 218
+   }
   },
   {
    "id": "kaique-skins",
    "nome": "KAIQUE_SKINS",
    "time": "sm",
    "foto": null,
-   "aliases": []
+   "aliases": [],
+   "elenco": 3,
+   "total": {
+    "k": 244,
+    "a": 61,
+    "d": 208
+   }
   },
   {
    "id": "nikolas",
    "nome": "Nikolas",
    "time": "sm",
    "foto": null,
-   "aliases": []
+   "aliases": [],
+   "elenco": 4,
+   "total": {
+    "k": 149,
+    "a": 80,
+    "d": 263
+   }
   },
   {
    "id": "dante-catarina",
    "nome": "Dante Catarina",
    "time": "sm",
    "foto": null,
-   "aliases": []
+   "aliases": [],
+   "elenco": 5,
+   "total": {
+    "k": 47,
+    "a": 19,
+    "d": 62
+   }
   },
   {
    "id": "mth",
    "nome": "mth",
    "time": "sm",
    "foto": null,
-   "aliases": []
+   "aliases": [],
+   "elenco": 6,
+   "total": {
+    "k": 41,
+    "a": 11,
+    "d": 28
+   }
   },
   {
    "id": "fl-darknnes",
    "nome": "Fl_Darknnes",
    "time": "sm",
    "foto": null,
-   "aliases": []
+   "aliases": [],
+   "elenco": 7,
+   "total": {
+    "k": 12,
+    "a": 5,
+    "d": 27
+   }
   },
   {
    "id": "diagnostic",
    "nome": "-dIAGNOSTIC",
    "time": "canada",
    "foto": null,
-   "aliases": []
+   "aliases": [],
+   "elenco": null,
+   "total": null
   },
   {
    "id": "facao-do-goleiro-bruno",
    "nome": "FACÃO DO GOLEIRO BRUNO",
    "time": "sm",
    "foto": null,
-   "aliases": []
+   "aliases": [],
+   "elenco": null,
+   "total": null
   }
  ],
  "partidas": [
@@ -468,7 +558,8 @@
       }
      ]
     }
-   ]
+   ],
+   "mapas_vazios": 0
   },
   {
    "semana": 2,
@@ -692,7 +783,8 @@
       }
      ]
     }
-   ]
+   ],
+   "mapas_vazios": 1
   },
   {
    "semana": 3,
@@ -916,7 +1008,8 @@
       }
      ]
     }
-   ]
+   ],
+   "mapas_vazios": 1
   },
   {
    "semana": 4,
@@ -1140,7 +1233,8 @@
       }
      ]
     }
-   ]
+   ],
+   "mapas_vazios": 1
   },
   {
    "semana": 5,
@@ -1472,7 +1566,8 @@
       }
      ]
     }
-   ]
+   ],
+   "mapas_vazios": 0
   },
   {
    "semana": 6,
@@ -1696,7 +1791,8 @@
       }
      ]
     }
-   ]
+   ],
+   "mapas_vazios": 1
   },
   {
    "semana": 7,
@@ -2028,7 +2124,10 @@
       }
      ]
     }
-   ]
+   ],
+   "mapas_vazios": 0
   }
- ]
+ ],
+ "comp": "Campeonato Interno CS",
+ "statsLabel": "estatísticas da última md3"
 }
