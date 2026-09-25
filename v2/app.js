@@ -24,10 +24,13 @@ async function boot(){
   }
   if (!state.seasons.length){
     document.getElementById('app').innerHTML =
-      '<p class="dimmed" style="padding:60px 0">Nenhuma season encontrada.</p>';
+      '<p class="dim" style="padding:60px 0;text-align:center">Nenhuma season encontrada.</p>';
     return;
   }
   state.atual = state.seasons[0];
+  const sea = state.atual;
+  document.getElementById('comp').innerHTML =
+    esc(sea.liga.nome) + `<small>Season ${sea.season} · ${sea.encerrada?'encerrada':'em andamento'}</small>`;
   window.addEventListener('hashchange', rota);
   rota();
 }
@@ -47,7 +50,7 @@ function linhasDoJogador(sea, id, filtroSemana){
     p.mapas.forEach(m=>{
       const l = m.stats.find(s=>s.jogador===id);
       if (!l) return;
-      const meu = l.time==='canada' ? m.rounds_canada : m.rounds_sm;
+      const meu  = l.time==='canada' ? m.rounds_canada : m.rounds_sm;
       const dele = l.time==='canada' ? m.rounds_sm : m.rounds_canada;
       out.push({semana:p.semana, mapa:m.mapa, rounds:roundsDoMapa(m),
                 placar:`${meu}x${dele}`,
@@ -68,11 +71,10 @@ function agrega(linhas){
     if (l.score!=null) t.score+=l.score;
   });
   const r = Math.max(t.rounds,1);
-  t.kpr=t.k/r; t.dpr=t.d/r; t.apr=t.a/r; t.spr=(r-t.d)/r;
-  t.mvpr=t.mvps/r;
-  t.kd = t.d>0 ? t.k/t.d : t.k;
+  t.kpr=t.k/r; t.dpr=t.d/r; t.apr=t.a/r; t.spr=(r-t.d)/r; t.mvpr=t.mvps/r;
+  t.kd  = t.d>0 ? t.k/t.d : t.k;
   t.kda = t.d>0 ? (t.k+t.a)/t.d : (t.k+t.a);
-  t.hs = t.hsN ? t.hsSoma/t.hsN : null;
+  t.hs  = t.hsN ? t.hsSoma/t.hsN : null;
   return t;
 }
 
@@ -88,9 +90,8 @@ function mediasDaLiga(sea){
 
 /** Rating KND: 1.00 = jogador medio da liga */
 function rating(t, med){
-  const temMvp = med.mvpr > 0 && t.mvpr >= 0;
-  const base = 0.55*(t.kpr/med.kpr) + 0.30*(t.spr/med.spr) + 0.15*(t.apr/med.apr);
-  if (!temMvp || !med.mvpr) return base;
+  if (!med.mvpr)
+    return 0.55*(t.kpr/med.kpr) + 0.30*(t.spr/med.spr) + 0.15*(t.apr/med.apr);
   return 0.48*(t.kpr/med.kpr) + 0.26*(t.spr/med.spr) + 0.12*(t.apr/med.apr)
        + 0.14*(t.mvpr/med.mvpr);
 }
@@ -155,18 +156,35 @@ function mapPool(sea){
   return Object.entries(M).sort((a,b)=>b[1].n-a[1].n);
 }
 
-/** MVP de cada semana */
-function mvpsSemanais(sea){
+/** candidatos a MVP de uma semana (sem filtro = season inteira) */
+function candidatos(sea, semana){
   const med = mediasDaLiga(sea);
-  return sea.partidas.filter(p=>p.mapas.length).map(p=>{
-    const cand = sea.jogadores.map(j=>{
-      const linhas = linhasDoJogador(sea, j.id, p.semana);
-      if (!linhas.length) return null;
-      const t = agrega(linhas);
-      return {j, t, r: rating(t, med)};
-    }).filter(Boolean).sort((a,b)=>b.r-a.r);
-    return {partida:p, mvp:cand[0], top:cand.slice(0,3)};
-  }).reverse();
+  return sea.jogadores.map(j=>{
+    const linhas = linhasDoJogador(sea, j.id, semana);
+    if (!linhas.length) return null;
+    const t = agrega(linhas);
+    return {j, t, r: rating(t, med)};
+  }).filter(Boolean).sort((a,b)=>b.r-a.r);
+}
+
+/** MVP de cada semana, da mais recente pra mais antiga */
+function mvpsSemanais(sea){
+  return sea.partidas.filter(p=>p.mapas.length)
+    .map(p=>({partida:p, lista:candidatos(sea, p.semana)})).reverse();
+}
+
+/** MVP da season: melhor rating entre quem bateu o corte de participacao */
+function mvpDaSeason(sea){
+  const corte = minRounds(sea);
+  const lista = candidatos(sea).filter(c=>c.t.rounds>=corte);
+  if (!lista.length) return null;
+  const trofeus = {};
+  mvpsSemanais(sea).forEach(w=>{
+    const id = w.lista[0] && w.lista[0].j.id;
+    if (id) trofeus[id] = (trofeus[id]||0) + 1;
+  });
+  return {lista, semanas: trofeus[lista[0].j.id] || 0,
+          totalSemanas: sea.partidas.filter(p=>p.mapas.length).length};
 }
 
 /* ============ helpers de tela ============ */
@@ -174,125 +192,214 @@ const esc = s => String(s==null?'':s)
   .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
 function time(sea, id){ return sea.times.find(t=>t.id===id) || {nome:id, cor:'#888'}; }
+function lado(id){ return id==='canada' ? 'a' : 'b'; }
 function abbr(n){
   const p = String(n||'?').trim().split(/\s+/);
   return ((p[0][0]||'') + (p.length>1 ? (p[p.length-1][0]||'') : '')).toUpperCase();
 }
 function avatar(j, cls='av'){
-  return j.foto
-    ? `<img class="${cls}" src="${esc(j.foto)}" alt="${esc(j.nome)}">`
-    : `<div class="${cls}">${esc(abbr(j.nome))}</div>`;
+  return j.foto ? `<img class="${cls}" src="${esc(j.foto)}" alt="">`
+                : `<div class="${cls}">${esc(abbr(j.nome))}</div>`;
 }
-function chipJogador(sea, j){
-  const t = j.time==='canada' ? 'ca' : 'sm';
-  return `<div class="ply"><span class="tag ${t}"></span>${avatar(j)}
+function chipJogador(j){
+  return `<div class="ply"><span class="tag ${lado(j.time)}"></span>${avatar(j)}
           <span class="nm">${esc(j.nome)}</span></div>`;
+}
+
+/* ============ card de MVP (barras, igual ao original) ============ */
+const MVP_ORDER = [
+  {k:'K',         get:c=>c.t.k,   fmt:v=>Math.round(v)},
+  {k:'A',         get:c=>c.t.a,   fmt:v=>Math.round(v)},
+  {k:'K/D',       get:c=>c.t.kd,  fmt:f2},
+  {k:'KDA',       get:c=>c.t.kda, fmt:f2},
+  {k:'Sobrevida', get:c=>c.t.spr, fmt:pct},
+  {k:'Rating',    get:c=>c.r,     fmt:f2},
+];
+
+function mvpCard(sea, lista, opts){
+  if (!lista || !lista.length) return '';
+  const mvp = lista[0], j = mvp.j, tm = time(sea, j.time);
+  const BASE=46, CAP=94, MIN=7;   // BASE = altura da linha da media
+  const bars = MVP_ORDER.map(m=>{
+    const v = m.get(mvp);
+    const media = lista.map(m.get).reduce(soma,0)/lista.length || 0.0001;
+    const h = Math.max(MIN, Math.min(CAP, (media>0 ? v/media : 1)*BASE));
+    return `<div class="mvp-bar${m.k==='Rating'?' hl':''}">
+      <div class="val">${m.fmt(v)}</div>
+      <div class="col" style="height:${h.toFixed(1)}%"></div></div>`;
+  }).join('');
+  const labels = MVP_ORDER.map(m=>`<div class="mvp-lbl">${m.k}</div>`).join('');
+  const vice = lista.slice(1,3).map(c=>`${esc(c.j.nome)} (${f2(c.r)})`).join(', ');
+
+  return `<div class="mvpcard ${lado(j.time)}${opts.season?' season':''}">
+    <div class="mvp-top">
+      <div class="mvp-title">
+        <span class="mvp-dot"></span>
+        <span class="mvp-name" onclick="location.hash='#/jogador/${j.id}'">${esc(j.nome)}</span>
+        <span class="mvp-teaminline">${esc(tm.nome)}</span>
+      </div>
+      <div class="mvp-tag">${esc(opts.tag)}</div>
+    </div>
+    <div class="mvp-body">
+      ${j.foto ? `<div class="mvp-photo" style="background-image:url('${esc(j.foto)}')"></div>`
+               : `<div class="mvp-photo"><span class="ini">${esc(abbr(j.nome))}</span></div>`}
+      <div class="mvp-chart">
+        <div class="mvp-plot">
+          <div class="mvp-avg" style="bottom:${BASE}%"><span>Méd</span></div>
+          <div class="mvp-bars">${bars}</div>
+        </div>
+        <div class="mvp-labels">${labels}</div>
+      </div>
+    </div>
+    <div class="mvp-foot">${opts.rodape||''}${vice?` Logo atrás: ${vice}.`:''}</div>
+  </div>`;
 }
 
 /* ============ radar ============ */
 function radarSVG(eixos){
-  const S=440, C=S/2, R=128, N=eixos.length;   // folga nas bordas pros rotulos nao cortarem
+  const S=440, C=S/2, R=128, N=eixos.length;
   const ponto=(i,raio)=>{
     const ang = -Math.PI/2 + i*2*Math.PI/N;
     return [C+Math.cos(ang)*raio, C+Math.sin(ang)*raio];
   };
   let g='';
   [.25,.5,.75,1].forEach(f=>{
-    const pts = eixos.map((_,i)=>ponto(i,R*f).map(n=>n.toFixed(1)).join(',')).join(' ');
-    g += `<polygon points="${pts}" fill="none" stroke="#242d3d" stroke-width="1"/>`;
+    g += `<polygon points="${eixos.map((_,i)=>ponto(i,R*f).map(n=>n.toFixed(1)).join(',')).join(' ')}"
+           fill="none" stroke="#2b3441" stroke-width="1"/>`;
   });
   eixos.forEach((_,i)=>{
     const [x,y]=ponto(i,R);
-    g += `<line x1="${C}" y1="${C}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#1c2432" stroke-width="1"/>`;
+    g += `<line x1="${C}" y1="${C}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"
+           stroke="#222a36" stroke-width="1"/>`;
   });
-  const pts = eixos.map((e,i)=>ponto(i, R*Math.max(.06, e.p)).map(n=>n.toFixed(1)).join(',')).join(' ');
-  g += `<polygon points="${pts}" fill="rgba(195,245,60,.16)" stroke="#c3f53c" stroke-width="2"
-         stroke-linejoin="round"/>`;
+  g += `<polygon points="${eixos.map((e,i)=>ponto(i,R*Math.max(.06,e.p)).map(n=>n.toFixed(1)).join(',')).join(' ')}"
+         fill="rgba(195,245,60,.16)" stroke="#c3f53c" stroke-width="2" stroke-linejoin="round"/>`;
   eixos.forEach((e,i)=>{
-    const [x,y]=ponto(i, R*Math.max(.06, e.p));
+    const [x,y]=ponto(i,R*Math.max(.06,e.p));
     g += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.2" fill="#c3f53c"/>`;
   });
   eixos.forEach((e,i)=>{
-    const [x,y]=ponto(i, R+30);
+    const [x,y]=ponto(i,R+30);
     const anc = x<C-8 ? 'end' : (x>C+8 ? 'start' : 'middle');
-    g += `<text x="${x.toFixed(1)}" y="${(y-3).toFixed(1)}" text-anchor="${anc}"
-           font-size="16" font-weight="700" fill="#eef3fa"
-           font-family="Barlow Condensed,sans-serif">${esc(e.v)}</text>
-          <text x="${x.toFixed(1)}" y="${(y+11).toFixed(1)}" text-anchor="${anc}"
-           font-size="9.5" fill="#61708a" letter-spacing=".8"
-           font-family="Inter,sans-serif">${esc(e.nome.toUpperCase())}</text>`;
+    g += `<text x="${x.toFixed(1)}" y="${(y-3).toFixed(1)}" text-anchor="${anc}" font-size="16"
+           font-weight="800" fill="#eaf0f7" font-family="Segoe UI,sans-serif">${esc(e.v)}</text>
+          <text x="${x.toFixed(1)}" y="${(y+12).toFixed(1)}" text-anchor="${anc}" font-size="9.5"
+           fill="#5d6779" letter-spacing=".8" font-weight="700"
+           font-family="Segoe UI,sans-serif">${esc(e.nome.toUpperCase())}</text>`;
   });
   return `<svg class="radar" viewBox="0 0 ${S} ${S}" role="img">${g}</svg>`;
 }
 
 /* ============ telas ============ */
 function rota(){
-  const h = location.hash.replace(/^#\/?/,'');
-  const [tela, arg] = h.split('/');
+  const [tela, arg] = location.hash.replace(/^#\/?/,'').split('/');
   window.scrollTo(0,0);
   if (tela==='jogador' && arg) telaJogador(decodeURIComponent(arg));
   else if (tela==='jogadores') telaJogadores();
   else if (tela==='partidas') telaPartidas();
   else telaHub();
-  document.querySelectorAll('.nav-links a').forEach(a=>{
-    a.classList.toggle('on', a.getAttribute('href') === '#/' + (tela||''));
-  });
 }
 
 function telaHub(){
   const sea = state.atual, T = tabela(sea), F = fichas(sea);
   const ca = time(sea,'canada'), sm = time(sea,'sm');
-  const mvps = mvpsSemanais(sea);
-  const totRounds = T.canada.rp + T.canada.rc;
+  const semanasJogadas = sea.partidas.filter(p=>p.mapas.length);
 
-  const hero = `
-   <div class="hero"><div class="hero-in">
-     <div class="hero-team ca">
-       ${ca.logo?`<img src="${esc(ca.logo)}" alt="">`:''}
-       <div class="tn">${esc(ca.nome)}</div>
-       <div class="sub">${T.canada.series}V ${T.canada.serieL}D em séries</div>
-     </div>
-     <div class="hero-score">
-       <span class="n ca num">${T.canada.series}</span>
-       <span class="x">×</span>
-       <span class="n sm num">${T.sm.series}</span>
-     </div>
-     <div class="hero-team sm">
-       ${sm.logo?`<img src="${esc(sm.logo)}" alt="">`:''}
-       <div class="tn">${esc(sm.nome)}</div>
-       <div class="sub">${T.sm.series}V ${T.sm.serieL}D em séries</div>
-     </div>
-   </div>
-   <div class="hero-label">Season ${sea.season} ${sea.encerrada?'encerrada':'em andamento'}
-     · ${sea.partidas.filter(p=>p.mapas.length).length} semanas
-     · ${sea.partidas.reduce((s,p)=>s+p.mapas.length,0)} mapas
-     · ${totRounds} rounds</div>
-   </div>`;
-
-  const linhaTabela = (id,t)=>{
+  /* confronto */
+  const boxTime = (id, t) => {
     const tm = time(sea,id);
-    return `<tr><td><div class="ply"><span class="tag ${id==='canada'?'ca':'sm'}"></span>
-        ${tm.logo?`<img class="av" src="${esc(tm.logo)}" alt="">`:''}
-        <span class="nm">${esc(tm.nome)}</span></div></td>
-      <td class="strong">${t.series}${t.serieE?'-'+t.serieE:''}-${t.serieL}</td>
-      <td>${t.mapas}-${t.mapaE?t.mapaE+'-':''}${t.mapaL}</td>
-      <td class="hide-sm dimmed">${t.rp}:${t.rc}</td>
-      <td class="strong" style="color:${t.rp-t.rc>0?'var(--win)':(t.rp-t.rc<0?'var(--loss)':'var(--txt-2)')}">
-        ${t.rp-t.rc>0?'+':''}${t.rp-t.rc}</td></tr>`;
+    return `<div class="team ${lado(id)}">
+      <div class="logo" style="background-image:url('${esc(tm.logo||'')}')"></div>
+      <div class="tname">${esc(tm.nome)}</div>
+      <div class="rec">${t.mapas}-${t.mapaE?t.mapaE+'-':''}${t.mapaL} em mapas ·
+        ${t.rp-t.rc>0?'+':''}${t.rp-t.rc} rounds</div>
+    </div>`;
   };
+  const match = `<div class="match">
+      ${boxTime('canada',T.canada)}
+      <div class="score">
+        <div class="n a num">${T.canada.series}</div>
+        <div class="x">&times;</div>
+        <div class="n b num">${T.sm.series}</div>
+      </div>
+      ${boxTime('sm',T.sm)}
+    </div>
+    <div class="resumo">${semanasJogadas.length} semanas ·
+      ${sea.partidas.reduce((s,p)=>s+p.mapas.length,0)} mapas ·
+      ${T.canada.rp+T.canada.rc} rounds</div>`;
 
-  const classificacao = `
-   <div class="sec"><div class="sec-h"><h2>Classificação</h2>
-     <span class="hint">séries, mapas e saldo de rounds</span></div>
-     <div class="card pad"><table>
-       <thead><tr><th>Time</th><th>Séries</th><th>Mapas</th>
-         <th class="hide-sm">Rounds</th><th>Saldo</th></tr></thead>
-       <tbody>${linhaTabela('canada',T.canada)}${linhaTabela('sm',T.sm)}</tbody>
-     </table></div></div>`;
+  /* semanas */
+  const semanas = semanasJogadas.slice().reverse().map(p=>{
+    let c=0,s=0; p.mapas.forEach(m=>{ if(m.vencedor==='canada')c++; else if(m.vencedor==='sm')s++; });
+    const maps = p.mapas.map((m,i)=>{
+      const r = m.vencedor==='canada' ? 'w' : (m.vencedor==='sm' ? 'l' : 'e');
+      return `<div class="map" onclick="abrirMapa(${p.semana},${i})">
+        <span class="dot ${r}"></span>
+        <span class="mp-name">${esc(m.mapa)}</span>
+        <span class="mp-score">${m.rounds_canada}x${m.rounds_sm}</span></div>`;
+    }).join('');
+    return `<div class="week"><div class="bar"></div><div class="body">
+        <div class="wk-name">${esc(p.nome)}</div>
+        <div class="wk-score"><span style="color:var(--a)">${c}</span>x<span style="color:var(--b)">${s}</span></div>
+        <div class="maps"><span class="maps-lbl">Mapas</span>${maps}</div>
+      </div></div>`;
+  }).join('');
 
-  const poolList = mapPool(sea);
-  const maxN = Math.max(...poolList.map(([,e])=>e.n), 1);
-  const mp = poolList.map(([nome,e])=>{
+  /* MVPs */
+  const porSemana = mvpsSemanais(sea);
+  const ultima = porSemana[0];
+  const season = mvpDaSeason(sea);
+
+  const cardSemana = ultima ? `
+    <div class="sec-label">MVP da semana <span class="hint">${esc(ultima.partida.nome)}</span></div>
+    ${mvpCard(sea, ultima.lista, {tag:'✦ MVP DA SEMANA',
+      rodape:'Barras comparadas com a média de quem jogou essa semana.'})}` : '';
+
+  const cardSeason = season ? `
+    <div class="sec-label">MVP da season
+      <span class="hint">melhor rating entre quem jogou ${minRounds(sea)}+ rounds</span></div>
+    ${mvpCard(sea, season.lista, {tag:'★ MVP DA SEASON', season:true,
+      rodape:`<b>${esc(season.lista[0].j.nome)}</b> foi MVP em
+              <b>${season.semanas} de ${season.totalSemanas}</b> semanas.`})}` : '';
+
+  const strip = porSemana.length > 1 ? `
+    <div class="sec-label">MVP semana a semana</div>
+    <div class="mvp-strip">${porSemana.slice().reverse().map(w=>{
+      const c = w.lista[0];
+      return `<div class="mvp-chip" onclick="location.hash='#/jogador/${c.j.id}'">
+        ${avatar(c.j)}
+        <div><div class="wk">${esc(w.partida.nome)}</div><div class="nm">${esc(c.j.nome)}</div></div>
+        <span class="rt">${f2(c.r)}</span></div>`;
+    }).join('')}</div>` : '';
+
+  /* ranking */
+  const temHs = F.some(x=>x.t.hs!=null);
+  const linhas = F.filter(f=>f.apto).map((f,i)=>`
+    <tr class="link" onclick="location.hash='#/jogador/${f.id}'">
+      <td class="dim num" style="width:22px">${i+1}</td>
+      <td>${chipJogador(f)}</td>
+      <td class="strong">${f2(f.rating)}</td>
+      <td>${f2(f.t.kd)}</td>
+      <td class="hide-sm">${f2(f.t.kpr)}</td>
+      <td class="hide-sm">${pct(f.t.spr)}</td>
+      ${temHs?`<td class="hide-sm">${f.t.hs!=null?Math.round(f.t.hs)+'%':'-'}</td>`:''}
+      <td class="hide-sm dim num">${f.t.k}</td>
+      <td class="dim num">${f.t.maps}</td></tr>`).join('');
+
+  const ranking = `
+    <div class="sec-label">Ranking da season
+      <span class="hint">Rating KND: 1.00 é o jogador médio da liga</span></div>
+    <div class="tpanel"><table>
+      <thead><tr><th></th><th>Jogador</th><th>Rating</th><th>K/D</th>
+        <th class="hide-sm">K/round</th><th class="hide-sm">Sobrevida</th>
+        ${temHs?'<th class="hide-sm">HS</th>':''}
+        <th class="hide-sm">Kills</th><th>Mapas</th></tr></thead>
+      <tbody>${linhas}</tbody></table></div>`;
+
+  /* map pool */
+  const pool = mapPool(sea);
+  const maxN = Math.max(...pool.map(([,e])=>e.n), 1);
+  const poolHtml = pool.map(([nome,e])=>{
     const w = x => (x/e.n*100).toFixed(1)+'%';
     return `<div class="bar-row">
       <span class="lbl">${esc(nome)}</span>
@@ -300,115 +407,49 @@ function telaHub(){
         <i class="w" style="width:${w(e.v)}"></i>
         <i class="e" style="width:${w(e.e)}"></i>
         <i class="l" style="width:${w(e.d)}"></i></span></span>
-      <span class="rec num" style="margin-left:auto">${e.v}V ${e.e?e.e+'E ':''}${e.d}D</span>
-      <span class="dimmed num mp-n" style="width:62px;flex:none;text-align:right;font-size:11.5px">${e.n} mapa${e.n>1?'s':''}</span></div>`;
+      <span class="rec num">${e.v}V ${e.e?e.e+'E ':''}${e.d}D</span>
+      <span class="mp-n num">${e.n} mapa${e.n>1?'s':''}</span></div>`;
   }).join('');
-
-  const mapPoolSec = `
-   <div class="sec"><div class="sec-h"><h2>Map pool</h2>
-     <span class="hint">verde = vitória do ${esc(ca.nome)}, azul = ${esc(sm.nome)}. Barra mais curta significa mapa menos jogado</span></div>
-     <div class="card pad">${mp}</div></div>`;
-
-  const top = F.filter(f=>f.apto).slice(0,12).map((f,i)=>`
-    <tr class="link" onclick="location.hash='#/jogador/${f.id}'">
-      <td class="dimmed num" style="width:26px">${i+1}</td>
-      <td>${chipJogador(sea,f)}</td>
-      <td class="strong">${f2(f.rating)}</td>
-      <td>${f2(f.t.kd)}</td>
-      <td class="hide-sm">${f2(f.t.kpr)}</td>
-      <td class="hide-sm">${f2(f.t.dpr)}</td>
-      <td class="hide-sm dimmed num">${f.t.k}</td>
-      <td class="dimmed num">${f.t.maps}</td></tr>`).join('');
-
-  const leaderboard = `
-   <div class="sec"><div class="sec-h"><h2>Ranking</h2>
-     <span class="hint">Rating KND: 1.00 é o jogador médio da liga. Entram os que jogaram ${minRounds(sea)}+ rounds</span></div>
-     <div class="card pad"><table>
-       <thead><tr><th></th><th>Jogador</th><th>Rating</th><th>K/D</th>
-         <th class="hide-sm">K/round</th><th class="hide-sm">Mortes/round</th>
-         <th class="hide-sm">Kills</th><th>Mapas</th></tr></thead>
-       <tbody>${top}</tbody></table></div></div>`;
-
-  const m0 = mvps[0];
-  const mvpSec = m0 ? `
-   <div class="sec"><div class="sec-h"><h2>MVP da semana</h2>
-     <span class="hint">${esc(m0.partida.nome)}</span></div>
-     <div class="card pad"><div class="mvp">
-       ${m0.mvp.j.foto ? `<img class="mvp-photo" src="${esc(m0.mvp.j.foto)}" alt="">`
-                       : `<div class="mvp-photo">${esc(abbr(m0.mvp.j.nome))}</div>`}
-       <div>
-         <span class="mvp-badge">✦ MVP</span>
-         <div class="mvp-name">${esc(m0.mvp.j.nome)}</div>
-         <div class="dimmed" style="font-size:13px;margin-top:5px">
-           ${esc(time(sea,m0.mvp.j.time).nome)} · ${m0.mvp.t.maps} mapas na semana</div>
-         <div class="mvp-stats">
-           <div class="stat"><div class="v">${f2(m0.mvp.r)}</div><div class="k">Rating</div></div>
-           <div class="stat"><div class="v">${m0.mvp.t.k}</div><div class="k">Kills</div></div>
-           <div class="stat"><div class="v">${f2(m0.mvp.t.kd)}</div><div class="k">K/D</div></div>
-           <div class="stat"><div class="v">${f2(m0.mvp.t.kpr)}</div><div class="k">K/round</div></div>
-           ${m0.mvp.t.hs!=null?`<div class="stat"><div class="v">${Math.round(m0.mvp.t.hs)}%</div><div class="k">HS</div></div>`:''}
-         </div>
-         <div class="dimmed" style="font-size:12px;margin-top:14px">
-           Logo atrás: ${m0.top.slice(1).map(c=>esc(c.j.nome)+' ('+f2(c.r)+')').join(', ')}</div>
-       </div>
-     </div></div></div>` : '';
-
-  const semanas = sea.partidas.filter(p=>p.mapas.length).slice().reverse().map(p=>{
-    let c=0,s=0; p.mapas.forEach(m=>{ if(m.vencedor==='canada')c++; else if(m.vencedor==='sm')s++; });
-    const maps = p.mapas.map((m,i)=>{
-      const r = m.vencedor==='canada' ? 'w' : (m.vencedor==='sm' ? 'l' : 'e');
-      return `<div class="wk-map" onclick="abrirMapa(${p.semana},${i})">
-        <span class="dot ${r}"></span><span class="mn">${esc(m.mapa)}</span>
-        <span class="ms num">${m.rounds_canada}:${m.rounds_sm}</span></div>`;
-    }).join('');
-    return `<div class="wk">
-      <div class="wk-h"><span class="t">${esc(p.nome)}</span>
-        <span class="s num"><span style="color:var(--canada)">${c}</span>
-        <span style="color:var(--txt-3);font-weight:400">:</span>
-        <span style="color:var(--sm)">${s}</span></span></div>
-      <div class="wk-maps">${maps}</div></div>`;
-  }).join('');
-
-  const semanasSec = `
-   <div class="sec"><div class="sec-h"><h2>Semanas</h2>
-     <span class="hint">clique num mapa pra ver o placar completo</span></div>
-     <div class="weeks">${semanas}</div></div>`;
 
   const patro = sea.patrocinador && sea.patrocinador.img ? `
-   <div class="sec">${sea.patrocinador.link
-     ? `<a class="sponsor" href="${esc(sea.patrocinador.link)}" target="_blank" rel="noopener">
-          <img src="${esc(sea.patrocinador.img)}" alt="Patrocinador"></a>`
-     : `<div class="sponsor"><img src="${esc(sea.patrocinador.img)}" alt="Patrocinador"></div>`}
-   </div>` : '';
+    <div class="sec-label">Patrocinador</div>
+    ${sea.patrocinador.link
+      ? `<a class="sponsor" href="${esc(sea.patrocinador.link)}" target="_blank" rel="noopener">
+           <img src="${esc(sea.patrocinador.img)}" alt="Patrocinador"></a>`
+      : `<div class="sponsor"><img src="${esc(sea.patrocinador.img)}" alt="Patrocinador"></div>`}` : '';
 
   document.getElementById('app').innerHTML =
-    hero + classificacao + mvpSec + leaderboard + mapPoolSec + semanasSec + patro;
+    match +
+    `<div class="sec-label">Semanas <span class="hint">clique num mapa pra ver o placar completo</span></div>
+     <div class="weeks">${semanas}</div>` +
+    (sea.encerrada ? cardSeason + cardSemana : cardSemana + cardSeason) +
+    strip + ranking +
+    `<div class="sec-label">Map pool
+       <span class="hint">verde = vitória do ${esc(ca.nome)}, azul = ${esc(sm.nome)}. Barra mais curta significa mapa menos jogado</span></div>
+     <div class="pool">${poolHtml}</div>` +
+    patro;
 }
 
 function telaJogadores(){
   const sea = state.atual, F = fichas(sea);
-  const grupo = tid => F.filter(f=>f.time===tid).map(f=>`
-    <tr class="link" onclick="location.hash='#/jogador/${f.id}'">
-      <td>${chipJogador(sea,f)}</td>
-      <td class="strong">${f.apto?f2(f.rating):'<span class="dimmed">-</span>'}</td>
-      <td>${f2(f.t.kd)}</td>
-      <td class="hide-sm">${f2(f.t.kpr)}</td>
-      <td class="hide-sm dimmed num">${f.t.k}/${f.t.a}/${f.t.d}</td>
-      <td class="dimmed num">${f.t.maps}</td></tr>`).join('');
-
   const bloco = tid => {
-    const t = time(sea,tid);
-    return `<div class="card pad">
-      <h3 style="font-size:17px;color:${t.cor};margin-bottom:10px">${esc(t.nome)}</h3>
+    const tm = time(sea,tid);
+    const rows = F.filter(f=>f.time===tid).map(f=>`
+      <tr class="link" onclick="location.hash='#/jogador/${f.id}'">
+        <td>${chipJogador(f)}</td>
+        <td class="strong">${f.apto?f2(f.rating):'<span class="dim">-</span>'}</td>
+        <td>${f2(f.t.kd)}</td>
+        <td class="hide-sm">${f2(f.t.kpr)}</td>
+        <td class="hide-sm dim num">${f.t.k}/${f.t.a}/${f.t.d}</td>
+        <td class="dim num">${f.t.maps}</td></tr>`).join('');
+    return `<div class="tpanel ${lado(tid)}"><h3>${esc(tm.nome)}</h3>
       <table><thead><tr><th>Jogador</th><th>Rating</th><th>K/D</th>
         <th class="hide-sm">K/round</th><th class="hide-sm">K/A/D</th><th>Mapas</th></tr></thead>
-        <tbody>${grupo(tid)}</tbody></table></div>`;
+        <tbody>${rows}</tbody></table></div>`;
   };
-
-  document.getElementById('app').innerHTML = `
-    <div class="sec"><div class="sec-h"><h2>Jogadores</h2>
-      <span class="hint">clique em alguém pra abrir a ficha</span></div>
-      <div class="grid2">${bloco('canada')}${bloco('sm')}</div></div>`;
+  document.getElementById('app').innerHTML =
+    `<div class="sec-label">Jogadores <span class="hint">clique em alguém pra abrir a ficha</span></div>
+     <div class="panels">${bloco('canada')}${bloco('sm')}</div>`;
 }
 
 function telaJogador(id){
@@ -418,101 +459,87 @@ function telaJogador(id){
   const t = f.t, tm = time(sea, f.time), med = mediasDaLiga(sea);
   const aptos = F.filter(x=>x.apto);
 
-  const eixo = (nome, valor, chave, inverso=false) => {
-    const lista = aptos.map(x=>chave(x));
-    let p = percentil(chave(f), lista);
-    if (inverso) p = 1-p;
-    return {nome, v:valor, p};
-  };
+  const eixo = (nome, valor, chave) => ({nome, v:valor, p:percentil(chave(f), aptos.map(chave))});
   const eixos = [
-    eixo('Rating', f2(f.rating), x=>x.rating),
-    eixo('K/rnd', f2(t.kpr), x=>x.t.kpr),
-    eixo('K/D', f2(t.kd), x=>x.t.kd),
-    eixo('Sobrevida', pct(t.spr), x=>x.t.spr),
-    eixo('Assist', f2(t.apr), x=>x.t.apr),
+    eixo('Rating',    f2(f.rating), x=>x.rating),
+    eixo('K/rnd',     f2(t.kpr),    x=>x.t.kpr),
+    eixo('K/D',       f2(t.kd),     x=>x.t.kd),
+    eixo('Sobrevida', pct(t.spr),   x=>x.t.spr),
+    eixo('Assist',    f2(t.apr),    x=>x.t.apr),
   ];
   if (f.cons!=null) eixos.push(eixo('Regular.', pct(f.cons), x=>x.cons||0));
   if (t.hs!=null)   eixos.push(eixo('HS', Math.round(t.hs)+'%', x=>x.t.hs||0));
   if (t.mvps>0)     eixos.push(eixo('MVP/rnd', f2(t.mvpr), x=>x.t.mvpr||0));
 
   const pos = aptos.findIndex(x=>x.id===f.id)+1;
-
-  const ultimos = f.linhas.slice().reverse().slice(0,12).map(l=>{
+  const ultimos = f.linhas.slice().reverse().slice(0,14).map(l=>{
     const cor = l.res==='w' ? 'var(--win)' : (l.res==='l' ? 'var(--loss)' : 'var(--draw)');
-    const rl = rating(agrega([l]), med);
     return `<tr>
-      <td><span style="color:${cor};font-weight:700">${l.placar}</span></td>
-      <td class="dimmed" style="text-align:left">${esc(l.mapa)}</td>
-      <td class="hide-sm dimmed" style="text-align:left">Semana ${l.semana}</td>
+      <td style="color:${cor};font-weight:800">${l.placar}</td>
+      <td>${esc(l.mapa)}</td>
+      <td class="hide-sm dim">Semana ${l.semana}</td>
       <td class="num">${l.k}-${l.d}</td>
       <td class="hide-sm num">${l.a}</td>
-      <td class="strong">${f2(rl)}</td></tr>`;
+      <td class="strong">${f2(rating(agrega([l]), med))}</td></tr>`;
   }).join('');
 
   document.getElementById('app').innerHTML = `
     <div class="back" onclick="location.hash='#/jogadores'">← todos os jogadores</div>
-    <div class="sec" style="margin-top:12px">
-      <div class="pl-head">
-        ${f.foto ? `<img class="pl-photo" src="${esc(f.foto)}" alt="">`
-                 : `<div class="pl-photo">${esc(abbr(f.nome))}</div>`}
-        <div class="pl-id" style="display:flex;flex-direction:column;justify-content:center">
-          <div class="nm">${esc(f.nome)}</div>
-          <div class="tm" style="color:${tm.cor}">${esc(tm.nome)}</div>
-          <div class="mvp-stats" style="margin-top:20px">
-            <div class="stat"><div class="v">${f2(f.rating)}</div><div class="k">Rating</div></div>
-            <div class="stat"><div class="v">${f.apto?('#'+pos):'-'}</div><div class="k">na liga</div></div>
-            <div class="stat"><div class="v">${f2(t.kd)}</div><div class="k">K/D</div></div>
-            <div class="stat"><div class="v">${t.k}</div><div class="k">Kills</div></div>
-            <div class="stat"><div class="v">${t.maps}</div><div class="k">Mapas</div></div>
-            <div class="stat"><div class="v">${t.rounds}</div><div class="k">Rounds</div></div>
-          </div>
+    <div class="pl-head">
+      ${f.foto ? `<img class="pl-photo" src="${esc(f.foto)}" alt="">`
+               : `<div class="pl-photo">${esc(abbr(f.nome))}</div>`}
+      <div class="pl-id">
+        <div class="nm">${esc(f.nome)}</div>
+        <div class="tm" style="color:${tm.cor}">${esc(tm.nome)}</div>
+        <div class="stats-row">
+          <div class="stat"><div class="v">${f2(f.rating)}</div><div class="k">Rating</div></div>
+          <div class="stat"><div class="v">${f.apto?('#'+pos):'-'}</div><div class="k">na liga</div></div>
+          <div class="stat"><div class="v">${f2(t.kd)}</div><div class="k">K/D</div></div>
+          <div class="stat"><div class="v">${t.k}</div><div class="k">Kills</div></div>
+          <div class="stat"><div class="v">${t.maps}</div><div class="k">Mapas</div></div>
+          <div class="stat"><div class="v">${t.rounds}</div><div class="k">Rounds</div></div>
         </div>
       </div>
     </div>
 
-    <div class="sec"><div class="sec-h"><h2>Perfil</h2>
-      <span class="hint">o desenho mostra a posição dele contra todos os outros da liga</span></div>
-      <div class="card pad"><div class="radar-box">
-        ${radarSVG(eixos)}
-        <div class="radar-legend">
-          <p>O número em cada ponta é o valor real. A distância até a borda é o quanto ele está
-             acima dos outros jogadores da liga.</p>
-          <p style="margin-top:12px"><b>Rating KND</b> combina kills por round, sobrevivência
-             e assistências. 1.00 é exatamente a média da liga${med.mvpr>0?', e entra MVP de round no cálculo':''}.</p>
-          <p style="margin-top:12px"><b>Regularidade</b> é o quanto ele repete o mesmo nível
-             mapa após mapa. Alto quer dizer que entrega sempre.</p>
-        </div>
-      </div></div></div>
+    <div class="sec-label">Perfil
+      <span class="hint">a distância até a borda é a posição dele contra os outros da liga</span></div>
+    <div class="radar-box">
+      ${radarSVG(eixos)}
+      <div class="radar-legend">
+        <p>O número em cada ponta é o valor real. A distância até a borda mostra o quanto
+           ele está acima dos outros jogadores da liga.</p>
+        <p><b>Rating KND</b> combina kills por round, sobrevivência e assistências.
+           1.00 é exatamente a média da liga${med.mvpr>0?', e o MVP de round entra na conta':''}.</p>
+        <p><b>Regularidade</b> é o quanto ele repete o mesmo nível mapa após mapa.</p>
+      </div>
+    </div>
 
-    <div class="sec"><div class="sec-h"><h2>Últimos mapas</h2></div>
-      <div class="card pad"><table>
-        <thead><tr><th style="text-align:left">Placar</th><th style="text-align:left">Mapa</th>
-          <th class="hide-sm" style="text-align:left">Rodada</th>
-          <th>K-D</th><th class="hide-sm">A</th><th>Rating</th></tr></thead>
-        <tbody>${ultimos}</tbody></table></div></div>`;
+    <div class="sec-label">Últimos mapas</div>
+    <div class="tpanel"><table>
+      <thead><tr><th>Placar</th><th>Mapa</th><th class="hide-sm">Rodada</th>
+        <th>K-D</th><th class="hide-sm">A</th><th>Rating</th></tr></thead>
+      <tbody>${ultimos}</tbody></table></div>`;
 }
 
 function telaPartidas(){
   const sea = state.atual;
   const blocos = sea.partidas.filter(p=>p.mapas.length).slice().reverse().map(p=>{
     const mapas = p.mapas.map((m,i)=>{
-      const cor = m.vencedor==='canada' ? 'var(--canada)'
-                : (m.vencedor==='sm' ? 'var(--sm)' : 'var(--txt-2)');
+      const cor = m.vencedor==='canada' ? 'var(--a)' : (m.vencedor==='sm' ? 'var(--b)' : 'var(--mut)');
       return `<tr class="link" onclick="abrirMapa(${p.semana},${i})">
-        <td style="text-align:left">${esc(m.mapa)}</td>
+        <td>${esc(m.mapa)}</td>
         <td class="strong" style="color:${cor}">${m.rounds_canada} : ${m.rounds_sm}</td>
-        <td class="dimmed">${roundsDoMapa(m)} rounds</td></tr>`;
+        <td class="dim">${roundsDoMapa(m)} rounds</td></tr>`;
     }).join('');
-    return `<div class="card pad" style="margin-bottom:14px">
-      <h3 style="font-size:17px;margin-bottom:9px">${esc(p.nome)}</h3>
-      <table><thead><tr><th style="text-align:left">Mapa</th>
+    return `<div class="tpanel" style="margin-bottom:14px"><h3>${esc(p.nome)}</h3>
+      <table><thead><tr><th>Mapa</th>
         <th>${esc(time(sea,'canada').nome)} : ${esc(time(sea,'sm').nome)}</th>
         <th>Duração</th></tr></thead><tbody>${mapas}</tbody></table></div>`;
   }).join('');
   document.getElementById('app').innerHTML =
-    `<div class="sec"><div class="sec-h"><h2>Partidas</h2>
-      <span class="hint">clique num mapa pra ver o placar jogador a jogador</span></div>
-      ${blocos}</div>`;
+    `<div class="sec-label">Partidas <span class="hint">clique num mapa pra ver o placar jogador a jogador</span></div>
+     ${blocos}`;
 }
 
 /* ============ modal do mapa ============ */
@@ -521,38 +548,35 @@ function abrirMapa(semana, idx){
   const p = sea.partidas.find(x=>x.semana===semana);
   const m = p.mapas[idx], med = mediasDaLiga(sea);
   const rounds = roundsDoMapa(m);
+  const temMvp = m.stats.some(s=>s.mvps!=null), temHs = m.stats.some(s=>s.hs!=null);
 
-  const lado = tid => {
+  const painel = tid => {
     const tm = time(sea,tid);
-    const linhas = m.stats.filter(s=>s.time===tid)
-      .map(s=>{
-        const j = sea.jogadores.find(x=>x.id===s.jogador) || {nome:s.jogador, time:tid};
-        const r = rating(agrega([{rounds, k:s.k, a:s.a, d:s.d, mvps:s.mvps, hs:s.hs, score:s.score}]), med);
-        return {j, s, r};
-      })
-      .sort((a,b)=>b.r-a.r)
+    const rows = m.stats.filter(s=>s.time===tid).map(s=>{
+        const j = sea.jogadores.find(x=>x.id===s.jogador) || {id:s.jogador, nome:s.jogador, time:tid};
+        return {j, s, r: rating(agrega([{rounds, k:s.k, a:s.a, d:s.d,
+                 mvps:s.mvps, hs:s.hs, score:s.score}]), med)};
+      }).sort((a,b)=>b.r-a.r)
       .map(({j,s,r})=>`<tr class="link" onclick="fecharMapa();location.hash='#/jogador/${j.id}'">
-        <td>${chipJogador(sea,j)}</td>
+        <td>${chipJogador(j)}</td>
         <td class="num">${s.k}</td><td class="num">${s.a}</td><td class="num">${s.d}</td>
-        ${s.mvps!=null?`<td class="num">${s.mvps}</td>`:''}
-        ${s.hs!=null?`<td class="num dimmed">${s.hs}%</td>`:''}
+        ${temMvp?`<td class="num">${s.mvps!=null?s.mvps:'-'}</td>`:''}
+        ${temHs?`<td class="num dim">${s.hs!=null?s.hs+'%':'-'}</td>`:''}
         <td class="strong">${f2(r)}</td></tr>`).join('');
-    const temMvp = m.stats.some(s=>s.mvps!=null), temHs = m.stats.some(s=>s.hs!=null);
-    return `<div><h4 style="color:${tm.cor};font-size:15px;margin-bottom:7px">${esc(tm.nome)}</h4>
+    return `<div><h4 style="color:${tm.cor}">${esc(tm.nome)}</h4>
       <table><thead><tr><th>Jogador</th><th>K</th><th>A</th><th>D</th>
         ${temMvp?'<th>★</th>':''}${temHs?'<th>HS</th>':''}<th>Rating</th></tr></thead>
-        <tbody>${linhas}</tbody></table></div>`;
+        <tbody>${rows}</tbody></table></div>`;
   };
 
   document.getElementById('modalPanel').innerHTML = `
     <div class="modal-h"><h3>${esc(m.mapa)}
-      <span style="color:var(--canada)">${m.rounds_canada}</span>
-      <span class="dimmed" style="font-weight:300"> : </span>
-      <span style="color:var(--sm)">${m.rounds_sm}</span></h3>
+      <span style="color:var(--a)">${m.rounds_canada}</span>
+      <span style="color:var(--mut);font-weight:400"> : </span>
+      <span style="color:var(--b)">${m.rounds_sm}</span></h3>
       <span class="modal-x" onclick="fecharMapa()">✕</span></div>
-    <p class="dimmed" style="font-size:12px;margin:0 0 18px;letter-spacing:.08em;text-transform:uppercase">
-      ${esc(p.nome)} · ${rounds} rounds</p>
-    <div class="grid2">${lado('canada')}${lado('sm')}</div>`;
+    <div class="modal-sub">${esc(p.nome)} · ${rounds} rounds</div>
+    <div class="modal-grid">${painel('canada')}${painel('sm')}</div>`;
   document.getElementById('modal').hidden = false;
 }
 function fecharMapa(){ document.getElementById('modal').hidden = true; }
