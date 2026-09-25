@@ -5,6 +5,29 @@
 const ARQUIVO = 'data/season1.json';
 let D = null;
 
+/* O GitHub Pages manda Cache-Control: max-age=600 no proprio index.html. Por dez minutos
+   o navegador nem pergunta ao servidor, serve o HTML velho e com ele o css/js velhos.
+   Nem o F5 resolve. Entao a pagina confere a versao publicada e se recarrega sozinha
+   numa URL nova, que o cache ainda nao conhece. */
+async function conferirVersao(){
+  try{
+    const meta = document.querySelector('meta[name="versao"]');
+    const aqui = meta ? +meta.content : 0;
+    const r = await fetch('versao.json', {cache:'no-store'});
+    if (!r.ok) return;
+    const {v} = await r.json();
+    if (!(v > aqui)) return;
+    if (sessionStorage.getItem('recarga') === String(v)) return;  // trava anti-loop
+    sessionStorage.setItem('recarga', String(v));
+    location.replace(location.pathname + '?r=' + v + location.hash);
+  }catch(e){ /* sem rede ou arquivo ausente: segue com o que tem */ }
+}
+// tira o ?r= da barra de endereco depois que a pagina nova carregou
+if (location.search.startsWith('?r=')){
+  history.replaceState(null, '', location.pathname + location.hash);
+}
+conferirVersao();
+
 /* ---------- contas ---------- */
 const f2  = n => (Math.round(n*100)/100).toFixed(2);
 const kd  = p => p.d > 0 ? p.k/p.d : p.k;
