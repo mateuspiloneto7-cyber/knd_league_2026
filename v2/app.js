@@ -20,6 +20,19 @@ function initials(n){
 }
 
 function timeDe(id){ return D.times.find(t=>t.id===id) || {nome:id}; }
+
+/* sigla de 3 letras do mapa, pro chip compacto */
+const SIGLAS = {
+  'mirage':'MIR', 'inferno':'INF', 'nuke':'NUK', 'ancient':'ANC', 'anubis':'ANU',
+  'overpass':'OVP', 'vertigo':'VTG', 'train':'TRN', 'cache':'CCH', 'office':'OFF',
+  'italy':'ITA', 'cobblestone':'CBL', 'dust ii':'DU2', 'dust2':'DU2', 'dust 2':'DU2',
+};
+function sigla(nome){
+  const k = String(nome||'').trim().toLowerCase();
+  if (SIGLAS[k]) return SIGLAS[k];
+  const limpo = k.replace(/[^a-z0-9]/g,'');
+  return (limpo.slice(0,3) || '?').toUpperCase();
+}
 function jogadorDe(id){ return D.jogadores.find(j=>j.id===id) || {id, nome:id}; }
 
 /** total acumulado de um jogador na season, somando os mapas */
@@ -60,26 +73,21 @@ function renderTopo(){
 function renderWeeks(){
   const box = document.getElementById('weeks');
   box.innerHTML = D.partidas.map(p=>{
+    // os mapas da semana ficam lado a lado, em chip compacto com a sigla do mapa
     const maps = p.mapas.map((m,i)=>`
-      <div class="map">
-        <span class="mp-i">${i+1}</span>
-        <span class="mp-name">${esc(m.mapa)}</span>
-        <span class="mp-score">${m.rounds_canada}x${m.rounds_sm}</span>
-        <button class="mp-open" onclick="openMapModal(${p.semana},${i})"
-                title="ver stats do mapa">▤</button>
-      </div>`).join('');
-    // as semanas que tiveram menos de 3 mapas mantem a linha vazia, como no original
-    const vazios = Array.from({length: p.mapas_vazios||0}, (_,k)=>`
-      <div class="map vazio">
-        <span class="mp-i">${p.mapas.length+k+1}</span>
-        <span class="mp-name">mapa</span>
-        <span class="mp-score">0x0</span>
-        <button class="mp-open" disabled title="sem stats">▤</button>
-      </div>`).join('');
+      <button class="mp" onclick="openMapModal(${p.semana},${i})"
+              title="${esc(m.mapa)} ${m.rounds_canada}x${m.rounds_sm} · ver stats do mapa">
+        <span class="mp-ab">${sigla(m.mapa)}</span>
+        <span class="mp-sc">${m.rounds_canada}x${m.rounds_sm}</span>
+      </button>`).join('');
+    // semana com menos de 3 mapas mantem o espaco vazio, como no original
+    const vazios = Array.from({length: p.mapas_vazios||0}, ()=>`
+      <span class="mp vazio"><span class="mp-ab">-</span><span class="mp-sc">-</span></span>`).join('');
     return `<div class="week"><div class="bar"></div><div class="body">
         <div class="wk-name">${esc(p.nome)}</div>
         <div class="wk-score">${esc(p.serie||'')}</div>
-        <div class="maps"><span class="maps-lbl">Mapas</span>${maps}${vazios}</div>
+        <div class="maps"><span class="maps-lbl">Mapas</span>
+          <div class="mp-row">${maps}${vazios}</div></div>
       </div></div>`;
   }).join('');
 }
