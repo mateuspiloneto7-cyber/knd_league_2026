@@ -157,7 +157,7 @@ function renderMVP(){
   }).join('');
   const labels = MVP_ORDER.map(k=>`<div class="mvp-lbl">${k}</div>`).join('');
 
-  box.className = 'mvpcard ' + (mvp.j.time==='sm' ? 'b' : 'a');
+  box.className = 'mvpcard moldura ' + (mvp.j.time==='sm' ? 'b' : 'a');
   box.innerHTML =
     `<div class="mvp-top">
        <div class="mvp-title">
@@ -251,7 +251,7 @@ function renderMVPSemana(){
 
   document.getElementById('mvpWeekHint').textContent = ultima.nome;
   document.getElementById('mvpWeek').innerHTML =
-    `<div class="mvpweek ${j.time==='sm'?'b':'a'}">
+    `<div class="mvpweek moldura ${j.time==='sm'?'b':'a'}">
        ${j.foto ? `<div class="foto" style="background-image:url('${esc(j.foto)}')"></div>`
                 : `<div class="foto">${esc(initials(j.nome))}</div>`}
        <div>
@@ -358,7 +358,7 @@ function renderDuelo(){
       </div>
     </div>`;
 
-  box.innerHTML = `<div class="duelo">
+  box.innerHTML = `<div class="duelo moldura">
       <div class="du-topo">
         ${cabeca(A,'a')}
         <div class="du-vs">VS</div>
@@ -530,12 +530,12 @@ function radarSVG(eixos, cor){
   let g='';
   [.25,.5,.75,1].forEach(f=>{
     g += `<polygon points="${eixos.map((_,i)=>ponto(i,R*f).map(n=>n.toFixed(1)).join(',')).join(' ')}"
-           fill="none" stroke="#1e1e1e" stroke-width="1"/>`;
+           fill="none" stroke="#2c3e52" stroke-width="1"/>`;
   });
   eixos.forEach((_,i)=>{
     const [x,y]=ponto(i,R);
     g += `<line x1="${C}" y1="${C}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"
-           stroke="#171717" stroke-width="1"/>`;
+           stroke="#233242" stroke-width="1"/>`;
   });
   g += `<polygon points="${eixos.map((e,i)=>ponto(i,R*Math.max(.06,e.p)).map(n=>n.toFixed(1)).join(',')).join(' ')}"
          fill="${cor}22" stroke="${cor}" stroke-width="2" stroke-linejoin="round"/>`;
@@ -549,7 +549,7 @@ function radarSVG(eixos, cor){
     g += `<text x="${x.toFixed(1)}" y="${(y-3).toFixed(1)}" text-anchor="${anc}" font-size="16"
            font-weight="400" fill="#ffffff" font-family="Anton,sans-serif">${esc(e.v)}</text>
           <text x="${x.toFixed(1)}" y="${(y+12).toFixed(1)}" text-anchor="${anc}" font-size="9.5"
-           fill="#5a5a5a" letter-spacing="1.4" font-weight="700"
+           fill="#68809a" letter-spacing="1.4" font-weight="700"
            font-family="Inter,sans-serif">${esc(e.nome.toUpperCase())}</text>`;
   });
   return `<svg class="radar" viewBox="0 0 ${S} ${S}" role="img">${g}</svg>`;
@@ -595,7 +595,7 @@ function renderJogador(id){
   document.getElementById('jogPage').innerHTML = `
     <div class="back" onclick="location.hash='#/time/${j.time}'">← voltar pro ${esc(tm.nome)}</div>
 
-    <div class="pl-head">
+    <div class="pl-head ${j.time==='canada'?'a':'b'}">
       ${j.foto ? `<img class="pl-photo" src="${esc(j.foto)}" alt="">`
                : `<div class="pl-photo ${j.time==='canada'?'a':'b'}">${esc(initials(j.nome))}</div>`}
       <div class="pl-id">
@@ -635,6 +635,21 @@ function renderJogador(id){
       <tbody>${ultimos}</tbody></table></div>`;
 }
 
+/** titulo de secao em duas cores: a ultima palavra sai em coral */
+function duasCores(){
+  document.querySelectorAll('.sec-label').forEach(el=>{
+    const no = [...el.childNodes].find(n=>n.nodeType===3 && n.textContent.trim());
+    if (!no || el.querySelector('em')) return;
+    const palavras = no.textContent.trim().split(/\s+/);
+    if (palavras.length < 2) return;
+    const ultima = palavras.pop();
+    const em = document.createElement('em');
+    em.textContent = ultima;
+    no.textContent = palavras.join(' ') + ' ';
+    no.parentNode.insertBefore(em, no.nextSibling);
+  });
+}
+
 /* ---------- roteador ---------- */
 function rota(){
   const [tela, arg] = location.hash.replace(/^#\/?/,'').split('/');
@@ -652,6 +667,7 @@ function rota(){
     marcaDoTopo(j ? j.time : null);
   }
   else marcaDoTopo(null);
+  duasCores();
 }
 
 /* ---------- patrocinador ---------- */
