@@ -348,23 +348,23 @@ function renderDuelo(){
          h2h.juntos - h2h.a - h2h.b ? `, com ${h2h.juntos-h2h.a-h2h.b} empate(s)` : ''}.`
     : '';
 
-  const cabeca = (c, lado) => `
-    <div class="du-cara ${lado}" onclick="irJogador('${c.j.id}')">
-      ${c.j.foto ? `<img src="${esc(c.j.foto)}" alt="">`
-                 : `<div class="semfoto ${lado}">${esc(initials(c.j.nome))}</div>`}
-      <div class="du-info">
-        <div class="du-nome">${esc(c.j.nome)}</div>
-        <div class="du-time">${esc(timeDe(c.j.time).nome)}</div>
-      </div>
+  // coluna lateral: foto alta com a placa do nick embaixo
+  const coluna = (c, lado) => `
+    <div class="du-col ${lado}" onclick="irJogador('${c.j.id}')">
+      <div class="du-time">${esc(timeDe(c.j.time).nome)}</div>
+      ${c.j.foto
+        ? `<div class="du-foto" style="background-image:url('${esc(c.j.foto)}')"></div>`
+        : `<div class="du-foto vazia ${lado}">${esc(initials(c.j.nome))}</div>`}
+      <div class="du-nick">${esc(c.j.nome)}</div>
     </div>`;
 
   box.innerHTML = `<div class="duelo moldura">
-      <div class="du-topo">
-        ${cabeca(A,'a')}
+      ${coluna(A,'a')}
+      <div class="du-centro">
         <div class="du-vs">VS</div>
-        ${cabeca(B,'b')}
+        <div class="du-linhas">${linhas}</div>
       </div>
-      <div class="du-linhas">${linhas}</div>
+      ${coluna(B,'b')}
       ${rodape ? `<div class="du-rodape">${rodape}</div>` : ''}
     </div>`;
 }

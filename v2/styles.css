@@ -214,7 +214,7 @@ tr.link:hover td{background:rgba(242,85,95,.07);color:var(--txt)}
            scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
 .mvp-strip::-webkit-scrollbar{height:5px}
 .mvp-strip::-webkit-scrollbar-thumb{background:var(--line2)}
-.mvp-chip{flex:1 1 0;min-width:0;display:flex;align-items:center;gap:9px;background:var(--sup);
+.mvp-chip{flex:1 0 152px;min-width:152px;display:flex;align-items:center;gap:9px;background:var(--sup);
           padding:10px 12px;cursor:pointer;transition:.15s;
           border-left:3px solid var(--line2)}
 .mvp-chip:hover{border-left-color:var(--acc);background:var(--sup2)}
@@ -229,39 +229,47 @@ tr.link:hover td{background:rgba(242,85,95,.07);color:var(--txt)}
 .mvp-chip .rt{flex:none;font-family:'Anton',sans-serif;font-size:16px;color:#fff;
               background:var(--acc);padding:2px 7px;font-variant-numeric:tabular-nums}
 
-/* ---------- comparativo ---------- */
-.duelo{background-color:var(--sup);padding:30px 32px;position:relative}
-.du-topo{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;
-         margin-bottom:26px;padding-bottom:24px;border-bottom:1px solid var(--line2)}
-.du-cara{display:flex;align-items:center;gap:14px;min-width:0;cursor:pointer}
-.du-cara.b{flex-direction:row-reverse;text-align:right}
-.du-cara img,.du-cara .semfoto{width:66px;height:84px;flex:none;object-fit:cover;
-  object-position:center top;display:flex;align-items:center;justify-content:center;
-  font-family:'Anton',sans-serif;font-size:26px;color:rgba(0,0,0,.42)}
-.du-cara .semfoto.a{background:var(--a)} .du-cara .semfoto.b{background:var(--b)}
-.du-info{min-width:0}
-.du-nome{font-family:'Anton',sans-serif;font-size:25px;line-height:1;text-transform:uppercase;
-         padding:3px 10px;display:inline-block;max-width:100%;white-space:nowrap;
-         overflow:hidden;text-overflow:ellipsis;vertical-align:bottom}
-.du-cara.a .du-nome{background:var(--a);color:#101a12}
-.du-cara.b .du-nome{background:var(--b);color:#08222f}
-.du-cara:hover .du-nome{filter:brightness(1.08)}
-.du-time{font-size:9px;color:var(--mut2);font-weight:800;letter-spacing:1.8px;
-         text-transform:uppercase;margin-top:7px;white-space:nowrap;overflow:hidden;
+/* ---------- comparativo ----------
+   Tres colunas: foto alta com a placa do nick embaixo em cada ponta,
+   e as estatisticas no miolo, na mesma altura das fotos. */
+.duelo{background-color:var(--sup);padding:26px 28px;position:relative;
+       display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:20px;align-items:stretch}
+
+.du-col{display:flex;flex-direction:column;gap:8px;min-width:0;cursor:pointer}
+.du-time{font-size:8.5px;color:var(--mut2);font-weight:800;letter-spacing:1.8px;
+         text-transform:uppercase;text-align:center;white-space:nowrap;overflow:hidden;
          text-overflow:ellipsis}
-.du-vs{font-family:'Anton',sans-serif;font-size:24px;color:var(--acc);flex:none}
-.du-linhas{display:flex;flex-direction:column;gap:13px}
-.du-linha{display:grid;grid-template-columns:84px 1fr 84px;align-items:center;gap:14px}
-.du-val{font-family:'Anton',sans-serif;font-size:20px;font-variant-numeric:tabular-nums;
+.du-foto{flex:1;min-height:250px;background-size:cover;background-position:center top;
+         background-color:var(--sup2);transition:.2s;
+         display:flex;align-items:center;justify-content:center}
+.du-foto.vazia{font-family:'Anton',sans-serif;font-size:56px;color:rgba(0,0,0,.4)}
+.du-foto.vazia.a{background-color:var(--a)} .du-foto.vazia.b{background-color:var(--b)}
+.du-col:hover .du-foto{filter:brightness(1.08)}
+.du-nick{font-family:'Anton',sans-serif;font-size:21px;line-height:1;text-transform:uppercase;
+         text-align:center;padding:8px 10px;white-space:nowrap;overflow:hidden;
+         text-overflow:ellipsis}
+.du-col.a .du-nick{background:var(--a);color:#101a12}
+.du-col.b .du-nick{background:var(--b);color:#08222f}
+.du-col:hover .du-nick{filter:brightness(1.08)}
+
+.du-centro{display:flex;flex-direction:column;justify-content:center;gap:18px;min-width:0;
+           background:rgba(0,0,0,.16);padding:22px 20px}
+.du-vs{font-family:'Anton',sans-serif;font-size:26px;color:var(--acc);text-align:center;
+       line-height:1}
+.du-linhas{display:flex;flex-direction:column;gap:14px}
+.du-linha{display:grid;grid-template-columns:62px 1fr 62px;align-items:center;gap:10px}
+.du-val{font-family:'Anton',sans-serif;font-size:19px;font-variant-numeric:tabular-nums;
         color:var(--mut2)}
 .du-val.esq{text-align:right} .du-val.dir{text-align:left}
-.du-val.vence{font-size:26px;color:var(--txt)}
-.du-meio{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
-.du-barra{width:100%;height:6px;overflow:hidden;display:flex;background:var(--sup2)}
+.du-val.vence{font-size:25px;color:var(--txt)}
+.du-meio{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
+.du-barra{width:100%;height:5px;overflow:hidden;display:flex;background:var(--sup2)}
 .du-barra i{display:block;height:100%}
 .du-barra i.a{background:var(--a)} .du-barra i.b{background:var(--b)}
-.du-k{font-size:8.5px;color:var(--mut2);font-weight:800;letter-spacing:2px;text-transform:uppercase}
-.du-rodape{margin-top:24px;padding-top:18px;border-top:1px solid var(--line2);
+.du-k{font-size:8px;color:var(--mut2);font-weight:800;letter-spacing:1.6px;
+      text-transform:uppercase;white-space:nowrap}
+
+.du-rodape{grid-column:1/-1;margin-top:8px;padding-top:18px;border-top:1px solid var(--line2);
            font-size:12.5px;color:var(--mut);text-align:center}
 .du-rodape b{color:var(--txt)}
 .du-rodape b.a{color:var(--a)} .du-rodape b.b{color:var(--b)}
@@ -416,6 +424,14 @@ footer{margin-top:66px;padding-top:22px;border-top:1px solid var(--line2);color:
 footer a:hover{color:var(--acc)}
 
 /* ---------- responsivo ---------- */
+@media(max-width:820px){
+  /* fotos lado a lado em cima, estatisticas inteiras embaixo */
+  .duelo{grid-template-columns:1fr 1fr;gap:14px;padding:20px 18px}
+  .du-col.a{order:1} .du-col.b{order:2}
+  .du-centro{order:3;grid-column:1/-1}
+  .du-foto{min-height:200px}
+  .du-rodape{order:4}
+}
 @media(max-width:900px){
   .stats,.mm-grid,.radar-box,.pl-head{grid-template-columns:1fr}
   .match{grid-template-columns:1fr;gap:28px;padding:28px 18px}
@@ -442,11 +458,9 @@ footer a:hover{color:var(--acc)}
   .mvpweek{grid-template-columns:1fr}
   .mvpweek .foto{max-width:164px}
   .mvpweek .boxes{grid-template-columns:repeat(2,1fr)}
-  .du-cara img,.du-cara .semfoto{width:48px;height:62px}
-  .du-nome{font-size:17px;padding:2px 7px}
-  .du-linha{grid-template-columns:58px 1fr 58px;gap:9px}
-  .du-val{font-size:15px} .du-val.vence{font-size:19px}
-  .duelo{padding:22px 16px}
+  .du-linha{grid-template-columns:52px 1fr 52px;gap:8px}
+  .du-val{font-size:16px} .du-val.vence{font-size:20px}
+  .du-nick{font-size:16px;padding:6px 8px}
   .pl-head{padding:20px 16px}
   .pl-id .nm{font-size:34px}
   .stats-row{grid-template-columns:repeat(2,1fr)}
