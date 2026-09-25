@@ -21,7 +21,7 @@
   /* coral: a cor do sistema. Tag, regua, quadradinho, destaque. */
   --acc:#f2555f;
   --acc-esc:#c73f49;
-  --creme:#f3eee4;
+  --box:#223041;      /* caixa de numero */
 
   /* cor de time */
   --a:#c3f53c;        /* Canadá */
@@ -98,10 +98,6 @@ a{color:inherit;text-decoration:none}
   position:relative;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
   gap:26px;padding:40px 30px;background:var(--sup);overflow:hidden;
 }
-.match::after{
-  content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;
-  background:url('assets/liga.png') center/380px no-repeat;
-}
 .team{position:relative;display:flex;flex-direction:column;align-items:center;gap:16px;min-width:0}
 .logo{
   width:100%;max-width:190px;aspect-ratio:1/1;
@@ -136,7 +132,8 @@ a{color:inherit;text-decoration:none}
 .week .wk-name{color:var(--mut2);font-size:9.5px;font-weight:700;text-transform:uppercase;
                letter-spacing:2px}
 .week .wk-score{
-  width:100%;background:var(--creme);color:#1b1b1b;text-align:center;padding:5px 0;
+  width:100%;background:var(--box);color:var(--txt);text-align:center;padding:6px 0;
+  border-top:2px solid var(--acc);
   font-family:'Anton',sans-serif;font-size:27px;line-height:1;font-variant-numeric:tabular-nums;
 }
 .week .maps{width:100%;display:flex;flex-direction:column;gap:7px;
@@ -202,11 +199,11 @@ tr.link:hover td{background:rgba(242,85,95,.07);color:var(--txt)}
               text-transform:uppercase;font-weight:700}
 .mvpweek .boxes{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));
                 gap:9px;margin-top:22px}
-.mvpweek .box{background:var(--creme);color:#1b1b1b;padding:11px 13px}
-.mvpweek .box .v{font-family:'Anton',sans-serif;font-size:29px;line-height:1;color:var(--acc-esc);
+.mvpweek .box{background:var(--box);padding:12px 14px;border-top:2px solid var(--acc)}
+.mvpweek .box .v{font-family:'Anton',sans-serif;font-size:29px;line-height:1;color:var(--txt);
                  font-variant-numeric:tabular-nums}
-.mvpweek .box .k{font-size:8.5px;color:#5c5c5c;letter-spacing:1.8px;text-transform:uppercase;
-                 font-weight:800;margin-top:4px}
+.mvpweek .box .k{font-size:8.5px;color:var(--mut2);letter-spacing:1.8px;text-transform:uppercase;
+                 font-weight:800;margin-top:5px}
 .mvpweek .atras{font-size:11px;color:var(--mut2);margin-top:16px}
 
 /* ---------- faixa de MVP semana a semana ---------- */
@@ -352,8 +349,9 @@ tr.link:hover td{background:rgba(242,85,95,.07);color:var(--txt)}
 /* map pool: nome do mapa em bloco creme, como a referencia */
 .pool{background:var(--sup);padding:16px 18px}
 .bar-row{display:flex;align-items:center;gap:12px;padding:6px 0}
-.bar-row .lbl{width:104px;flex:none;font-size:11.5px;font-weight:800;letter-spacing:1.2px;
-              text-transform:uppercase;background:var(--creme);color:#1b1b1b;padding:6px 10px}
+.bar-row .lbl{width:100px;flex:none;font-size:11.5px;font-weight:800;letter-spacing:1.4px;
+              text-transform:uppercase;color:var(--txt);padding:6px 0 6px 10px;
+              border-left:2px solid var(--acc)}
 .bar-wrap{flex:1;min-width:0;display:flex}
 .bar-track{width:100%;height:16px;background:var(--sup2);overflow:hidden;display:flex}
 .bar-track i{display:block;height:100%}
@@ -383,11 +381,11 @@ tr.link:hover td{background:rgba(242,85,95,.07);color:var(--txt)}
 .pl-head.b .pl-id .tm{color:#08222f;background:var(--b)}
 .pl-id .tm:hover{filter:brightness(1.08)}
 .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(94px,1fr));gap:8px;margin-top:24px}
-.stat{background:var(--creme);color:#1b1b1b;padding:12px 14px}
-.stat .v{font-family:'Anton',sans-serif;font-size:30px;line-height:1;color:var(--acc-esc);
+.stat{background:var(--box);padding:13px 15px;border-top:2px solid var(--acc)}
+.stat .v{font-family:'Anton',sans-serif;font-size:30px;line-height:1;color:var(--txt);
          font-variant-numeric:tabular-nums}
-.stat .k{font-size:8.5px;color:#5c5c5c;letter-spacing:1.8px;text-transform:uppercase;
-         font-weight:800;margin-top:4px}
+.stat .k{font-size:8.5px;color:var(--mut2);letter-spacing:1.8px;text-transform:uppercase;
+         font-weight:800;margin-top:5px}
 .radar-box{background:var(--sup);padding:26px 28px;display:grid;
            grid-template-columns:minmax(0,1fr) 300px;gap:34px;align-items:center}
 svg.radar{width:100%;max-width:480px;height:auto;display:block;margin:0 auto}
@@ -465,7 +463,7 @@ footer a:hover{color:var(--acc)}
   .pl-id .nm{font-size:34px}
   .stats-row{grid-template-columns:repeat(2,1fr)}
   .bar-row{gap:8px}
-  .bar-row .lbl{width:74px;font-size:10px;padding:5px 7px}
+  .bar-row .lbl{width:70px;font-size:10px;padding:5px 0 5px 7px}
   .bar-row .rec{width:66px;font-size:9.5px}
   .bar-row .mp-n{display:none}
   .mm-panel{padding:20px 16px}
