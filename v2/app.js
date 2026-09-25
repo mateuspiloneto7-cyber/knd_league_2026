@@ -485,7 +485,7 @@ function renderTime(tid){
 
     <div class="team-hero ${classe}">
       <div class="team-logo" style="background-image:url('${esc(t.logo||'')}')"></div>
-      <div class="team-nome" style="color:${cor}">${esc(t.nome)}</div>
+      <div class="team-nome">${esc(t.nome)}</div>
       <div class="team-resumo">${sv}V ${sd}D em séries ·
         ${mv}V ${me?me+'E ':''}${md}D em mapas</div>
     </div>
@@ -623,7 +623,7 @@ function renderJogador(id){
                : `<div class="pl-photo ${j.time==='canada'?'a':'b'}">${esc(initials(j.nome))}</div>`}
       <div class="pl-id">
         <div class="nm">${esc(j.nome)}</div>
-        <div class="tm" style="color:${cor}" onclick="location.hash='#/time/${j.time}'">${esc(tm.nome)}</div>
+        <div class="tm" onclick="location.hash='#/time/${j.time}'">${esc(tm.nome)}</div>
         <div class="stats-row">
           <div class="stat"><div class="v">${f2(r)}</div><div class="k">Rating</div></div>
           <div class="stat"><div class="v">${apto?('#'+pos):'-'}</div><div class="k">na liga</div></div>
