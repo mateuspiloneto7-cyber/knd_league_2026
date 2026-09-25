@@ -63,6 +63,12 @@ function renderTopo(){
     const t = timeDe(tid);
     const el = document.getElementById('logo'+letra);
     if (t.logo) el.style.backgroundImage = `url('${t.logo}')`;
+    // logo e nome levam pra pagina do time
+    el.onclick = () => location.hash = '#/time/' + tid;
+    el.title = 'ver a página do ' + t.nome;
+    const nm = document.getElementById('name'+letra);
+    nm.onclick = el.onclick;
+    nm.classList.add('clicavel');
     document.getElementById('name'+letra).textContent  = t.nome;
     document.getElementById('score'+letra).textContent = t.placar;
     document.getElementById('stTitle'+letra).textContent = t.nome;
@@ -273,6 +279,113 @@ function renderRanking(){
       <tbody>${linhas}</tbody></table>`;
 }
 
+/* ============================================================
+   Pagina do time: abre ao clicar na logo, em #/time/{id}
+   ============================================================ */
+
+/** retrospecto do time por mapa, com rounds a favor e contra */
+function mapasDoTime(tid){
+  const M = {};
+  D.partidas.forEach(p=>p.mapas.forEach(m=>{
+    const e = M[m.mapa] || (M[m.mapa] = {v:0, e:0, d:0, n:0, rp:0, rc:0});
+    const meu  = tid==='canada' ? m.rounds_canada : m.rounds_sm;
+    const dele = tid==='canada' ? m.rounds_sm : m.rounds_canada;
+    e.n++; e.rp += meu; e.rc += dele;
+    if (meu > dele) e.v++; else if (dele > meu) e.d++; else e.e++;
+  }));
+  // ordena pelo mesmo aproveitamento que aparece na tela (empate vale meio ponto)
+  const aprov = e => e.n ? (e.v + e.e*0.5) / e.n : 0;
+  return Object.entries(M).sort((x,y)=>
+    aprov(y[1]) - aprov(x[1]) || y[1].n - x[1].n);
+}
+
+function renderTime(tid){
+  const t = timeDe(tid);
+  if (!t.id){ location.hash = '#/'; return; }
+  const cor = tid==='canada' ? 'var(--a)' : 'var(--b)';
+  const classe = tid==='canada' ? 'a' : 'b';
+
+  /* elenco em cards de foto */
+  const cards = elenco(tid).map(j=>`
+    <div class="rcard ${classe}">
+      ${j.foto ? `<img src="${esc(j.foto)}" alt="${esc(j.nome)}">`
+               : `<span class="ini">${esc(initials(j.nome))}</span>`}
+      <span class="nick">${esc(j.nome)}</span>
+    </div>`).join('');
+
+  /* map pool do time */
+  const mapas = mapasDoTime(tid);
+  const linhasMapa = mapas.map(([nome,e])=>{
+    const aprov = e.n ? (e.v + e.e*0.5) / e.n : 0;
+    const saldo = e.rp - e.rc;
+    return `<div class="bar-row">
+      <span class="lbl">${esc(nome)}</span>
+      <span class="bar-wrap"><span class="bar-track">
+        <i class="w" style="width:${(aprov*100).toFixed(1)}%;background:${cor}"></i></span></span>
+      <span class="ap num">${Math.round(aprov*100)}%</span>
+      <span class="rec num">${e.v}V ${e.e?e.e+'E ':''}${e.d}D</span>
+      <span class="mp-n num">${e.rp}:${e.rc}
+        <b style="color:${saldo>0?'var(--win)':(saldo<0?'var(--loss)':'var(--mut)')}">
+          ${saldo>0?'+':''}${saldo}</b></span></div>`;
+  }).join('');
+
+  /* tabela de K/D do time */
+  const linhasStats = elenco(tid).map(j=>`
+    <tr><td class="name">${esc(j.nome)}</td>
+      <td>${j.k}</td><td>${j.a}</td><td>${j.d}</td>
+      <td class="der"><b>${f2(kd(j))}</b></td>
+      <td class="der">${f2(kda(j))}</td></tr>`).join('');
+
+  /* resumo de series e mapas */
+  let sv=0, sd=0, mv=0, md=0, me=0;
+  D.partidas.forEach(p=>{
+    let meu=0, dele=0;
+    p.mapas.forEach(m=>{
+      const a = tid==='canada' ? m.rounds_canada : m.rounds_sm;
+      const b = tid==='canada' ? m.rounds_sm : m.rounds_canada;
+      if (a>b){ meu++; mv++; } else if (b>a){ dele++; md++; } else me++;
+    });
+    if (!p.mapas.length) return;
+    if (meu>dele) sv++; else if (dele>meu) sd++;
+  });
+
+  document.getElementById('timePage').innerHTML = `
+    <div class="back" onclick="location.hash='#/'">← voltar pro campeonato</div>
+
+    <div class="team-hero ${classe}">
+      <div class="team-logo" style="background-image:url('${esc(t.logo||'')}')"></div>
+      <div class="team-nome" style="color:${cor}">${esc(t.nome)}</div>
+      <div class="team-resumo">${sv}V ${sd}D em séries ·
+        ${mv}V ${me?me+'E ':''}${md}D em mapas</div>
+    </div>
+
+    <div class="sec-label">Elenco</div>
+    <div class="roster">${cards}</div>
+
+    <div class="sec-label">Map pool
+      <span class="hint">aproveitamento do ${esc(t.nome)} em cada mapa, com rounds a favor e contra</span></div>
+    <div class="pool">${linhasMapa}</div>
+
+    <div class="sec-label">Estatísticas</div>
+    <div class="tpanel ${classe}"><h3>${esc(t.nome)}</h3>
+      <table><thead><tr><th>Jogador</th><th>K</th><th>A</th><th>D</th>
+        <th>K/D</th><th>KDA</th></tr></thead><tbody>${linhasStats}</tbody></table></div>`;
+}
+
+/* ---------- roteador ---------- */
+function rota(){
+  const [tela, arg] = location.hash.replace(/^#\/?/,'').split('/');
+  const home = document.getElementById('home');
+  const pag  = document.getElementById('timePage');
+  window.scrollTo(0,0);
+  if (tela === 'time' && arg){
+    home.hidden = true; pag.hidden = false;
+    renderTime(decodeURIComponent(arg));
+  } else {
+    pag.hidden = true; home.hidden = false;
+  }
+}
+
 /* ---------- patrocinador ---------- */
 function renderSponsor(){
   const box = document.getElementById('sponsor');
@@ -337,6 +450,8 @@ fetch(ARQUIVO, {cache:'no-store'})
     renderRanking();
     renderMVP();
     renderSponsor();
+    window.addEventListener('hashchange', rota);
+    rota();
   })
   .catch(()=>{
     document.querySelector('.wrap').insertAdjacentHTML('beforeend',
