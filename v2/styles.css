@@ -206,6 +206,43 @@ tr.link:hover td{background:rgba(242,85,95,.07);color:var(--txt)}
                  font-weight:800;margin-top:5px}
 .mvpweek .atras{font-size:11px;color:var(--mut2);margin-top:16px}
 
+/* ---------- podio da semana ---------- */
+.podio{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.pod{display:flex;align-items:center;gap:10px;background-color:var(--sup);padding:11px 13px;
+     cursor:pointer;transition:.15s;border-left:3px solid var(--line2);min-width:0}
+.pod:hover{background-color:var(--sup2)}
+.pod.a{border-left-color:var(--a)} .pod.b{border-left-color:var(--b)}
+.pod.ouro{background-color:var(--sup2)}
+.pod .lugar{font-family:'Anton',sans-serif;font-size:17px;color:var(--mut2);flex:none;width:24px}
+.pod.ouro .lugar{color:var(--acc)}
+.pod .av{width:32px;height:32px;flex:none;object-fit:cover;background:var(--sup2);
+         display:flex;align-items:center;justify-content:center;font-size:11px;
+         font-weight:800;color:var(--mut2)}
+.pod-info{min-width:0;flex:1}
+.pod-nome{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pod-time{font-size:8px;color:var(--mut2);letter-spacing:1.4px;text-transform:uppercase;
+          font-weight:800;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pod-rt{font-family:'Anton',sans-serif;font-size:19px;flex:none;font-variant-numeric:tabular-nums}
+.pod.ouro .pod-rt{color:var(--acc)}
+
+/* ---------- movimento no ranking e forma recente ---------- */
+td.movcol{width:38px;padding-left:0;padding-right:0}
+.mov{font-size:10.5px;font-weight:800;letter-spacing:.3px;font-variant-numeric:tabular-nums}
+.mov.sobe{color:var(--win)} .mov.cai{color:var(--loss)}
+.mov.zero{color:var(--line2)} .mov.novo{color:var(--acc);font-size:9px;letter-spacing:1px}
+.forma{flex:none;font-size:7.5px;font-weight:800;letter-spacing:1.2px;padding:3px 6px;
+       text-transform:uppercase;white-space:nowrap}
+.forma.quente{background:rgba(74,222,128,.15);color:var(--win)}
+.forma.frio{background:rgba(242,85,95,.15);color:var(--loss)}
+.forma.estavel{display:none}
+
+/* ---------- titulo e evolucao na ficha ---------- */
+.pl-selos{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+.titulo{font-size:10px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;
+        color:var(--acc);border:1px solid var(--acc);padding:5px 10px}
+.evo-box{background-color:var(--sup);padding:20px 22px}
+svg.evo{width:100%;height:auto;display:block}
+
 /* ---------- faixa de MVP semana a semana ---------- */
 .mvp-strip{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;
            scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
@@ -443,6 +480,8 @@ footer a:hover{color:var(--acc)}
   .pl-photo{max-width:220px}
 }
 @media(max-width:560px){
+  .podio{grid-template-columns:1fr;gap:6px}
+  .forma{display:none}
   .wrap{padding:0 14px 70px}
   .brand img{max-height:98px}
   .comp{font-size:26px}

@@ -265,6 +265,155 @@ function avatarDe(j){
                 : `<div class="av">${esc(initials(j.nome))}</div>`;
 }
 
+/* ============================================================
+   Leituras de disputa: movimento no ranking, forma recente,
+   podio da semana, evolucao e titulo do jogador.
+   Tudo sai do dado que ja existe, nada digitado a mais.
+   ============================================================ */
+
+function semanasJogadas(){ return D.partidas.filter(p=>p.mapas.length); }
+
+/** total acumulado ate uma semana (inclusive) */
+function totalAte(id, ate){
+  const t = {k:0,a:0,d:0,rounds:0,mapas:0};
+  D.partidas.forEach(p=>{
+    if (p.semana > ate) return;
+    p.mapas.forEach(m=>{
+      const l = m.stats.find(s=>s.jogador===id);
+      if (!l) return;
+      t.k+=l.k; t.a+=l.a; t.d+=l.d; t.rounds+=roundsDoMapa(m); t.mapas++;
+    });
+  });
+  const r = Math.max(t.rounds,1);
+  t.kpr=t.k/r; t.dpr=t.d/r; t.apr=t.a/r; t.spr=(r-t.d)/r;
+  t.kd = t.d>0 ? t.k/t.d : t.k;
+  return t;
+}
+
+/** ranking como estava no fim de uma semana. Usa o mesmo corte de 30%,
+    so que sobre os rounds jogados ate ali. */
+const _rank = {};
+function rankingAte(ate){
+  if (_rank[ate]) return _rank[ate];
+  const roundsAte = D.partidas.filter(p=>p.semana<=ate)
+    .reduce((s,p)=>s+p.mapas.reduce((x,m)=>x+roundsDoMapa(m),0),0);
+  const corte = Math.max(30, Math.round(roundsAte*CORTE));
+  _rank[ate] = D.jogadores.map(j=>({j, t:totalAte(j.id, ate)}))
+    .filter(e=>e.t.rounds >= corte)
+    .map(e=>({...e, r: ratingKND(e.t)}))
+    .sort((x,y)=>y.r-x.r);
+  return _rank[ate];
+}
+
+/** quantas posicoes o jogador subiu ou caiu da semana passada pra atual */
+function movimento(id){
+  const ss = semanasJogadas();
+  if (ss.length < 2) return null;
+  const atual = rankingAte(ss[ss.length-1].semana).findIndex(e=>e.j.id===id);
+  const antes = rankingAte(ss[ss.length-2].semana).findIndex(e=>e.j.id===id);
+  if (atual < 0) return null;
+  if (antes < 0) return {novo:true};
+  return {delta: antes - atual};   // positivo = subiu
+}
+
+/** forma recente: os 3 ultimos mapas contra a media dele na season */
+function forma(id){
+  const linhas = linhasDoJogador(id);
+  if (linhas.length < 5) return null;
+  const ultimos = linhas.slice(-3);
+  const recente = ultimos.reduce((s,l)=>s+ratingDaLinha(l),0)/ultimos.length;
+  const season = ratingKND(totalComRounds(id));
+  const dif = recente - season;
+  return {recente, dif,
+          estado: dif > .10 ? 'quente' : (dif < -.10 ? 'frio' : 'estavel')};
+}
+
+/** top 3 da ultima semana */
+function podio(){
+  const ss = semanasJogadas();
+  if (!ss.length) return [];
+  return melhores(ss[ss.length-1].semana).slice(0,3);
+}
+
+/** o tracinho que melhor define o jogador, virado em frase */
+const TITULOS = [
+  {ler:x=>x.t.kpr, frase:'O mais letal da liga'},
+  {ler:x=>x.t.spr, frase:'O mais difícil de matar'},
+  {ler:x=>x.t.kd,  frase:'O melhor saldo da liga'},
+  {ler:x=>x.t.apr, frase:'O que mais dá assistência'},
+  {ler:x=>x.reg||0, frase:'O mais regular da liga'},
+];
+function tituloDe(id){
+  const corte = minRounds();
+  const aptos = D.jogadores.map(j=>{
+    const t = totalComRounds(j.id);
+    return {j, t, reg: regularidade(linhasDoJogador(j.id))};
+  }).filter(e=>e.t.rounds >= corte);
+  const eu = aptos.find(e=>e.j.id===id);
+  if (!eu) return null;
+  if (rankingAte(semanasJogadas().slice(-1)[0].semana)[0]?.j.id === id)
+    return 'O melhor da liga';
+  let melhor = null;
+  TITULOS.forEach(cand=>{
+    const lista = aptos.map(cand.ler);
+    const p = percentil(cand.ler(eu), lista);
+    if (!melhor || p > melhor.p) melhor = {p, frase:cand.frase};
+  });
+  return melhor && melhor.p >= .6 ? melhor.frase : null;
+}
+
+/** evolucao do rating semana a semana, em linha */
+function evolucaoSVG(id, cor){
+  const pontos = semanasJogadas().map(p=>{
+    const t = totalComRounds(id, p.semana);
+    return t.mapas ? {semana:p.semana, r: ratingKND(t)} : null;
+  }).filter(Boolean);
+  if (pontos.length < 2) return '';
+
+  const L=640, A=190, mx=34, my=24;
+  const vs = pontos.map(p=>p.r);
+  const min = Math.min(...vs, .8), max = Math.max(...vs, 1.2);
+  const x = i => mx + i*(L-mx*2)/(pontos.length-1);
+  const y = v => my + (1-(v-min)/((max-min)||1))*(A-my*2);
+
+  const linha = pontos.map((p,i)=>`${x(i).toFixed(1)},${y(p.r).toFixed(1)}`).join(' ');
+  const area = `${mx},${A-my} ${linha} ${(L-mx).toFixed(1)},${A-my}`;
+  let g = `<polygon points="${area}" fill="${cor}18"/>`;
+  // a linha da media da liga
+  if (min <= 1 && 1 <= max)
+    g += `<line x1="${mx}" y1="${y(1).toFixed(1)}" x2="${L-mx}" y2="${y(1).toFixed(1)}"
+           stroke="#3b5269" stroke-width="1" stroke-dasharray="4 4"/>
+          <text x="${L-mx}" y="${(y(1)-6).toFixed(1)}" text-anchor="end" font-size="9"
+           fill="#68809a" font-weight="700" font-family="Inter,sans-serif">MÉDIA DA LIGA</text>`;
+  g += `<polyline points="${linha}" fill="none" stroke="${cor}" stroke-width="2.5"
+         stroke-linejoin="round" stroke-linecap="round"/>`;
+  pontos.forEach((p,i)=>{
+    g += `<circle cx="${x(i).toFixed(1)}" cy="${y(p.r).toFixed(1)}" r="4" fill="${cor}"/>
+          <text x="${x(i).toFixed(1)}" y="${(y(p.r)-12).toFixed(1)}" text-anchor="middle"
+           font-size="12" font-weight="400" fill="#fff"
+           font-family="Anton,sans-serif">${f2(p.r)}</text>
+          <text x="${x(i).toFixed(1)}" y="${A-6}" text-anchor="middle" font-size="8.5"
+           fill="#68809a" font-weight="700" letter-spacing="1"
+           font-family="Inter,sans-serif">S${p.semana}</text>`;
+  });
+  return `<svg class="evo" viewBox="0 0 ${L} ${A}" role="img">${g}</svg>`;
+}
+
+function selo(f){
+  if (!f) return '';
+  const txt = {quente:'EM ALTA', frio:'EM QUEDA', estavel:'ESTÁVEL'}[f.estado];
+  const sinal = f.dif > 0 ? '+' : '';
+  return `<span class="forma ${f.estado}" title="últimos 3 mapas: ${f2(f.recente)} de rating, ${sinal}${f2(f.dif)} contra a média dele na season">${txt}</span>`;
+}
+
+function setaMov(m){
+  if (!m) return '<span class="mov zero">–</span>';
+  if (m.novo) return '<span class="mov novo">novo</span>';
+  if (m.delta > 0) return `<span class="mov sobe">▲${m.delta}</span>`;
+  if (m.delta < 0) return `<span class="mov cai">▼${-m.delta}</span>`;
+  return '<span class="mov zero">–</span>';
+}
+
 function renderMVPSemana(){
   const semanas = D.partidas.filter(p=>p.mapas.length);
   if (!semanas.length) return;
@@ -287,10 +436,26 @@ function renderMVPSemana(){
            <div class="box"><div class="v">${f2(c.t.kd)}</div><div class="k">K/D</div></div>
            <div class="box"><div class="v">${f2(c.t.kpr)}</div><div class="k">K/round</div></div>
          </div>
-         <div class="atras">Logo atrás: ${
-           lista.slice(1,3).map(x=>`${esc(x.j.nome)} (${f2(x.r)})`).join(', ')}</div>
        </div>
-     </div>`;
+     </div>
+     ${renderPodio()}`;
+}
+
+/** podio da semana: 2o e 3o tambem aparecem, com foto e rating */
+function renderPodio(){
+  const tres = podio();
+  if (tres.length < 2) return '';
+  const medalha = ['1º','2º','3º'];
+  return `<div class="podio">${tres.map((c,i)=>`
+    <div class="pod ${i===0?'ouro':''} ${c.j.time==='sm'?'b':'a'}" onclick="irJogador('${c.j.id}')">
+      <span class="lugar">${medalha[i]}</span>
+      ${avatarDe(c.j)}
+      <div class="pod-info">
+        <div class="pod-nome">${esc(c.j.nome)}</div>
+        <div class="pod-time">${esc(timeDe(c.j.time).nome)}</div>
+      </div>
+      <span class="pod-rt">${f2(c.r)}</span>
+    </div>`).join('')}</div>`;
 }
 
 function renderStrip(){
@@ -406,8 +571,10 @@ function renderRanking(){
   const corte = minRounds();
   const linhas = melhores().filter(c=>c.t.rounds>=corte).map((c,i)=>`
     <tr class="link" onclick="irJogador('${c.j.id}')"><td class="pos">${i+1}</td>
+      <td class="movcol">${setaMov(movimento(c.j.id))}</td>
       <td><div class="ply"><span class="tag ${c.j.time==='sm'?'b':'a'}"></span>
-        ${avatarDe(c.j)}<span class="nm">${esc(c.j.nome)}</span></div></td>
+        ${avatarDe(c.j)}<span class="nm">${esc(c.j.nome)}</span>
+        ${selo(forma(c.j.id))}</div></td>
       <td class="forte">${f2(c.r)}</td>
       <td>${f2(c.t.kd)}</td>
       <td>${f2(c.t.kpr)}</td>
@@ -415,7 +582,7 @@ function renderRanking(){
       <td class="dim">${c.t.k}</td>
       <td class="dim">${c.t.mapas}</td></tr>`).join('');
   document.getElementById('ranking').innerHTML =
-    `<table><thead><tr><th></th><th>Jogador</th><th>Rating</th><th>K/D</th>
+    `<table><thead><tr><th></th><th></th><th>Jogador</th><th>Rating</th><th>K/D</th>
       <th>K/round</th><th>Sobrevida</th><th>Kills</th><th>Mapas</th></tr></thead>
       <tbody>${linhas}</tbody></table>`;
 }
@@ -634,6 +801,8 @@ function renderJogador(id){
       <div class="pl-id">
         <div class="nm">${esc(j.nome)}</div>
         <div class="tm" onclick="location.hash='#/time/${j.time}'">${esc(tm.nome)}</div>
+        ${(()=>{const tt=tituloDe(id); const fm=forma(id);
+          return (tt||fm) ? `<div class="pl-selos">${tt?`<span class="titulo">${esc(tt)}</span>`:''}${selo(fm)}</div>` : '';})()}
         <div class="stats-row">
           <div class="stat"><div class="v">${f2(r)}</div><div class="k">Rating</div></div>
           <div class="stat"><div class="v">${apto?('#'+pos):'-'}</div><div class="k">na liga</div></div>
@@ -660,6 +829,10 @@ function renderJogador(id){
            então fica fora do ranking e a comparação perde peso.</p>`}
       </div>
     </div>
+
+    ${(()=>{const g = evolucaoSVG(id, cor==='var(--a)' ? '#c3f53c' : '#38bdf8');
+      return g ? `<div class="sec-label">Evolução na <em>season</em></div>
+        <div class="evo-box">${g}</div>` : '';})()}
 
     <div class="sec-label">Mapa a mapa</div>
     <div class="tpanel"><table>
