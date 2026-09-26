@@ -339,6 +339,76 @@ function podio(){
     (jogador, titulo) com o percentil dele naquele traco, ordena do mais forte
     pro mais fraco e vai casando. Quem nao se destaca em nada fica sem titulo,
     o que e melhor do que dar uma frase generica repetida. */
+/* ============================================================
+   Conquistas: a estante de trofeus do jogador. Tudo apurado do
+   resultado, nada atribuido na mao. Cada entrada guarda a season,
+   entao quando a Season 2 entrar a estante so cresce.
+   ============================================================ */
+
+const ICONES = {
+  taca:`<svg viewBox="0 0 24 24" fill="none"><path d="M7 3h10v5a5 5 0 0 1-10 0V3Z" fill="currentColor"/>
+        <path d="M7 5H4v2a4 4 0 0 0 4 4M17 5h3v2a4 4 0 0 1-4 4" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M12 13v4M9 21h6M10 17h4v4h-4z" stroke="currentColor" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  medalha:`<svg viewBox="0 0 24 24" fill="none"><path d="m8 2 4 7 4-7" stroke="currentColor" stroke-width="1.8"
+        stroke-linecap="round"/><circle cx="12" cy="15.5" r="6" fill="currentColor"/></svg>`,
+  estrela:`<svg viewBox="0 0 24 24" fill="none"><path d="m12 2.5 2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5
+        l1.2-6.5-4.8-4.6 6.6-.9L12 2.5Z" fill="currentColor"/></svg>`,
+  mira:`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/>
+        <circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"
+        stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+};
+
+function conquistasDe(id){
+  const j = D.jogadores.find(x=>x.id===id);
+  if (!j) return [];
+  const S = D.season, out = [];
+  const corte = minRounds();
+  const rank = melhores().filter(c=>c.t.rounds>=corte);
+  const pos = rank.findIndex(c=>c.j.id===id);
+
+  // campeao ou vice, pelo placar de series
+  const ts = D.times.slice().sort((a,b)=>(b.placar||0)-(a.placar||0));
+  if (ts.length===2 && ts[0].placar !== ts[1].placar){
+    const campeao = ts[0].id === j.time;
+    out.push(campeao
+      ? {icone:'taca', cor:'ouro', nome:'Campeão', det:`Season ${S}`}
+      : {icone:'taca', cor:'prata', nome:'Vice-campeão', det:`Season ${S}`});
+  }
+
+  // podio de rating da season
+  if (pos === 0) out.push({icone:'estrela', cor:'ouro', nome:'MVP da Season', det:`Season ${S} · rating ${f2(rank[0].r)}`});
+  else if (pos === 1) out.push({icone:'medalha', cor:'prata', nome:'2º no ranking', det:`Season ${S} · rating ${f2(rank[1].r)}`});
+  else if (pos === 2) out.push({icone:'medalha', cor:'bronze', nome:'3º no ranking', det:`Season ${S} · rating ${f2(rank[2].r)}`});
+
+  // artilheiro
+  const art = rank.slice().sort((a,b)=>b.t.k-a.t.k)[0];
+  if (art && art.j.id === id)
+    out.push({icone:'mira', cor:'coral', nome:'Artilheiro', det:`Season ${S} · ${art.t.k} kills`});
+
+  // MVPs de semana
+  let n = 0;
+  semanasJogadas().forEach(p=>{ const c = melhores(p.semana)[0]; if (c && c.j.id===id) n++; });
+  // "x" comum: a Anton nao tem o sinal de multiplicacao e ele sai como traco
+  if (n) out.push({icone:'estrela', cor:'coral',
+                   nome:`${n}x MVP da semana`, det:`Season ${S}`});
+  return out;
+}
+
+function renderConquistas(id){
+  const lista = conquistasDe(id);
+  if (!lista.length) return '';
+  return `<div class="sec-label">Conquistas</div>
+    <div class="trofeus">${lista.map(c=>`
+      <div class="trofeu ${c.cor}">
+        <span class="tr-icone">${ICONES[c.icone]}</span>
+        <div class="tr-info">
+          <div class="tr-nome">${esc(c.nome)}</div>
+          <div class="tr-det">${esc(c.det)}</div>
+        </div>
+      </div>`).join('')}</div>`;
+}
+
 /** evolucao do rating semana a semana, em linha */
 function evolucaoSVG(id, cor){
   const pontos = semanasJogadas().map(p=>{
@@ -790,6 +860,8 @@ function renderJogador(id){
         </div>
       </div>
     </div>
+
+    ${renderConquistas(id)}
 
     <div class="sec-label">Perfil
       <span class="hint">a distância até a borda é a posição dele contra os outros da liga</span></div>
