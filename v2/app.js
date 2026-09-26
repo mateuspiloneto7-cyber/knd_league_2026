@@ -188,7 +188,7 @@ function renderMVP(){
          <span class="mvp-name link" onclick="irJogador('${mvp.j.id}')">${esc(mvp.j.nome)}</span>
          <span class="mvp-teaminline">${esc(timeDe(mvp.j.time).nome)}</span>
        </div>
-       <div class="mvp-tag">✦ MVP DA SÉRIE</div>
+       <div class="mvp-tag">✦ MVP DA SEASON</div>
      </div>
      <div class="mvp-body">
        ${mvp.j.foto
