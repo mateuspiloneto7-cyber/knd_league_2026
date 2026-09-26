@@ -13,14 +13,14 @@
   {
    "id": "canada",
    "nome": "CANADÁ",
-   "logo": "assets/times/canada.jpg",
+   "logo": "assets/times/canada.png",
    "cor": "#c3f53c",
    "placar": 4
   },
   {
    "id": "sm",
    "nome": "SM ASSISTÊNCIA",
-   "logo": "assets/times/sm.jpg",
+   "logo": "assets/times/sm.png",
    "cor": "#38bdf8",
    "placar": 3
   }
