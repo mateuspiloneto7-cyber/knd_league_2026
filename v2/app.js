@@ -488,14 +488,13 @@ function renderMVPSemana(){
      ${renderPodio()}`;
 }
 
-/** podio da semana: 2o e 3o tambem aparecem, com foto e rating */
+/** 2o e 3o da semana. O 1o nao entra aqui porque ja e o card grande acima. */
 function renderPodio(){
-  const tres = podio();
-  if (tres.length < 2) return '';
-  const medalha = ['1º','2º','3º'];
-  return `<div class="podio">${tres.map((c,i)=>`
-    <div class="pod ${i===0?'ouro':''} ${c.j.time==='sm'?'b':'a'}" onclick="irJogador('${c.j.id}')">
-      <span class="lugar">${medalha[i]}</span>
+  const resto = podio().slice(1);
+  if (!resto.length) return '';
+  return `<div class="podio">${resto.map((c,i)=>`
+    <div class="pod ${c.j.time==='sm'?'b':'a'}" onclick="irJogador('${c.j.id}')">
+      <span class="lugar">${i+2}º</span>
       ${avatarDe(c.j)}
       <div class="pod-info">
         <div class="pod-nome">${esc(c.j.nome)}</div>
