@@ -1,9 +1,12 @@
-/* KND League - Season 1
-   Recriacao da pagina original. Mesma estrutura e mesmas contas,
-   so que lendo de data/season1.json em vez de localStorage. */
+/* KND League
+   Uma season por arquivo em data/. O indice data/seasons.json diz quais existem
+   e qual esta valendo agora. A pagina mostra uma season por vez (D), mas carrega
+   todas, porque a estante de conquistas do jogador soma a carreira inteira. */
 
-const ARQUIVO = 'data/season1.json';
-let D = null;
+const INDICE = 'data/seasons.json';
+let TODAS  = [];     // todas as seasons carregadas, da primeira pra ultima
+let D      = null;   // a season que a tela esta mostrando
+let PADRAO = 1;      // numero da season que abre por padrao (a que esta rolando)
 
 /* O GitHub Pages manda Cache-Control: max-age=600 no proprio index.html. Por dez minutos
    o navegador nem pergunta ao servidor, serve o HTML velho e com ele o css/js velhos.
@@ -37,13 +40,25 @@ const ratingOf = p => kd(p)*0.7 + kda(p)*0.3;
 const esc = s => String(s==null?'':s)
   .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
+/** mostra ou esconde um titulo de secao. Bloco sem conteudo nao deixa titulo orfao. */
+function secao(id, tem){
+  const el = document.getElementById(id);
+  if (el) el.hidden = !tem;
+}
+
 function initials(n){
   const p = String(n||'?').trim().split(/\s+/);
   return ((p[0][0]||'') + (p.length>1 ? (p[p.length-1][0]||'') : '')).toUpperCase();
 }
 
 function timeDe(id){ return D.times.find(t=>t.id===id) || {nome:id}; }
-function irJogador(id){ location.hash = '#/jogador/' + id; }
+function temJogos(){ return D.partidas.some(p=>p.mapas.length); }
+
+/* Navegacao. A season viaja no endereco: #/s1/jogador/jb abre a ficha dele na
+   Season 1. A season que esta valendo nao precisa do prefixo, o link fica limpo. */
+function prefixo(){ return (D && D.season !== PADRAO) ? '#/s' + D.season + '/' : '#/'; }
+function ir(caminho){ location.hash = prefixo() + (caminho || ''); }
+function irJogador(id){ ir('jogador/' + id); }
 
 /** troca a logo do topo. Na ficha do jogador entra a do time dele. */
 function marcaDoTopo(tid){
@@ -54,12 +69,12 @@ function marcaDoTopo(tid){
     img.src = t.logo;
     img.alt = t.nome;
     img.classList.add('logo-time');
-    link.href = '#/time/' + tid;
+    link.href = prefixo() + 'time/' + tid;
   } else {
     img.src = (D && D.liga.logo) || 'assets/liga.png';
     img.alt = (D && D.liga.nome) || 'KND League';
     img.classList.remove('logo-time');
-    link.href = '#/';
+    link.href = prefixo();
   }
 }
 
@@ -88,12 +103,13 @@ function totalDoJogador(id){
   return t;
 }
 
-/** elenco oficial do time, na ordem e com os totais gravados no site original */
+/** elenco oficial do time, na ordem. Na Season 1 os totais sao os que ja estavam
+    gravados no site original; daqui pra frente saem da soma dos mapas. */
 function elenco(tid){
   return D.jogadores
-    .filter(j=>j.time===tid && j.elenco != null && j.total)
+    .filter(j=>j.time===tid && j.elenco != null)
     .sort((x,y)=>x.elenco-y.elenco)
-    .map(j=>({...j, ...j.total}));
+    .map(j=>({...j, ...(j.total || totalDoJogador(j.id))}));
 }
 
 /* ---------- topo e confronto ---------- */
@@ -106,7 +122,7 @@ function renderTopo(){
     const el = document.getElementById('logo'+letra);
     if (t.logo) el.style.backgroundImage = `url('${t.logo}')`;
     // logo e nome levam pra pagina do time
-    el.onclick = () => location.hash = '#/time/' + tid;
+    el.onclick = () => ir('time/' + tid);
     el.title = 'ver a página do ' + t.nome;
     const nm = document.getElementById('name'+letra);
     nm.onclick = el.onclick;
@@ -120,6 +136,7 @@ function renderTopo(){
 /* ---------- semanas ---------- */
 function renderWeeks(){
   const box = document.getElementById('weeks');
+  secao('lblSemanas', D.partidas.length);
   box.innerHTML = D.partidas.map(p=>{
     // os mapas da semana ficam lado a lado, em chip compacto com a sigla do mapa
     const maps = p.mapas.map((m,i)=>`
@@ -142,6 +159,8 @@ function renderWeeks(){
 
 /* ---------- tabelas de estatistica ---------- */
 function renderStats(letra, tid){
+  secao('statsLabel', temJogos());
+  document.querySelector('.stats').hidden = !temJogos();
   const rows = elenco(tid).map(p=>`
     <tr class="link" onclick="irJogador('${p.id}')"><td class="name">${esc(p.nome)}</td>
       <td>${p.k}</td><td>${p.a}</td><td>${p.d}</td>
@@ -157,8 +176,12 @@ const MVP_ORDER = ['K','A','D','K/D','KDA','Rating'];
 
 function renderMVP(){
   const box = document.getElementById('mvp');
-  // mesma base do original: o elenco oficial com os totais gravados
-  const todos = D.jogadores.filter(j=>j.elenco != null && j.total).map(j=>({j, p:j.total}));
+  // mesma base do original: o elenco oficial com os totais da season
+  const todos = D.jogadores.filter(j=>j.elenco != null)
+    .map(j=>({j, p: j.total || totalDoJogador(j.id)}))
+    .filter(e=>e.p.k || e.p.a || e.p.d);
+  secao('lblMvp', todos.length);
+  box.hidden = !todos.length;
   if (!todos.length){ box.innerHTML = ''; return; }
 
   todos.forEach(e=>{
@@ -359,7 +382,21 @@ const ICONES = {
         stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`,
 };
 
-function conquistasDe(id){
+/** roda uma conta dentro de outra season sem baguncar a que esta na tela.
+    Troca o D e zera os caches enquanto dura, depois devolve tudo como estava. */
+function comSeason(S, fn){
+  const dAntes = D, mAntes = _medias, rAntes = {..._rank};
+  D = S; _medias = null; Object.keys(_rank).forEach(k=>delete _rank[k]);
+  try { return fn(); }
+  finally {
+    D = dAntes; _medias = mAntes;
+    Object.keys(_rank).forEach(k=>delete _rank[k]);
+    Object.assign(_rank, rAntes);
+  }
+}
+
+/** conquistas do jogador numa season so */
+function conquistasDaSeason(id){
   const j = D.jogadores.find(x=>x.id===id);
   if (!j) return [];
   const S = D.season, out = [];
@@ -367,31 +404,47 @@ function conquistasDe(id){
   const rank = melhores().filter(c=>c.t.rounds>=corte);
   const pos = rank.findIndex(c=>c.j.id===id);
 
-  // campeao ou vice, pelo placar de series
-  const ts = D.times.slice().sort((a,b)=>(b.placar||0)-(a.placar||0));
-  if (ts.length===2 && ts[0].placar !== ts[1].placar){
-    const campeao = ts[0].id === j.time;
-    out.push(campeao
-      ? {icone:'taca', cor:'ouro', nome:'Campeão', det:`Season ${S}`}
-      : {icone:'taca', cor:'prata', nome:'Vice-campeão', det:`Season ${S}`});
+  // titulo e podio so valem com a season fechada. Enquanto ela corre, nada
+  // esta decidido e seria mentira pendurar o trofeu na estante.
+  if (D.encerrada){
+    // campeao ou vice, pelo placar de series
+    const ts = D.times.slice().sort((a,b)=>(b.placar||0)-(a.placar||0));
+    if (ts.length===2 && ts[0].placar !== ts[1].placar){
+      const campeao = ts[0].id === j.time;
+      out.push(campeao
+        ? {icone:'taca', cor:'ouro', nome:'Campeão', det:`Season ${S}`}
+        : {icone:'taca', cor:'prata', nome:'Vice-campeão', det:`Season ${S}`});
+    }
+
+    // podio de rating da season
+    if (pos === 0) out.push({icone:'estrela', cor:'ouro', nome:'MVP da Season', det:`Season ${S} · rating ${f2(rank[0].r)}`});
+    else if (pos === 1) out.push({icone:'medalha', cor:'prata', nome:'2º no ranking', det:`Season ${S} · rating ${f2(rank[1].r)}`});
+    else if (pos === 2) out.push({icone:'medalha', cor:'bronze', nome:'3º no ranking', det:`Season ${S} · rating ${f2(rank[2].r)}`});
+
+    // artilheiro
+    const art = rank.slice().sort((a,b)=>b.t.k-a.t.k)[0];
+    if (art && art.j.id === id)
+      out.push({icone:'mira', cor:'coral', nome:'Artilheiro', det:`Season ${S} · ${art.t.k} kills`});
   }
 
-  // podio de rating da season
-  if (pos === 0) out.push({icone:'estrela', cor:'ouro', nome:'MVP da Season', det:`Season ${S} · rating ${f2(rank[0].r)}`});
-  else if (pos === 1) out.push({icone:'medalha', cor:'prata', nome:'2º no ranking', det:`Season ${S} · rating ${f2(rank[1].r)}`});
-  else if (pos === 2) out.push({icone:'medalha', cor:'bronze', nome:'3º no ranking', det:`Season ${S} · rating ${f2(rank[2].r)}`});
-
-  // artilheiro
-  const art = rank.slice().sort((a,b)=>b.t.k-a.t.k)[0];
-  if (art && art.j.id === id)
-    out.push({icone:'mira', cor:'coral', nome:'Artilheiro', det:`Season ${S} · ${art.t.k} kills`});
-
-  // MVPs de semana
+  // MVPs de semana. Esse conta mesmo com a season correndo: cada semana
+  // encerrada ja e um fato, nao depende do resto do campeonato.
   let n = 0;
   semanasJogadas().forEach(p=>{ const c = melhores(p.semana)[0]; if (c && c.j.id===id) n++; });
   // "x" comum: a Anton nao tem o sinal de multiplicacao e ele sai como traco
   if (n) out.push({icone:'estrela', cor:'coral',
                    nome:`${n}x MVP da semana`, det:`Season ${S}`});
+  return out;
+}
+
+/** a estante inteira: carreira do jogador somando todas as seasons,
+    da mais recente pra mais antiga */
+function conquistasDe(id){
+  const out = [];
+  TODAS.slice().reverse().forEach(S=>{
+    if (!S.partidas.some(p=>p.mapas.length)) return;   // season sem jogo nao gera nada
+    comSeason(S, ()=>{ out.push(...conquistasDaSeason(id)); });
+  });
   return out;
 }
 
@@ -463,7 +516,8 @@ function setaMov(m){
 
 function renderMVPSemana(){
   const semanas = D.partidas.filter(p=>p.mapas.length);
-  if (!semanas.length) return;
+  secao('lblMvpWeek', semanas.length);
+  if (!semanas.length){ document.getElementById('mvpWeek').innerHTML = ''; return; }
   const ultima = semanas[semanas.length-1];
   const lista = melhores(ultima.semana);
   const c = lista[0], j = c.j;
@@ -553,6 +607,7 @@ function confrontoDireto(idA, idB){
 function renderDuelo(){
   const A = melhorDoTime('canada'), B = melhorDoTime('sm');
   const box = document.getElementById('duelo');
+  secao('lblDuelo', A && B);
   if (!A || !B){ box.innerHTML = ''; return; }
 
   document.getElementById('duelHint').textContent =
@@ -615,7 +670,10 @@ function renderDuelo(){
 
 function renderRanking(){
   const corte = minRounds();
-  const linhas = melhores().filter(c=>c.t.rounds>=corte).map((c,i)=>`
+  const aptos = melhores().filter(c=>c.t.rounds>=corte);
+  secao('lblRanking', aptos.length);
+  document.getElementById('ranking').hidden = !aptos.length;
+  const linhas = aptos.map((c,i)=>`
     <tr class="link" onclick="irJogador('${c.j.id}')"><td class="pos">${i+1}</td>
       <td class="movcol">${setaMov(movimento(c.j.id))}</td>
       <td><div class="ply"><span class="tag ${c.j.time==='sm'?'b':'a'}"></span>
@@ -655,7 +713,7 @@ function mapasDoTime(tid){
 
 function renderTime(tid){
   const t = timeDe(tid);
-  if (!t.id){ location.hash = '#/'; return; }
+  if (!t.id){ ir(''); return; }
   const cor = tid==='canada' ? 'var(--a)' : 'var(--b)';
   const classe = tid==='canada' ? 'a' : 'b';
 
@@ -704,26 +762,29 @@ function renderTime(tid){
   });
 
   document.getElementById('timePage').innerHTML = `
-    <div class="back" onclick="location.hash='#/'">← voltar pro campeonato</div>
+    <div class="back" onclick="ir('')">← voltar pro campeonato</div>
 
     <div class="team-hero ${classe}">
       <div class="team-logo" style="background-image:url('${esc(t.logo||'')}')"></div>
       <div class="team-nome">${esc(t.nome)}</div>
-      <div class="team-resumo">${sv}V ${sd}D em séries ·
-        ${mv}V ${me?me+'E ':''}${md}D em mapas</div>
+      ${temJogos() ? `<div class="team-resumo">${sv}V ${sd}D em séries ·
+        ${mv}V ${me?me+'E ':''}${md}D em mapas</div>` : ''}
     </div>
 
     <div class="sec-label">Elenco</div>
     <div class="roster">${cards}</div>
 
-    <div class="sec-label">Map pool
-      <span class="hint">aproveitamento do ${esc(t.nome)} em cada mapa, com rounds a favor e contra</span></div>
-    <div class="pool">${linhasMapa}</div>
+    ${temJogos() ? `
+      <div class="sec-label">Map pool
+        <span class="hint">aproveitamento do ${esc(t.nome)} em cada mapa, com rounds a favor e contra</span></div>
+      <div class="pool">${linhasMapa}</div>
 
-    <div class="sec-label">Estatísticas</div>
-    <div class="tpanel ${classe}"><h3>${esc(t.nome)}</h3>
-      <table><thead><tr><th>Jogador</th><th>K</th><th>A</th><th>D</th>
-        <th>K/D</th><th>KDA</th></tr></thead><tbody>${linhasStats}</tbody></table></div>`;
+      <div class="sec-label">Estatísticas</div>
+      <div class="tpanel ${classe}"><h3>${esc(t.nome)}</h3>
+        <table><thead><tr><th>Jogador</th><th>K</th><th>A</th><th>D</th>
+          <th>K/D</th><th>KDA</th></tr></thead><tbody>${linhasStats}</tbody></table></div>`
+    : `<div class="vazio"><b>Season ${D.season} começando.</b>
+         Map pool e estatísticas do time entram aqui depois do primeiro mapa.</div>`}`;
 }
 
 /* ============================================================
@@ -801,11 +862,30 @@ function radarSVG(eixos, cor){
   return `<svg class="radar" viewBox="0 0 ${S} ${S}" role="img">${g}</svg>`;
 }
 
+/** jogador que ainda nao entrou em mapa nesta season. Nao tem numero pra mostrar,
+    mas a estante de conquistas e da carreira, entao continua valendo. */
+function renderJogadorVazio(j){
+  const tm = timeDe(j.time), lado = j.time==='canada' ? 'a' : 'b';
+  document.getElementById('jogPage').innerHTML = `
+    <div class="back" onclick="ir('time/${j.time}')">← voltar pro ${esc(tm.nome)}</div>
+    <div class="pl-head ${lado}">
+      ${j.foto ? `<img class="pl-photo" src="${esc(j.foto)}" alt="">`
+               : `<div class="pl-photo ${lado}">${esc(initials(j.nome))}</div>`}
+      <div class="pl-id">
+        <div class="nm">${esc(j.nome)}</div>
+        <div class="tm" onclick="ir('time/${j.time}')">${esc(tm.nome)}</div>
+        <p class="pl-vazio">Ainda sem mapas na Season ${D.season}.
+           As estatísticas entram aqui depois do primeiro jogo.</p>
+      </div>
+    </div>
+    ${renderConquistas(j.id)}`;
+}
+
 function renderJogador(id){
   const j = D.jogadores.find(x=>x.id===id);
-  if (!j){ location.hash = '#/'; return; }
+  if (!j){ ir(''); return; }
   const t = totalComRounds(id);
-  if (!t.mapas){ location.hash = '#/'; return; }
+  if (!t.mapas){ renderJogadorVazio(j); return; }
 
   const tm = timeDe(j.time);
   const cor = j.time==='canada' ? 'var(--a)' : 'var(--b)';
@@ -839,14 +919,14 @@ function renderJogador(id){
   }).join('');
 
   document.getElementById('jogPage').innerHTML = `
-    <div class="back" onclick="location.hash='#/time/${j.time}'">← voltar pro ${esc(tm.nome)}</div>
+    <div class="back" onclick="ir('time/${j.time}')">← voltar pro ${esc(tm.nome)}</div>
 
     <div class="pl-head ${j.time==='canada'?'a':'b'}">
       ${j.foto ? `<img class="pl-photo" src="${esc(j.foto)}" alt="">`
                : `<div class="pl-photo ${j.time==='canada'?'a':'b'}">${esc(initials(j.nome))}</div>`}
       <div class="pl-id">
         <div class="nm">${esc(j.nome)}</div>
-        <div class="tm" onclick="location.hash='#/time/${j.time}'">${esc(tm.nome)}</div>
+        <div class="tm" onclick="ir('time/${j.time}')">${esc(tm.nome)}</div>
         ${(()=>{const fm=forma(id);
           return fm ? `<div class="pl-selos">${selo(fm)}</div>` : '';})()}
         <div class="stats-row">
@@ -906,7 +986,12 @@ function duasCores(){
 
 /* ---------- roteador ---------- */
 function rota(){
-  const [tela, arg] = location.hash.replace(/^#\/?/,'').split('/');
+  const partes = location.hash.replace(/^#\/?/,'').split('/').filter(Boolean);
+  // #/s1/... abre aquela season. Sem o prefixo, abre a que esta valendo.
+  let n = PADRAO;
+  if (partes[0] && /^s\d+$/.test(partes[0])){ n = +partes[0].slice(1); partes.shift(); }
+  usarSeason(n);
+  const [tela, arg] = partes;
   const telas = {home:document.getElementById('home'),
                  time:document.getElementById('timePage'),
                  jogador:document.getElementById('jogPage')};
@@ -973,25 +1058,70 @@ function openMapModal(semana, idx){
 function closeMapModal(){ document.getElementById('mapModal').hidden = true; }
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeMapModal(); });
 
+/* ---------- seletor de season ---------- */
+function renderSeasons(){
+  const box = document.getElementById('seasons');
+  if (!box) return;
+  if (TODAS.length < 2){ box.hidden = true; return; }
+  box.hidden = false;
+  box.innerHTML = TODAS.map(S=>{
+    const alvo  = S.season === PADRAO ? '#/' : '#/s' + S.season + '/';
+    const atual = D && S.season === D.season;
+    const vivo  = !S.encerrada;
+    return `<a class="sea${atual?' on':''}" href="${alvo}">
+      <span class="sea-n">Season ${S.season}</span>
+      <span class="sea-st${vivo?' viva':''}">${vivo ? 'em andamento' : 'encerrada'}</span></a>`;
+  }).join('');
+}
+
+/* aviso de season que ainda nao comecou */
+function renderVazio(){
+  const el = document.getElementById('vazio');
+  el.hidden = temJogos();
+  if (el.hidden) return;
+  el.innerHTML = `<b>Season ${D.season} começando.</b>
+    Placar, ranking e MVP aparecem aqui assim que o primeiro mapa entrar.`;
+}
+
+/* ---------- troca de season ---------- */
+function usarSeason(n){
+  const S = TODAS.find(x=>x.season===n)
+         || TODAS.find(x=>x.season===PADRAO)
+         || TODAS[TODAS.length-1];
+  if (D === S) return;
+  D = S;
+  _medias = null;                                   // as medias da liga sao por season
+  Object.keys(_rank).forEach(k=>delete _rank[k]);
+  renderHome();
+}
+
+function renderHome(){
+  document.getElementById('statsLabel').textContent = D.statsLabel || '';
+  renderSeasons();
+  renderTopo();
+  renderVazio();
+  renderWeeks();
+  renderStats('A','canada');
+  renderStats('B','sm');
+  renderMVPSemana();
+  renderStrip();
+  renderDuelo();
+  renderRanking();
+  renderMVP();
+  renderSponsor();
+}
+
 /* ---------- start ---------- */
-fetch(ARQUIVO, {cache:'no-store'})
+fetch(INDICE, {cache:'no-store'})
   .then(r=>r.json())
-  .then(dados=>{
-    D = dados;
-    document.getElementById('statsLabel').textContent = D.statsLabel || '';
-    renderTopo();
-    renderWeeks();
-    renderStats('A','canada');
-    renderStats('B','sm');
-    renderMVPSemana();
-    renderStrip();
-    renderDuelo();
-    renderRanking();
-    renderMVP();
-    renderSponsor();
-    window.addEventListener('hashchange', rota);
-    rota();
-  })
+  .then(ix => Promise.all(ix.lista.map(s =>
+      fetch('data/' + s.arquivo, {cache:'no-store'}).then(r=>r.json())))
+    .then(dados=>{
+      TODAS  = dados.sort((a,b)=>a.season-b.season);
+      PADRAO = ix.ativa || TODAS[TODAS.length-1].season;
+      window.addEventListener('hashchange', rota);
+      rota();                                       // a rota escolhe a season e desenha
+    }))
   .catch(()=>{
     document.querySelector('.wrap').insertAdjacentHTML('beforeend',
       '<p style="color:#8a93a3;text-align:center;padding:40px 0">Não consegui carregar os dados.</p>');

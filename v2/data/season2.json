@@ -1,0 +1,123 @@
+{
+ "liga": {
+  "nome": "KND League",
+  "logo": "assets/liga.png"
+ },
+ "season": 2,
+ "encerrada": false,
+ "comp": "Campeonato Interno CS",
+ "statsLabel": "estatísticas da season",
+ "patrocinador": {
+  "img": "assets/patrocinador.jpg",
+  "link": ""
+ },
+ "times": [
+  {
+   "id": "canada",
+   "nome": "CANADÁ",
+   "logo": "assets/times/canada.png",
+   "cor": "#c3f53c",
+   "placar": 0
+  },
+  {
+   "id": "sm",
+   "nome": "SM ASSISTÊNCIA",
+   "logo": "assets/times/sm.png",
+   "cor": "#38bdf8",
+   "placar": 0
+  }
+ ],
+ "jogadores": [
+  {
+   "id": "ibis-cellin",
+   "nome": "iBiS Cellin",
+   "time": "canada",
+   "foto": "assets/jogadores/ibis-cellin.jpg",
+   "aliases": [],
+   "elenco": 0,
+   "total": null
+  },
+  {
+   "id": "loirin-do-knd-045-vida",
+   "nome": "Loirin do KND 045 #vida",
+   "time": "canada",
+   "foto": "assets/jogadores/loirin-do-knd-045-vida.jpg",
+   "aliases": [],
+   "elenco": 1,
+   "total": null
+  },
+  {
+   "id": "jb",
+   "nome": "JB",
+   "time": "canada",
+   "foto": "assets/jogadores/jb.jpg",
+   "aliases": [],
+   "elenco": 2,
+   "total": null
+  },
+  {
+   "id": "vini",
+   "nome": "vini",
+   "time": "canada",
+   "foto": "assets/jogadores/vini.jpg",
+   "aliases": [],
+   "elenco": 3,
+   "total": null
+  },
+  {
+   "id": "jose",
+   "nome": "josé",
+   "time": "canada",
+   "foto": "assets/jogadores/jose.jpg",
+   "aliases": [],
+   "elenco": 4,
+   "total": null
+  },
+  {
+   "id": "furebis-young",
+   "nome": "Furebis young",
+   "time": "sm",
+   "foto": "assets/jogadores/furebis-young.jpg",
+   "aliases": [],
+   "elenco": 0,
+   "total": null
+  },
+  {
+   "id": "bito-lodoyy",
+   "nome": "Bito_Lodoyy",
+   "time": "sm",
+   "foto": "assets/jogadores/bito-lodoyy.jpg",
+   "aliases": [],
+   "elenco": 1,
+   "total": null
+  },
+  {
+   "id": "quico-stallone",
+   "nome": "QUICO STALLONE",
+   "time": "sm",
+   "foto": "assets/jogadores/quico-stallone.jpg",
+   "aliases": [],
+   "elenco": 2,
+   "total": null
+  },
+  {
+   "id": "kaique-skins",
+   "nome": "KAIQUE_SKINS",
+   "time": "sm",
+   "foto": "assets/jogadores/kaique-skins.jpg",
+   "aliases": [],
+   "elenco": 3,
+   "total": null
+  },
+  {
+   "id": "nikolas",
+   "nome": "Nikolas",
+   "time": "sm",
+   "foto": "assets/jogadores/nikolas.jpg",
+   "aliases": [],
+   "elenco": 4,
+   "total": null
+  }
+ ],
+ "partidas": []
+}

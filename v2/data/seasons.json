@@ -1,0 +1,15 @@
+{
+ "ativa": 2,
+ "lista": [
+  {
+   "n": 1,
+   "arquivo": "season1.json",
+   "rotulo": "Season 1"
+  },
+  {
+   "n": 2,
+   "arquivo": "season2.json",
+   "rotulo": "Season 2"
+  }
+ ]
+}
