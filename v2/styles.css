@@ -556,3 +556,15 @@ footer a:hover{color:var(--acc)}
   .mm-title,.mm-score{font-size:21px}
   .hide-sm{display:none}
 }
+
+/* selo de reserva ao lado do nick */
+.tag-res{display:inline-flex;align-items:center;gap:3px;vertical-align:middle;margin-left:6px;
+         padding:2px 6px 2px 4px;border-radius:3px;background:#f5b83c;color:#1a1306;
+         font-family:Inter,sans-serif;font-size:9px;font-weight:900;letter-spacing:1px;line-height:1.2;
+         text-transform:uppercase}
+.tag-res svg{width:11px;height:11px}
+.rcard .nick .tag-res{font-size:8px;margin-left:4px}
+.pl-res{margin-top:10px;font-size:12px;color:var(--mut);cursor:pointer;display:flex;align-items:center;gap:6px}
+.pl-res .tag-res{margin-left:0}
+.pl-res b{color:var(--txt)}
+.pl-res:hover b{text-decoration:underline}

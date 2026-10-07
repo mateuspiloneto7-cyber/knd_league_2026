@@ -30,64 +30,78 @@
  "jogadores": [
   {
    "id": "ibis-cellin",
-   "nome": "iBiS Cellin",
+   "nome": "Cellin",
    "time": "canada",
    "foto": "assets/jogadores/ibis-cellin.jpg",
-   "aliases": [],
+   "aliases": [
+    "iBiS Cellin"
+   ],
    "elenco": 0,
    "total": null
   },
   {
    "id": "loirin-do-knd-045-vida",
-   "nome": "Loirin do KND 045 #vida",
+   "nome": "mTz1ka",
    "time": "canada",
    "foto": "assets/jogadores/loirin-do-knd-045-vida.jpg",
-   "aliases": [],
+   "aliases": [
+    "Loirin do KND 045 #vida"
+   ],
    "elenco": 1,
    "total": null
   },
   {
    "id": "jb",
-   "nome": "JB",
+   "nome": "JBN",
    "time": "canada",
    "foto": "assets/jogadores/jb.jpg",
-   "aliases": [],
+   "aliases": [
+    "JB"
+   ],
    "elenco": 2,
    "total": null
   },
   {
    "id": "vini",
-   "nome": "vini",
+   "nome": "VINI",
    "time": "canada",
    "foto": "assets/jogadores/vini.jpg",
-   "aliases": [],
+   "aliases": [
+    "vini"
+   ],
    "elenco": 3,
    "total": null
   },
   {
    "id": "jose",
-   "nome": "josé",
+   "nome": "CARMINHA BOLADONA",
    "time": "canada",
    "foto": "assets/jogadores/jose.jpg",
-   "aliases": [],
+   "aliases": [
+    "josé"
+   ],
    "elenco": 4,
    "total": null
   },
   {
    "id": "furebis-young",
-   "nome": "Furebis young",
+   "nome": "CACUNDA",
    "time": "sm",
    "foto": "assets/jogadores/furebis-young.jpg",
-   "aliases": [],
+   "aliases": [
+    "Furebis young"
+   ],
    "elenco": 0,
    "total": null
   },
   {
    "id": "bito-lodoyy",
-   "nome": "Bito_Lodoyy",
+   "nome": "BITO",
    "time": "sm",
    "foto": "assets/jogadores/bito-lodoyy.jpg",
-   "aliases": [],
+   "aliases": [
+    "Bito_Lodoyy"
+   ],
    "elenco": 1,
    "total": null
   },
@@ -102,20 +116,36 @@
   },
   {
    "id": "kaique-skins",
-   "nome": "KAIQUE_SKINS",
+   "nome": "KAIKE",
    "time": "sm",
    "foto": "assets/jogadores/kaique-skins.jpg",
-   "aliases": [],
+   "aliases": [
+    "KAIQUE_SKINS"
+   ],
    "elenco": 3,
    "total": null
   },
   {
    "id": "nikolas",
-   "nome": "Nikolas",
+   "nome": "NIKOLAS",
    "time": "sm",
    "foto": "assets/jogadores/nikolas.jpg",
-   "aliases": [],
+   "aliases": [
+    "Nikolas"
+   ],
    "elenco": 4,
+   "total": null
+  },
+  {
+   "id": "mth",
+   "nome": "MTH",
+   "time": "sm",
+   "foto": null,
+   "aliases": [
+    "mth"
+   ],
+   "elenco": 5,
+   "reservaDe": "quico-stallone",
    "total": null
   }
  ],

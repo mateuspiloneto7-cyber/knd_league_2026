@@ -162,7 +162,7 @@ function renderStats(letra, tid){
   secao('statsLabel', temJogos());
   document.querySelector('.stats').hidden = !temJogos();
   const rows = elenco(tid).map(p=>`
-    <tr class="link" onclick="irJogador('${p.id}')"><td class="name">${esc(p.nome)}</td>
+    <tr class="link" onclick="irJogador('${p.id}')"><td class="name">${nick(p)}</td>
       <td>${p.k}</td><td>${p.a}</td><td>${p.d}</td>
       <td class="der"><b>${f2(kd(p))}</b></td>
       <td class="der">${f2(kda(p))}</td></tr>`).join('');
@@ -282,6 +282,22 @@ function melhores(semana){
     return {j, t, r: ratingKND(t)};
   }).filter(Boolean).sort((x,y)=>y.r-x.r);
 }
+
+/** reserva ganha um selo ao lado do nick, dizendo de quem ele e reserva */
+function reservaTag(j){
+  if (!j.reservaDe) return '';
+  const tit = D.jogadores.find(x=>x.id===j.reservaDe);
+  const quem = tit ? tit.nome : j.reservaDe;
+  return ` <span class="tag-res" title="reserva do ${esc(quem)}">`+
+    `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h11l-3-3M17 17H6l3 3" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>RES</span>`;
+}
+function reservaLinha(j){
+  if (!j.reservaDe) return '';
+  const tit = D.jogadores.find(x=>x.id===j.reservaDe);
+  return `<div class="pl-res" onclick="irJogador('${esc(j.reservaDe)}')">${reservaTag(j)}
+    reserva do <b>${esc(tit ? tit.nome : j.reservaDe)}</b></div>`;
+}
+function nick(j){ return esc(j.nome) + reservaTag(j); }
 
 function avatarDe(j){
   return j.foto ? `<img class="av" src="${esc(j.foto)}" alt="">`
@@ -722,7 +738,7 @@ function renderTime(tid){
     <div class="rcard ${classe}" onclick="irJogador('${j.id}')" title="ver a ficha de ${esc(j.nome)}">
       ${j.foto ? `<img src="${esc(j.foto)}" alt="${esc(j.nome)}">`
                : `<span class="ini">${esc(initials(j.nome))}</span>`}
-      <span class="nick">${esc(j.nome)}</span>
+      <span class="nick">${nick(j)}</span>
     </div>`).join('');
 
   /* map pool do time */
@@ -743,7 +759,7 @@ function renderTime(tid){
 
   /* tabela de K/D do time */
   const linhasStats = elenco(tid).map(j=>`
-    <tr class="link" onclick="irJogador('${j.id}')"><td class="name">${esc(j.nome)}</td>
+    <tr class="link" onclick="irJogador('${j.id}')"><td class="name">${nick(j)}</td>
       <td>${j.k}</td><td>${j.a}</td><td>${j.d}</td>
       <td class="der"><b>${f2(kd(j))}</b></td>
       <td class="der">${f2(kda(j))}</td></tr>`).join('');
@@ -874,6 +890,7 @@ function renderJogadorVazio(j){
       <div class="pl-id">
         <div class="nm">${esc(j.nome)}</div>
         <div class="tm" onclick="ir('time/${j.time}')">${esc(tm.nome)}</div>
+        ${reservaLinha(j)}
         <p class="pl-vazio">Ainda sem mapas na Season ${D.season}.
            As estatísticas entram aqui depois do primeiro jogo.</p>
       </div>
@@ -927,6 +944,7 @@ function renderJogador(id){
       <div class="pl-id">
         <div class="nm">${esc(j.nome)}</div>
         <div class="tm" onclick="ir('time/${j.time}')">${esc(tm.nome)}</div>
+        ${reservaLinha(j)}
         ${(()=>{const fm=forma(id);
           return fm ? `<div class="pl-selos">${selo(fm)}</div>` : '';})()}
         <div class="stats-row">
