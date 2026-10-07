@@ -140,7 +140,7 @@
    "id": "mth",
    "nome": "MTH",
    "time": "sm",
-   "foto": null,
+   "foto": "assets/jogadores/mth.jpg",
    "aliases": [
     "mth"
    ],

@@ -186,7 +186,7 @@
    "id": "mth",
    "nome": "mth",
    "time": "sm",
-   "foto": null,
+   "foto": "assets/jogadores/mth.jpg",
    "aliases": [],
    "elenco": null,
    "total": {
