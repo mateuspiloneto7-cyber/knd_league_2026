@@ -163,9 +163,9 @@ function renderStats(letra, tid){
   document.querySelector('.stats').hidden = !temJogos();
   const rows = elenco(tid).map(p=>`
     <tr class="link" onclick="irJogador('${p.id}')"><td class="name">${nick(p)}</td>
-      <td>${p.k}</td><td>${p.a}</td><td>${p.d}</td>
+      ${jogou(p) ? `<td>${p.k}</td><td>${p.a}</td><td>${p.d}</td>
       <td class="der"><b>${f2(kd(p))}</b></td>
-      <td class="der">${f2(kda(p))}</td></tr>`).join('');
+      <td class="der">${f2(kda(p))}</td>` : '<td class="dim">-</td>'.repeat(5)}</tr>`).join('');
   document.getElementById('stats'+letra).innerHTML =
     `<table><thead><tr><th>Jogador</th><th>K</th><th>A</th><th>D</th>
       <th>K/D</th><th>KDA</th></tr></thead><tbody>${rows}</tbody></table>`;
@@ -297,6 +297,8 @@ function reservaLinha(j){
   return `<div class="pl-res" onclick="irJogador('${esc(j.reservaDe)}')">${reservaTag(j)}
     reserva do <b>${esc(tit ? tit.nome : j.reservaDe)}</b></div>`;
 }
+/** quem ainda nao entrou em mapa mostra traco, nao zero */
+function jogou(p){ return !!(p.k || p.a || p.d); }
 function nick(j){ return esc(j.nome) + reservaTag(j); }
 
 function avatarDe(j){
@@ -760,9 +762,9 @@ function renderTime(tid){
   /* tabela de K/D do time */
   const linhasStats = elenco(tid).map(j=>`
     <tr class="link" onclick="irJogador('${j.id}')"><td class="name">${nick(j)}</td>
-      <td>${j.k}</td><td>${j.a}</td><td>${j.d}</td>
+      ${jogou(j) ? `<td>${j.k}</td><td>${j.a}</td><td>${j.d}</td>
       <td class="der"><b>${f2(kd(j))}</b></td>
-      <td class="der">${f2(kda(j))}</td></tr>`).join('');
+      <td class="der">${f2(kda(j))}</td>` : '<td class="dim">-</td>'.repeat(5)}</tr>`).join('');
 
   /* resumo de series e mapas */
   let sv=0, sd=0, mv=0, md=0, me=0;
