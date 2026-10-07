@@ -172,7 +172,7 @@ function renderStats(letra, tid){
 }
 
 /* ---------- MVP da serie ---------- */
-const MVP_ORDER = ['K','A','D','K/D','KDA','Rating'];
+const MVP_ORDER = ['K','A','D','K/D','KDA'];
 
 function renderMVP(){
   const box = document.getElementById('mvp');
@@ -185,9 +185,9 @@ function renderMVP(){
   if (!todos.length){ box.innerHTML = ''; return; }
 
   todos.forEach(e=>{
-    e.m = {K:e.p.k, A:e.p.a, D:e.p.d, 'K/D':kd(e.p), KDA:kda(e.p), Rating:ratingOf(e.p)};
+    e.m = {K:e.p.k, A:e.p.a, D:e.p.d, 'K/D':kd(e.p), KDA:kda(e.p)};
   });
-  const mvp = todos.slice().sort((x,y)=> (y.m.Rating-x.m.Rating) || (y.p.k-x.p.k))[0];
+  const mvp = todos.slice().sort((x,y)=> (y.m.KDA-x.m.KDA) || (y.p.k-x.p.k))[0];
 
   const avg = {};
   MVP_ORDER.forEach(k=> avg[k] = (todos.reduce((s,e)=>s+e.m[k],0)/todos.length) || 0.0001);
@@ -197,7 +197,7 @@ function renderMVP(){
   const bars = MVP_ORDER.map(k=>{
     const v = mvp.m[k], ratio = avg[k]>0 ? v/avg[k] : 1;
     const h = Math.max(MINp, Math.min(CAPp, ratio*BASEp));
-    return `<div class="mvp-bar${k==='Rating'?' hl':''}">
+    return `<div class="mvp-bar${k==='KDA'?' hl':''}">
       <div class="val">${isInt(k) ? Math.round(v) : f2(v)}</div>
       <div class="col" style="height:${h.toFixed(1)}%"></div></div>`;
   }).join('');
@@ -268,11 +268,9 @@ function medias(){
   return _medias;
 }
 
-/** Rating KND: 1.00 = jogador medio da liga */
-function ratingKND(t){
-  const md = medias();
-  return 0.55*(t.kpr/md.kpr) + 0.30*(t.spr/md.spr) + 0.15*(t.apr/md.apr);
-}
+/** nota unica do site: KDA, (kills + assists) / mortes.
+    O Rating KND saiu em 2026-10-06 porque dois numeros de nota confundiam o time. */
+function ratingKND(t){ return kda(t); }
 
 /** melhores de uma semana (ou da season, sem argumento) */
 function melhores(semana){
@@ -435,9 +433,9 @@ function conquistasDaSeason(id){
     }
 
     // podio de rating da season
-    if (pos === 0) out.push({icone:'estrela', cor:'ouro', nome:'MVP da Season', det:`Season ${S} · rating ${f2(rank[0].r)}`});
-    else if (pos === 1) out.push({icone:'medalha', cor:'prata', nome:'2º no ranking', det:`Season ${S} · rating ${f2(rank[1].r)}`});
-    else if (pos === 2) out.push({icone:'medalha', cor:'bronze', nome:'3º no ranking', det:`Season ${S} · rating ${f2(rank[2].r)}`});
+    if (pos === 0) out.push({icone:'estrela', cor:'ouro', nome:'MVP da Season', det:`Season ${S} · KDA ${f2(rank[0].r)}`});
+    else if (pos === 1) out.push({icone:'medalha', cor:'prata', nome:'2º no ranking', det:`Season ${S} · KDA ${f2(rank[1].r)}`});
+    else if (pos === 2) out.push({icone:'medalha', cor:'bronze', nome:'3º no ranking', det:`Season ${S} · KDA ${f2(rank[2].r)}`});
 
     // artilheiro
     const art = rank.slice().sort((a,b)=>b.t.k-a.t.k)[0];
@@ -490,7 +488,10 @@ function evolucaoSVG(id, cor){
 
   const L=640, A=190, mx=34, my=24;
   const vs = pontos.map(p=>p.r);
-  const min = Math.min(...vs, .8), max = Math.max(...vs, 1.2);
+  // media de KDA de quem bateu o corte, pra linha de referencia
+  const aptos = melhores().filter(c=>c.t.rounds>=minRounds());
+  const base = aptos.length ? aptos.reduce((s,c)=>s+c.r,0)/aptos.length : 1;
+  const min = Math.min(...vs, base*.8), max = Math.max(...vs, base*1.2);
   const x = i => mx + i*(L-mx*2)/(pontos.length-1);
   const y = v => my + (1-(v-min)/((max-min)||1))*(A-my*2);
 
@@ -498,10 +499,10 @@ function evolucaoSVG(id, cor){
   const area = `${mx},${A-my} ${linha} ${(L-mx).toFixed(1)},${A-my}`;
   let g = `<polygon points="${area}" fill="${cor}18"/>`;
   // a linha da media da liga
-  if (min <= 1 && 1 <= max)
-    g += `<line x1="${mx}" y1="${y(1).toFixed(1)}" x2="${L-mx}" y2="${y(1).toFixed(1)}"
+  if (min <= base && base <= max)
+    g += `<line x1="${mx}" y1="${y(base).toFixed(1)}" x2="${L-mx}" y2="${y(base).toFixed(1)}"
            stroke="#3b5269" stroke-width="1" stroke-dasharray="4 4"/>
-          <text x="${L-mx}" y="${(y(1)-6).toFixed(1)}" text-anchor="end" font-size="9"
+          <text x="${L-mx}" y="${(y(base)-6).toFixed(1)}" text-anchor="end" font-size="9"
            fill="#68809a" font-weight="700" font-family="Inter,sans-serif">MÉDIA DA LIGA</text>`;
   g += `<polyline points="${linha}" fill="none" stroke="${cor}" stroke-width="2.5"
          stroke-linejoin="round" stroke-linecap="round"/>`;
@@ -521,7 +522,7 @@ function selo(f){
   if (!f) return '';
   const txt = {quente:'EM ALTA', frio:'EM QUEDA', estavel:'ESTÁVEL'}[f.estado];
   const sinal = f.dif > 0 ? '+' : '';
-  return `<span class="forma ${f.estado}" title="últimos 3 mapas: ${f2(f.recente)} de rating, ${sinal}${f2(f.dif)} contra a média dele na season">${txt}</span>`;
+  return `<span class="forma ${f.estado}" title="últimos 3 mapas: ${f2(f.recente)} de KDA, ${sinal}${f2(f.dif)} contra a média dele na season">${txt}</span>`;
 }
 
 function setaMov(m){
@@ -550,7 +551,7 @@ function renderMVPSemana(){
          <div class="nome link" onclick="irJogador('${j.id}')">${esc(j.nome)}</div>
          <div class="sub">${esc(timeDe(j.time).nome)} · ${c.t.mapas} mapas na semana</div>
          <div class="boxes">
-           <div class="box"><div class="v">${f2(c.r)}</div><div class="k">Rating</div></div>
+           <div class="box"><div class="v">${f2(c.r)}</div><div class="k">KDA</div></div>
            <div class="box"><div class="v">${c.t.k}</div><div class="k">Kills</div></div>
            <div class="box"><div class="v">${f2(c.t.kd)}</div><div class="k">K/D</div></div>
            <div class="box"><div class="v">${f2(c.t.kpr)}</div><div class="k">K/round</div></div>
@@ -629,10 +630,10 @@ function renderDuelo(){
   if (!A || !B){ box.innerHTML = ''; return; }
 
   document.getElementById('duelHint').textContent =
-    `${A.j.nome} contra ${B.j.nome}, os melhores rating de cada lado`;
+    `${A.j.nome} contra ${B.j.nome}, os melhores KDA de cada lado`;
 
   const LINHAS = [
-    {k:'Rating',        a:A.r,       b:B.r,       fmt:f2},
+    {k:'KDA',           a:A.r,       b:B.r,       fmt:f2},
     {k:'K/D',           a:A.t.kd,    b:B.t.kd,    fmt:f2},
     {k:'Kills',         a:A.t.k,     b:B.t.k,     fmt:v=>Math.round(v)},
     {k:'Kills/round',   a:A.t.kpr,   b:B.t.kpr,   fmt:f2},
@@ -704,7 +705,7 @@ function renderRanking(){
       <td class="dim">${c.t.k}</td>
       <td class="dim">${c.t.mapas}</td></tr>`).join('');
   document.getElementById('ranking').innerHTML =
-    `<table><thead><tr><th></th><th></th><th>Jogador</th><th>Rating</th><th>K/D</th>
+    `<table><thead><tr><th></th><th></th><th>Jogador</th><th>KDA</th><th>K/D</th>
       <th>K/round</th><th>Sobrevida</th><th>Kills</th><th>Mapas</th></tr></thead>
       <tbody>${linhas}</tbody></table>`;
 }
@@ -826,8 +827,7 @@ function linhasDoJogador(id){
 
 /** rating de um mapa isolado, pra tabela e pra regularidade */
 function ratingDaLinha(l){
-  const r = Math.max(l.rounds,1);
-  return ratingKND({kpr:l.k/r, spr:(r-l.d)/r, apr:l.a/r});
+  return kda(l);
 }
 
 /** regularidade: quanto o rating dele oscila de mapa pra mapa */
@@ -920,7 +920,7 @@ function renderJogador(id){
     ({nome, v:valor, p: percentil(ler({t, r, reg}), aptos.map(c=>ler({
       t:c.t, r:c.r, reg:regularidade(linhasDoJogador(c.j.id))})))});
   const eixos = [
-    eixo('Rating',    f2(r),                    x=>x.r),
+    eixo('KDA',       f2(r),                    x=>x.r),
     eixo('K/rnd',     f2(t.kpr),                x=>x.t.kpr),
     eixo('K/D',       f2(t.kd),                 x=>x.t.kd),
     eixo('Sobrevida', Math.round(t.spr*100)+'%',x=>x.t.spr),
@@ -950,7 +950,7 @@ function renderJogador(id){
         ${(()=>{const fm=forma(id);
           return fm ? `<div class="pl-selos">${selo(fm)}</div>` : '';})()}
         <div class="stats-row">
-          <div class="stat"><div class="v">${f2(r)}</div><div class="k">Rating</div></div>
+          <div class="stat"><div class="v">${f2(r)}</div><div class="k">KDA</div></div>
           <div class="stat"><div class="v">${apto?('#'+pos):'-'}</div><div class="k">na liga</div></div>
           <div class="stat"><div class="v">${f2(t.kd)}</div><div class="k">K/D</div></div>
           <div class="stat"><div class="v">${t.k}</div><div class="k">Kills</div></div>
@@ -969,8 +969,7 @@ function renderJogador(id){
       <div class="radar-legend">
         <p>O número em cada ponta é o valor real. A distância até a borda mostra o quanto
            ele está acima dos outros jogadores da liga.</p>
-        <p><b>Rating KND</b> junta kills por round, sobrevivência e assistências.
-           1.00 é exatamente a média da liga.</p>
+        <p><b>KDA</b> é kills mais assistências, dividido pelas mortes.</p>
         <p><b>Regularidade</b> é o quanto ele repete o mesmo nível mapa após mapa.
            Alto quer dizer que entrega sempre.</p>
         ${apto ? '' : `<p style="color:var(--draw)">Jogou menos de ${corte} rounds na season,
@@ -985,7 +984,7 @@ function renderJogador(id){
     <div class="sec-label">Mapa a mapa</div>
     <div class="tpanel"><table>
       <thead><tr><th>Placar</th><th>Mapa</th><th class="hide-sm">Rodada</th>
-        <th>K-D</th><th class="hide-sm">A</th><th>Rating</th></tr></thead>
+        <th>K-D</th><th class="hide-sm">A</th><th>KDA</th></tr></thead>
       <tbody>${ultimos}</tbody></table></div>`;
 }
 
