@@ -24,7 +24,7 @@
    "nome": "SM ASSISTÊNCIA",
    "logo": "assets/times/sm.png",
    "cor": "#38bdf8",
-   "placar": 1
+   "placar": 2
   }
  ],
  "jogadores": [
@@ -146,6 +146,15 @@
    ],
    "elenco": 5,
    "reservaDe": "quico-stallone",
+   "total": null
+  },
+  {
+   "id": "polenta-god",
+   "nome": "POLENTA_GOD",
+   "time": "sm",
+   "foto": null,
+   "aliases": [],
+   "elenco": 6,
    "total": null
   }
  ],
@@ -1110,6 +1119,173 @@
        "kast": 57,
        "mk": 2,
        "fk": 2,
+       "fa": 0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "semana": 3,
+   "nome": "Semana 3",
+   "data": "2026-10-20",
+   "serie": "0x1",
+   "mapas_vazios": 0,
+   "mapas": [
+    {
+     "mapa": "?",
+     "rounds_canada": 14,
+     "rounds_sm": 16,
+     "vencedor": "sm",
+     "stats": [
+      {
+       "jogador": "ibis-cellin",
+       "time": "canada",
+       "k": 29,
+       "a": 6,
+       "d": 16,
+       "mvps": null,
+       "hs": null,
+       "score": null,
+       "adr": 98.4,
+       "kast": 80,
+       "mk": 9,
+       "fk": 5,
+       "fa": 0
+      },
+      {
+       "jogador": "loirin-do-knd-045-vida",
+       "time": "canada",
+       "k": 25,
+       "a": 7,
+       "d": 18,
+       "mvps": null,
+       "hs": null,
+       "score": null,
+       "adr": 91.97,
+       "kast": 73,
+       "mk": 6,
+       "fk": 6,
+       "fa": 0
+      },
+      {
+       "jogador": "jose",
+       "time": "canada",
+       "k": 21,
+       "a": 5,
+       "d": 24,
+       "mvps": null,
+       "hs": null,
+       "score": null,
+       "adr": 76.33,
+       "kast": 70,
+       "mk": 6,
+       "fk": 5,
+       "fa": 0
+      },
+      {
+       "jogador": "jb",
+       "time": "canada",
+       "k": 14,
+       "a": 7,
+       "d": 22,
+       "mvps": null,
+       "hs": null,
+       "score": null,
+       "adr": 55.6,
+       "kast": 67,
+       "mk": 1,
+       "fk": 1,
+       "fa": 2
+      },
+      {
+       "jogador": "vini",
+       "time": "canada",
+       "k": 12,
+       "a": 6,
+       "d": 27,
+       "mvps": null,
+       "hs": null,
+       "score": null,
+       "adr": 50.17,
+       "kast": 50,
+       "mk": 2,
+       "fk": 2,
+       "fa": 0
+      },
+      {
+       "jogador": "furebis-young",
+       "time": "sm",
+       "k": 29,
+       "a": 12,
+       "d": 18,
+       "mvps": null,
+       "hs": null,
+       "score": null,
+       "adr": 115.57,
+       "kast": 90,
+       "mk": 7,
+       "fk": 2,
+       "fa": 0
+      },
+      {
+       "jogador": "polenta-god",
+       "time": "sm",
+       "k": 28,
+       "a": 3,
+       "d": 21,
+       "mvps": null,
+       "hs": null,
+       "score": null,
+       "adr": 77.77,
+       "kast": 67,
+       "mk": 7,
+       "fk": 1,
+       "fa": 0
+      },
+      {
+       "jogador": "kaique-skins",
+       "time": "sm",
+       "k": 19,
+       "a": 3,
+       "d": 18,
+       "mvps": null,
+       "hs": null,
+       "score": null,
+       "adr": 65.8,
+       "kast": 73,
+       "mk": 4,
+       "fk": 3,
+       "fa": 0
+      },
+      {
+       "jogador": "mth",
+       "time": "sm",
+       "k": 16,
+       "a": 7,
+       "d": 20,
+       "mvps": null,
+       "hs": null,
+       "score": null,
+       "adr": 61.17,
+       "kast": 60,
+       "mk": 4,
+       "fk": 2,
+       "fa": 0
+      },
+      {
+       "jogador": "bito-lodoyy",
+       "time": "sm",
+       "k": 14,
+       "a": 6,
+       "d": 24,
+       "mvps": null,
+       "hs": null,
+       "score": null,
+       "adr": 58.73,
+       "kast": 63,
+       "mk": 4,
+       "fk": 3,
        "fa": 0
       }
      ]
