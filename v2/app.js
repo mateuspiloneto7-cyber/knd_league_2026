@@ -433,24 +433,10 @@ function conquistasDaSeason(id){
         : {icone:'taca', cor:'prata', nome:'Vice-campeão', det:`Season ${S}`});
     }
 
-    // podio de rating da season
+    // MVP da season. Estante enxuta por pedido dele (10/11): so campeao,
+    // vice e MVP da season. Podio, artilheiro e MVP da semana sairam.
     if (pos === 0) out.push({icone:'estrela', cor:'ouro', nome:'MVP da Season', det:`Season ${S} · K/D ${f2(rank[0].r)}`});
-    else if (pos === 1) out.push({icone:'medalha', cor:'prata', nome:'2º no ranking', det:`Season ${S} · K/D ${f2(rank[1].r)}`});
-    else if (pos === 2) out.push({icone:'medalha', cor:'bronze', nome:'3º no ranking', det:`Season ${S} · K/D ${f2(rank[2].r)}`});
-
-    // artilheiro
-    const art = rank.slice().sort((a,b)=>b.t.k-a.t.k)[0];
-    if (art && art.j.id === id)
-      out.push({icone:'mira', cor:'coral', nome:'Artilheiro', det:`Season ${S} · ${art.t.k} kills`});
   }
-
-  // MVPs de semana. Esse conta mesmo com a season correndo: cada semana
-  // encerrada ja e um fato, nao depende do resto do campeonato.
-  let n = 0;
-  semanasJogadas().forEach(p=>{ const c = melhores(p.semana)[0]; if (c && c.j.id===id) n++; });
-  // "x" comum: a Anton nao tem o sinal de multiplicacao e ele sai como traco
-  if (n) out.push({icone:'estrela', cor:'coral',
-                   nome:`${n}x MVP da semana`, det:`Season ${S}`});
   return out;
 }
 
