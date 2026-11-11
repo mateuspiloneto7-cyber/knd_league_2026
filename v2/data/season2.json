@@ -160,22 +160,14 @@
   },
   {
    "id": "o-reserva-001",
-   "nome": "O_RESERVA_001",
-   "time": "canada",
-   "foto": null,
-   "aliases": [],
-   "elenco": 5,
-   "reservaDe": "loirin-do-knd-045-vida",
-   "total": null
-  },
-  {
-   "id": "henepeca",
    "nome": "henepeca",
    "time": "canada",
    "foto": null,
-   "aliases": [],
-   "elenco": 6,
-   "reservaDe": "jb",
+   "aliases": [
+    "O_RESERVA_001"
+   ],
+   "elenco": 5,
+   "reservaDe": "loirin-do-knd-045-vida",
    "total": null
   }
  ],
@@ -1855,7 +1847,7 @@
        "fa": null
       },
       {
-       "jogador": "henepeca",
+       "jogador": "o-reserva-001",
        "time": "canada",
        "k": 12,
        "a": 4,
@@ -2028,7 +2020,7 @@
        "fa": null
       },
       {
-       "jogador": "henepeca",
+       "jogador": "o-reserva-001",
        "time": "canada",
        "k": 4,
        "a": 4,
