@@ -1132,6 +1132,90 @@ function renderHome(){
   renderSponsor();
 }
 
+/* ---------- festa do campeao ----------
+   Abre por cima do site quando a season que esta valendo foi encerrada:
+   confete na cor do time campeao + logo + CAMPEAO. Toque ou 7s fecha.
+   So na entrada pela home, pra nao atrapalhar link direto pra jogador. */
+function celebrarCampeao(){
+  const S = TODAS.find(x=>x.season===PADRAO);
+  if (!S || !S.encerrada) return;
+  if (location.hash.replace(/^#\/?/,'')) return;
+  const ts = S.times.slice().sort((a,b)=>(b.placar||0)-(a.placar||0));
+  if (ts.length < 2 || ts[0].placar === ts[1].placar) return;
+  const c = ts[0], v = ts[1];
+  const cor = getComputedStyle(document.documentElement)
+              .getPropertyValue(c.id==='sm' ? '--b' : '--a').trim() || '#ffc233';
+
+  const ov = document.createElement('div');
+  ov.className = 'festa';
+  ov.style.setProperty('--cc', cor);
+  ov.innerHTML = `<canvas></canvas>
+    <div class="festa-card">
+      <div class="festa-logo"><img src="${esc(c.logo)}" alt=""></div>
+      <div class="festa-tit">CAMPEÃO</div>
+      <div class="festa-time">${esc(c.nome)}</div>
+      <div class="festa-sub">${esc(S.liga?.nome||'KND League')} · Season ${S.season} · ${c.placar}x${v.placar} na série</div>
+      <div class="festa-dica">toque pra entrar</div>
+    </div>`;
+  document.body.appendChild(ov);
+  document.body.style.overflow = 'hidden';
+
+  const cv = ov.querySelector('canvas'), g = cv.getContext('2d');
+  const dpr = Math.min(window.devicePixelRatio||1, 2);
+  let W, H;
+  const medir = ()=>{ W = innerWidth; H = innerHeight; cv.width = W*dpr; cv.height = H*dpr; g.setTransform(dpr,0,0,dpr,0,0); };
+  medir(); addEventListener('resize', medir);
+
+  const cores = [cor, cor, '#ffc233', '#ffffff', '#f2555f'];
+  const pecas = [];
+  const estourar = (x, y, n, forca) => {
+    for (let i=0;i<n;i++){
+      const ang = -Math.PI/2 + (Math.random()-.5)*Math.PI*0.9;
+      const vel = forca*(0.5+Math.random()*0.7);
+      pecas.push({x, y, vx:Math.cos(ang)*vel, vy:Math.sin(ang)*vel,
+        w:6+Math.random()*6, h:8+Math.random()*10, r:Math.random()*6.28,
+        vr:(Math.random()-.5)*0.3, cor:cores[i%cores.length],
+        bal:Math.random()*6.28, vida:0});
+    }
+  };
+  const calma = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!calma){
+    estourar(W*0.5, H*0.55, 160, 17);
+    setTimeout(()=>{ estourar(0, H, 90, 19); estourar(W, H, 90, 19); }, 350);
+    setTimeout(()=>estourar(W*0.5, H*0.6, 110, 15), 1100);
+  }
+  let vivo = true, cair = null;
+  // depois das explosoes, chuva fina caindo do topo
+  if (!calma) cair = setInterval(()=>{ for(let i=0;i<4;i++) pecas.push({x:Math.random()*W, y:-20, vx:(Math.random()-.5)*2, vy:2+Math.random()*2,
+      w:6+Math.random()*5, h:8+Math.random()*8, r:Math.random()*6.28, vr:(Math.random()-.5)*0.3,
+      cor:cores[(Math.random()*cores.length)|0], bal:Math.random()*6.28, vida:0}); }, 60);
+  const passo = ()=>{
+    if (!vivo) return;
+    g.clearRect(0,0,W,H);
+    for (let i=pecas.length-1;i>=0;i--){
+      const q = pecas[i];
+      q.vida++; q.vy += 0.32; q.vx *= 0.985; q.vy = Math.min(q.vy, 5.5);
+      q.bal += 0.08; q.x += q.vx + Math.sin(q.bal)*0.8; q.y += q.vy; q.r += q.vr;
+      if (q.y > H+30){ pecas.splice(i,1); continue; }
+      g.save(); g.translate(q.x,q.y); g.rotate(q.r);
+      g.scale(1, Math.abs(Math.cos(q.bal*1.7))*0.8+0.2);   // giro em 3D fingido
+      g.fillStyle = q.cor; g.fillRect(-q.w/2,-q.h/2,q.w,q.h);
+      g.restore();
+    }
+    requestAnimationFrame(passo);
+  };
+  requestAnimationFrame(passo);
+
+  const fechar = ()=>{
+    if (ov.classList.contains('saindo')) return;
+    ov.classList.add('saindo'); clearInterval(cair);
+    setTimeout(()=>{ vivo=false; ov.remove(); document.body.style.overflow=''; removeEventListener('resize', medir); }, 500);
+  };
+  ov.addEventListener('click', fechar);
+  addEventListener('keydown', function k(e){ if(e.key==='Escape'||e.key==='Enter'){ fechar(); removeEventListener('keydown',k);} });
+  setTimeout(fechar, 7000);
+}
+
 /* ---------- start ---------- */
 fetch(INDICE, {cache:'no-store'})
   .then(r=>r.json())
@@ -1142,6 +1226,7 @@ fetch(INDICE, {cache:'no-store'})
       PADRAO = ix.ativa || TODAS[TODAS.length-1].season;
       window.addEventListener('hashchange', rota);
       rota();                                       // a rota escolhe a season e desenha
+      celebrarCampeao();
     }))
   .catch(()=>{
     document.querySelector('.wrap').insertAdjacentHTML('beforeend',

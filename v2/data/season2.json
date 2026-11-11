@@ -4,7 +4,7 @@
   "logo": "assets/liga.png"
  },
  "season": 2,
- "encerrada": false,
+ "encerrada": true,
  "comp": "Campeonato Interno CS",
  "statsLabel": "estatísticas da season",
  "patrocinador": {
