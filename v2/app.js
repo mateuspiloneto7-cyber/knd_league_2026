@@ -1075,7 +1075,7 @@ function renderSeasons(){
     const alvo  = S.season === PADRAO ? '#/' : '#/s' + S.season + '/';
     const atual = D && S.season === D.season;
     const vivo  = !S.encerrada;
-    return `<a class="sea${atual?' on':''}" href="${alvo}">
+    return `<a class="sea${atual?' on':''}" href="${alvo}" data-s="${S.season}">
       <span class="sea-n">Season ${S.season}</span>
       <span class="sea-st${vivo?' viva':''}">${vivo ? 'em andamento' : 'encerrada'}</span></a>`;
   }).join('');
@@ -1122,10 +1122,8 @@ function renderHome(){
    Abre por cima do site quando a season que esta valendo foi encerrada:
    confete na cor do time campeao + logo + CAMPEAO. Toque ou 7s fecha.
    So na entrada pela home, pra nao atrapalhar link direto pra jogador. */
-function celebrarCampeao(){
-  const S = TODAS.find(x=>x.season===PADRAO);
-  if (!S || !S.encerrada) return;
-  if (location.hash.replace(/^#\/?/,'')) return;
+function celebrarCampeao(S){
+  if (!S || !S.encerrada || document.querySelector('.festa')) return;
   const ts = S.times.slice().sort((a,b)=>(b.placar||0)-(a.placar||0));
   if (ts.length < 2 || ts[0].placar === ts[1].placar) return;
   const c = ts[0], v = ts[1];
@@ -1212,7 +1210,12 @@ fetch(INDICE, {cache:'no-store'})
       PADRAO = ix.ativa || TODAS[TODAS.length-1].season;
       window.addEventListener('hashchange', rota);
       rota();                                       // a rota escolhe a season e desenha
-      celebrarCampeao();
+      if (!location.hash.replace(/^#\/?/,'')) celebrarCampeao(TODAS.find(x=>x.season===PADRAO));
+      // clicar na aba de uma season encerrada tambem solta a festa do campeao dela
+      document.getElementById('seasons').addEventListener('click', e=>{
+        const a = e.target.closest('[data-s]');
+        if (a) celebrarCampeao(TODAS.find(x=>x.season===+a.dataset.s));
+      });
     }))
   .catch(()=>{
     document.querySelector('.wrap').insertAdjacentHTML('beforeend',
