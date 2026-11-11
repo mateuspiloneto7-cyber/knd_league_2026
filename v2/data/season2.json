@@ -107,10 +107,12 @@
   },
   {
    "id": "quico-stallone",
-   "nome": "QUICO STALLONE",
+   "nome": "POLENTA_GOD",
    "time": "sm",
    "foto": "assets/jogadores/quico-stallone.jpg",
-   "aliases": [],
+   "aliases": [
+    "QUICO STALLONE"
+   ],
    "elenco": 2,
    "total": null
   },
@@ -147,15 +149,6 @@
    ],
    "elenco": 5,
    "reservaDe": "quico-stallone",
-   "total": null
-  },
-  {
-   "id": "polenta-god",
-   "nome": "POLENTA_GOD",
-   "time": "sm",
-   "foto": null,
-   "aliases": [],
-   "elenco": 6,
    "total": null
   },
   {
@@ -1242,7 +1235,7 @@
        "fa": 0
       },
       {
-       "jogador": "polenta-god",
+       "jogador": "quico-stallone",
        "time": "sm",
        "k": 28,
        "a": 3,
@@ -1424,7 +1417,7 @@
        "fa": null
       },
       {
-       "jogador": "polenta-god",
+       "jogador": "quico-stallone",
        "time": "sm",
        "k": 19,
        "a": 4,
@@ -1567,7 +1560,7 @@
        "fa": null
       },
       {
-       "jogador": "polenta-god",
+       "jogador": "quico-stallone",
        "time": "sm",
        "k": 13,
        "a": 2,
@@ -1770,7 +1763,7 @@
        "fa": null
       },
       {
-       "jogador": "polenta-god",
+       "jogador": "quico-stallone",
        "time": "sm",
        "k": 9,
        "a": 2,
@@ -1922,7 +1915,7 @@
        "fa": null
       },
       {
-       "jogador": "polenta-god",
+       "jogador": "quico-stallone",
        "time": "sm",
        "k": 15,
        "a": 3,
@@ -2095,7 +2088,7 @@
        "fa": null
       },
       {
-       "jogador": "polenta-god",
+       "jogador": "quico-stallone",
        "time": "sm",
        "k": 10,
        "a": 3,
